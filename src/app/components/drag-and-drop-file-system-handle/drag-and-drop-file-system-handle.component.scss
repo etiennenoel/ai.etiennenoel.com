@@ -1,0 +1,16 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+
+.dropzone {
+  border: 2px dashed $light-border-subtle;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border 0.3s ease;
+
+  &.dragEntered {
+    border-color: $primary;
+  }
+}

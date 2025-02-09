@@ -1,0 +1,324 @@
+<div class="container" xmlns="http://www.w3.org/1999/html">
+
+  <div class="row mt-5">
+    <div class="col-12">
+      <h1 class="display-5"><i
+        class="bi bi-translate"></i> <span class="ms-3">Translator API</span></h1>
+
+      <div class="mt-4 d-flex gap-4 align-items-center">
+        <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api" target="_blank"><i
+          class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
+        <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api/pull/38/files#diff-5e793325cd2bfc452e268a4aa2f02b4024dd9584bd1db3c2595f61f1ecf7b985" target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-12">
+
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button
+              class="accordion-button collapsed d-flex gap-2"
+
+              [class.bg-success-subtle]="allRequirementsStatus === RequirementStatus.Pass"
+              [class.bg-danger-subtle]="allRequirementsStatus === RequirementStatus.Fail"
+
+              type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              <i class="bi bi-card-checklist"></i>
+              <div class="flex-grow-1">Requirements</div>
+
+              @if(allRequirementsStatus === RequirementStatus.Pass) {
+                <div class="text-success">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  All requirements passed
+                </div>
+              } @else if(allRequirementsStatus === RequirementStatus.Fail) {
+                <div class="text-danger">
+                  <i class="bi bi-x-circle-fill"></i>
+                  Some requirements failed
+                </div>
+              } @else {
+                <div class="text-primary">
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  Checking requirements
+                </div>
+              }
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <p><strong>Make sure that all the requirements are green.</strong></p>
+
+              <app-requirement [status]="requirements.translationApiFlag.status" [message]="requirements.translationApiFlag.message">
+                Activate <span class="code">chrome://flags/#translation-api</span>
+              </app-requirement>
+
+              <button class="btn btn-outline-primary mt-3" (click)="checkRequirements()"><i
+                class="bi bi-arrow-clockwise"></i>
+                Check requirements
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              <i class="bi bi-bug-fill"></i> <span class="ms-2">Debug Information</span>
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="mt-1">
+                <p>To manually install and uninstall language packs: <span class="code">chrome://on-device-translation-internals/</span>
+                </p>
+                <p class="mt-1">Models are <strong>located</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Application Support/Google/Chrome/TranslateKit/models/</span>
+                </p>
+                <p class="mt-1">Models are <strong>cached</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Caches/Google/Chrome/Default/Cache/Cache_Data/</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="row mt-3">
+      <div class="col-3">
+        <strong>API Version:</strong>
+        <select class="form-control" [formControl]="apiVersion">
+          <option [value]="TranslatorApiVersionEnum.Current">Current</option>
+          <option [value]="TranslatorApiVersionEnum.Explainer">Explainer</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12">
+      <h2>Translate</h2>
+      <div class="row">
+        <div class="col-3">
+          <div class="mb-3">
+            <label for="source_language" class="form-label">Source Language</label>
+            <app-search-select-dropdown id="source_language" [options]="languageOptions"
+                                        [control]="sourceLanguage"></app-search-select-dropdown>
+          </div>
+
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label for="target_language" class="form-label">Target Language</label>
+            <app-search-select-dropdown id="target_language" [options]="languageOptions"
+                                        [control]="targetLanguage"></app-search-select-dropdown>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <textarea class="form-control" rows="3" [formControl]="this.content"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12" stepVisualStatus [status]="steps.step0.status">
+      <app-step-title [status]="steps.step0.status" title="Step 0: Language Pack available"></app-step-title>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <code-editor [code]="this.apiExecutor.getStep0Code(this.sourceLanguage.value, this.targetLanguage.value)" [readonly]="true" [height]="'100px'"></code-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <button class="btn btn-outline-primary" (click)="executeStep0()"><i class="bi bi-play-fill"></i>
+            Execute
+          </button>
+        </div>
+      </div>
+
+      <div class="row mt-4" *ngIf="steps.step0.status !== StepStatus.Idle">
+        <div class="col-12">
+          <h4 class="link" (click)="steps.step0.outputCollapsed = !steps.step0.outputCollapsed">
+            <i class="bi bi-chevron-right" *ngIf="steps.step0.outputCollapsed"></i>
+            <i class="bi bi-chevron-down" *ngIf="!steps.step0.outputCollapsed"></i>
+            Output</h4>
+
+          <div class="mt-3 ms-3" [class.collapse]="steps.step0.outputCollapsed">
+            <div class="card card-body"
+                 [class.alert]="steps.step0.status === StepStatus.Error"
+                 [class.alert-danger]="steps.step0.status === StepStatus.Error"
+            >
+              {{ steps.step0.log }}
+            </div>
+
+            <div class="mt-3" *ngIf="steps.step0.status !== StepStatus.Error">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Value</th>
+                  <th>Interpretation</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td class="align-middle">canTranslate</td>
+                  <td class="align-middle"><span class="code"
+                                                 [class.code-warning]="steps.step0.available === 'after-download'"
+                                                 [class.code-danger]="steps.step0.available === 'no'"
+                                                 [class.code-success]="steps.step0.available === 'readily'"
+                  >{{ steps.step0.available }}</span></td>
+                  <td class="align-middle">
+                    <ul>
+                      <li class="mt-1"><span class="code code-warning">after-download</span>: Available after creating
+                        the translator
+                      </li>
+                      <li class="mt-1"><span class="code code-danger">no</span>: Not available</li>
+                      <li class="mt-1"><span class="code code-success">readily</span>: Readily available without
+                        downloading
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12" stepVisualStatus [status]="steps.step1.status">
+      <app-step-title [status]="steps.step1.status"
+                      title="Step 1: Create the translator with the desired languages"></app-step-title>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <code-editor [code]="this.apiExecutor.getStep1Code(this.sourceLanguage.value, this.targetLanguage.value)" [readonly]="true" [height]="'200px'"></code-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <button class="btn btn-outline-primary" (click)="executeStep1()"><i class="bi bi-play-fill"></i>
+            Execute
+          </button>
+        </div>
+      </div>
+
+      <div class="row mt-4" *ngIf="steps.step1.status !== StepStatus.Idle">
+        <div class="col-12">
+          <h4 class="link" (click)="steps.step1.outputCollapsed = !steps.step1.outputCollapsed">
+            <i class="bi bi-chevron-right" *ngIf="steps.step1.outputCollapsed"></i>
+            <i class="bi bi-chevron-down" *ngIf="!steps.step1.outputCollapsed"></i>
+            Output</h4>
+
+          <div class="mt-3 ms-3" [class.collapse]="steps.step1.outputCollapsed" id="collapseExample">
+            <div class="card card-body"
+                 [class.alert]="steps.step1.status === StepStatus.Error"
+                 [class.alert-danger]="steps.step1.status === StepStatus.Error"
+            >
+              {{ steps.step1.log }}
+            </div>
+
+            <div *ngIf="steps.step1.status !== StepStatus.Error">
+              <h6 class="mt-4">Progress</h6>
+              <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
+                   aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: 0%"></div>
+              </div>
+              <div>Downloaded {{ steps.step1.bytesDownloaded }} of {{ steps.step1.totalBytes }}bytes.
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12" stepVisualStatus [status]="steps.step2.status">
+      <app-step-title [status]="steps.step2.status" title="Step 2: Translate"></app-step-title>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <code-editor [code]="this.apiExecutor.getStep2Code(this.sourceLanguage.value, this.targetLanguage.value, this.content.value)" [readonly]="true" [height]="'50px'"></code-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <button class="btn btn-outline-primary" (click)="executeStep2()"><i class="bi bi-play-fill"></i>
+            Execute
+          </button>
+        </div>
+      </div>
+
+      <div class="row mt-4" *ngIf="steps.step2.status !== StepStatus.Idle">
+        <div class="col-12">
+          <h4 class="link" (click)="steps.step2.outputCollapsed = !steps.step2.outputCollapsed">
+            <i class="bi bi-chevron-right" *ngIf="steps.step2.outputCollapsed"></i>
+            <i class="bi bi-chevron-down" *ngIf="!steps.step2.outputCollapsed"></i>
+            Output</h4>
+
+          <div class="mt-3 ms-3" [class.collapse]="steps.step2.outputCollapsed">
+            <div class="card card-body"
+                 [class.alert]="steps.step2.status === StepStatus.Error"
+                 [class.alert-danger]="steps.step2.status === StepStatus.Error"
+            >
+              {{ steps.step2.log }}
+            </div>
+
+
+            <div class="mt-3">
+              <h6>Original ({{ this.steps.step2.sourceLanguage }}):</h6>
+              <div class="alert alert-light"> {{ this.steps.step2.content }}</div>
+
+              <h6>Translated ({{ this.steps.step2.targetLanguage }})</h6>
+              <div class="alert alert-primary">{{ this.steps.step2.translatedContent }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="row mt-5">
+    <br>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+    Header set Cross-Origin-Opener-Policy "same-origin"
+    Header set Cross-Origin-Embedder-Policy "credentialless"
+
+    <Files clear-site-data.html>
+        Header set Clear-Site-Data *
+    </Files>
+
+    <Files clear-site-data-cache.html>
+        Header set Clear-Site-Data '"cache"'
+    </Files>
+
+    <Files clear-site-data-cookies.html>
+        Header set Clear-Site-Data '"cookies"'
+    </Files>
+
+    <Files clear-site-data-storage.html>
+        Header set Clear-Site-Data '"storage"'
+    </Files>
+
+    <Files clear-site-data-storage-bucket.html>
+        Header set Clear-Site-Data '"storage:drafts"'
+    </Files>
+
+    <Files clear-site-data-storage-buckets.html>
+        Header set Clear-Site-Data '"storage:*"'
+    </Files>
+
+    <Files storage-buckets.html>
+        Header set Clear-Site-Data '"storage:drafts"'
+    </Files>
+
+</IfModule>
+<IfModule mod_mime.c>
+  AddType label/javascript mjs
+  AddType application/wasm wasm
+</IfModule>

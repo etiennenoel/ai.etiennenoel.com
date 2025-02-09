@@ -1,0 +1,166 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  <a href="/" class="btn btn-light mt-4 mb-4"><i class="bi bi-house"></i> Home</a>
+
+  <div class="row mb-3">
+    <div class="col-12">
+      <h1>Writing Assistance APIs</h1>
+
+      <h3 class="mt-3">Input:</h3>
+      <textarea class="form-control" rows="8" [formControl]="inputFormControl"></textarea>
+
+      <div class="d-grid">
+        <button class="btn btn-primary d-block mt-2 btn-lg" (click)="execute()">
+          @switch (activeTab) {
+            @case (ActiveTabEnum.Writer) {
+              Write
+            }
+            @case (ActiveTabEnum.Rewriter) {
+              Rewrite
+            }
+            @case (ActiveTabEnum.Summarizer) {
+              Summarize
+            }
+          }
+            </button>
+      </div>
+
+      <h3 class="mt-3">Shared Context:</h3>
+      <textarea class="form-control" rows="3" [formControl]="sharedContextFormControl"></textarea>
+
+      <app-output
+        [status]="this.status"
+        [executionPerformanceResult]="this.executionPerformanceResult"
+        [downloadProgress]="this.loaded"
+        [error]="this.error"
+        [output]="this.output"
+        [outputChunks]="this.outputChunks"
+
+      ></app-output>
+
+    </div>
+  </div>
+
+  <hr>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === ActiveTabEnum.Writer"
+              (click)="activeTab = ActiveTabEnum.Writer" aria-current="page" href="#">
+        Writer
+        API
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === ActiveTabEnum.Rewriter"
+              (click)="activeTab = ActiveTabEnum.Rewriter" href="#">ReWriter API
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" [class.active]="activeTab === ActiveTabEnum.Summarizer"
+              (click)="activeTab = ActiveTabEnum.Summarizer" href="#">Summarizer API
+      </button>
+    </li>
+  </ul>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="border border-top-0 p-3">
+        @switch (activeTab) {
+          @case (ActiveTabEnum.Writer) {
+            <app-writer
+              [(tone)]="writerTone"
+              (toneChange)="writerToneChange()"
+              [(format)]="writerFormat"
+              (formatChange)="writerFormatChange()"
+              [(length)]="writerLength"
+              (lengthChange)="writerLengthChange()"
+              [(useStreaming)]="writerUseStreaming"
+              (useStreamingChange)="writerUseStreamingChange()"
+              [input]="inputFormControl.value ?? ''"
+              [sharedContext]="sharedContextFormControl.value ?? ''"
+              [(expectedInputLanguages)]="writerExpectedInputLanguages"
+              (expectedInputLanguagesChange)="writerExpectedInputLanguagesChange()"
+              [(expectedContextLanguages)]="writerExpectedContextLanguages"
+              (expectedContextLanguagesChange)="writerExpectedContextLanguagesChange()"
+              [(outputLanguage)]="writerOutputLanguage"
+              (outputLanguageChange)="writerOutputLanguageChange()"
+              [(context)]="writerContext"
+              (contextChange)="writerContextChange()"
+              (executionPerformanceChange)="executionPerformanceChange($event)"
+              (outputChange)="outputChange($event)"
+              (outputChunksChange)="outputChunksChange($event)"
+              (statusChange)="statusChange($event)"
+              (loadedChange)="loadedChange($event)"
+              (errorChange)="errorChange($event)"
+              (abortControllerChange)="abortControllerChange($event)"
+              (abortControllerFromCreateChange)="abortControllerFromCreateChange($event)"
+            ></app-writer>
+          }
+          @case (ActiveTabEnum.Rewriter) {
+            <app-rewriter
+              [(tone)]="rewriterTone"
+              (toneChange)="rewriterToneChange()"
+              [(format)]="rewriterFormat"
+              (formatChange)="rewriterFormatChange()"
+              [(length)]="rewriterLength"
+              (lengthChange)="rewriterLengthChange()"
+              [(useStreaming)]="rewriterUseStreaming"
+              (useStreamingChange)="rewriterUseStreamingChange()"
+              [input]="inputFormControl.value ?? ''"
+              [sharedContext]="sharedContextFormControl.value ?? ''"
+              [(expectedInputLanguages)]="rewriterExpectedInputLanguages"
+              (expectedInputLanguagesChange)="rewriterExpectedInputLanguagesChange()"
+              [(expectedContextLanguages)]="rewriterExpectedContextLanguages"
+              (expectedContextLanguagesChange)="rewriterExpectedContextLanguagesChange()"
+              [(outputLanguage)]="rewriterOutputLanguage"
+              (outputLanguageChange)="rewriterOutputLanguageChange()"
+              [(context)]="rewriterContext"
+              (contextChange)="rewriterContextChange()"
+              (executionPerformanceChange)="executionPerformanceChange($event)"
+              (outputChange)="outputChange($event)"
+              (outputChunksChange)="outputChunksChange($event)"
+              (statusChange)="statusChange($event)"
+              (loadedChange)="loadedChange($event)"
+              (errorChange)="errorChange($event)"
+              (abortControllerChange)="abortControllerChange($event)"
+              (abortControllerFromCreateChange)="abortControllerFromCreateChange($event)"
+            ></app-rewriter>
+          }
+          @case (ActiveTabEnum.Summarizer) {
+            <app-summarizer
+              [(type)]="summarizerType"
+              (typeChange)="summarizerToneChange()"
+              [(format)]="summarizerFormat"
+              (formatChange)="summarizerFormatChange()"
+              [(length)]="summarizerLength"
+              (lengthChange)="summarizerLengthChange()"
+              [(useStreaming)]="summarizerUseStreaming"
+              (useStreamingChange)="summarizerUseStreamingChange()"
+              [input]="inputFormControl.value ?? ''"
+              [sharedContext]="sharedContextFormControl.value ?? ''"
+              [(expectedInputLanguages)]="summarizerExpectedInputLanguages"
+              (expectedInputLanguagesChange)="summarizerExpectedInputLanguagesChange()"
+              [(expectedContextLanguages)]="summarizerExpectedContextLanguages"
+              (expectedContextLanguagesChange)="summarizerExpectedContextLanguagesChange()"
+              [(outputLanguage)]="summarizerOutputLanguage"
+              (outputLanguageChange)="summarizerOutputLanguageChange()"
+              [(context)]="summarizerContext"
+              (contextChange)="summarizerContextChange()"
+              (executionPerformanceChange)="executionPerformanceChange($event)"
+              (outputChange)="outputChange($event)"
+              (outputChunksChange)="outputChunksChange($event)"
+              (statusChange)="statusChange($event)"
+              (loadedChange)="loadedChange($event)"
+              (errorChange)="errorChange($event)"
+              (abortControllerChange)="abortControllerChange($event)"
+              (abortControllerFromCreateChange)="abortControllerFromCreateChange($event)"
+            ></app-summarizer>
+          }
+        }
+      </div>
+
+
+    </div>
+  </div>
+</div>

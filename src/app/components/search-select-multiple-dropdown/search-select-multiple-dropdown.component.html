@@ -1,0 +1,31 @@
+
+<div class="dropdown form-control p-0 d-flex align-items-center gap-2" style="height: 2.35rem;">
+    <div class="d-flex h-75 gap-1 ps-2">
+      @for (selectedOption of this.control.value; track $index) {
+
+        <button type="button" class="btn btn-primary btn-sm pt-0 pb-0 d-flex ps-0 gap-1" (click)="unselectOption(selectedOption)"><i class="bi bi-x ps-1"></i> <span>{{ this.getOptionLabel(selectedOption) }}</span></button>
+      }
+    </div>
+
+    <input type="text" class="dropdown-toggle p-0 border-0" style="background:none; width: inherit; height: inherit" role="button" data-bs-toggle="dropdown"
+           [name]="name"
+           [formControl]="searchControl"
+           (keyup)="keyUp($event)"
+           (click)="dropdownClicked()" />
+
+    <ul class="dropdown-menu" #dropdownMenu>
+      @for (option of filteredOptions; track $index) {
+        <li><button class="dropdown-item"
+                    [class.active]="$index === cursorPosition"
+
+                    (click)="selectOption(option.value)" href="#">{{ option.label }}</button></li>
+
+        <!--                [class.text-primary]="this.control.value?.find((element) => element.value === option.value)?.value"-->
+      }
+
+      @if(filteredOptions.length === 0) {
+        <li><button class="dropdown-item">No results found.</button></li>
+      }
+    </ul>
+
+</div>
