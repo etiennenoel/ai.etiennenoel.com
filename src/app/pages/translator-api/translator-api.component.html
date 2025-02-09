@@ -3,97 +3,43 @@
   <app-page-title [title]="'Translator API'" [icon]="'bi-translate'">
     <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api" target="_blank"><i
       class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
-    <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api/pull/38/files#diff-5e793325cd2bfc452e268a4aa2f02b4024dd9584bd1db3c2595f61f1ecf7b985" target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
+    <a class="btn btn-light"
+       href="https://github.com/webmachinelearning/translation-api/pull/38/files#diff-5e793325cd2bfc452e268a4aa2f02b4024dd9584bd1db3c2595f61f1ecf7b985"
+       target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
   </app-page-title>
 
 
   <div class="row mb-3">
     <div class="col-12">
 
-      <div class="accordion" id="accordionExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button
-              class="accordion-button collapsed d-flex gap-2"
-
-              [class.bg-success-subtle]="allRequirementsStatus === RequirementStatus.Pass"
-              [class.bg-danger-subtle]="allRequirementsStatus === RequirementStatus.Fail"
-
-              type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-              <i class="bi bi-card-checklist"></i>
-              <div class="flex-grow-1">Requirements</div>
-
-              @if(allRequirementsStatus === RequirementStatus.Pass) {
-                <div class="text-success">
-                  <i class="bi bi-check-circle-fill text-success"></i>
-                  All requirements passed
-                </div>
-              } @else if(allRequirementsStatus === RequirementStatus.Fail) {
-                <div class="text-danger">
-                  <i class="bi bi-x-circle-fill"></i>
-                  Some requirements failed
-                </div>
-              } @else {
-                <div class="text-primary">
-                  <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                  Checking requirements
-                </div>
-              }
-            </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-              <p><strong>Make sure that all the requirements are green.</strong></p>
-
-              <app-requirement [status]="requirements.translationApiFlag.status" [message]="requirements.translationApiFlag.message">
-                Activate <span class="code">chrome://flags/#translation-api</span>
-              </app-requirement>
-
-              <button class="btn btn-outline-primary mt-3" (click)="checkRequirements()"><i
-                class="bi bi-arrow-clockwise"></i>
-                Check requirements
-              </button>
-            </div>
-          </div>
+      <app-page-accordion
+        [requirementsStatus]="allRequirementsStatus"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="getAllRequirements()"
+      >
+        <div #debugInformation>
+          <p>To manually install and uninstall language packs: <span class="code">chrome://on-device-translation-internals/</span>
+          </p>
+          <p class="mt-1">Models are <strong>located</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Application Support/Google/Chrome/TranslateKit/models/</span>
+          </p>
+          <p class="mt-1">Models are <strong>cached</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Caches/Google/Chrome/Default/Cache/Cache_Data/</span>
+          </p>
         </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-              <i class="bi bi-bug-fill"></i> <span class="ms-2">Debug Information</span>
-            </button>
-          </h2>
-          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-              <div class="mt-1">
-                <p>To manually install and uninstall language packs: <span class="code">chrome://on-device-translation-internals/</span>
-                </p>
-                <p class="mt-1">Models are <strong>located</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Application Support/Google/Chrome/TranslateKit/models/</span>
-                </p>
-                <p class="mt-1">Models are <strong>cached</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Caches/Google/Chrome/Default/Cache/Cache_Data/</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-
-    <div class="row mt-3">
-      <div class="col-3">
-        <strong>API Version:</strong>
-        <select class="form-control" [formControl]="apiVersion">
-          <option [value]="TranslatorApiVersionEnum.Current">Current</option>
-          <option [value]="TranslatorApiVersionEnum.Explainer">Explainer</option>
-        </select>
-      </div>
+      </app-page-accordion>
     </div>
   </div>
+
+
+  <div class="row mt-3">
+    <div class="col-3">
+      <strong>API Version:</strong>
+      <select class="form-control" [formControl]="apiVersion">
+        <option [value]="TranslatorApiVersionEnum.Current">Current</option>
+        <option [value]="TranslatorApiVersionEnum.Explainer">Explainer</option>
+      </select>
+    </div>
+  </div>
+
 
   <div class="row mt-5">
     <div class="col-12">
@@ -132,7 +78,8 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <code-editor [code]="this.apiExecutor.getStep0Code(this.sourceLanguage.value, this.targetLanguage.value)" [readonly]="true" [height]="'100px'"></code-editor>
+              <code-editor [code]="this.apiExecutor.getStep0Code(this.sourceLanguage.value, this.targetLanguage.value)"
+                           [readonly]="true" [height]="'100px'"></code-editor>
             </div>
           </div>
         </div>
@@ -211,7 +158,8 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <code-editor [code]="this.apiExecutor.getStep1Code(this.sourceLanguage.value, this.targetLanguage.value)" [readonly]="true" [height]="'200px'"></code-editor>
+              <code-editor [code]="this.apiExecutor.getStep1Code(this.sourceLanguage.value, this.targetLanguage.value)"
+                           [readonly]="true" [height]="'200px'"></code-editor>
             </div>
           </div>
         </div>
@@ -266,7 +214,9 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <code-editor [code]="this.apiExecutor.getStep2Code(this.sourceLanguage.value, this.targetLanguage.value, this.content.value)" [readonly]="true" [height]="'50px'"></code-editor>
+              <code-editor
+                [code]="this.apiExecutor.getStep2Code(this.sourceLanguage.value, this.targetLanguage.value, this.content.value)"
+                [readonly]="true" [height]="'50px'"></code-editor>
             </div>
           </div>
         </div>

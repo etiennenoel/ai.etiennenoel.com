@@ -38,6 +38,7 @@ import {IndexComponent} from './pages/index/index.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {PageTitleComponent} from './components/page-title/page-title.component';
+import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import {PageTitleComponent} from './components/page-title/page-title.component';
     SidebarComponent,
     LayoutComponent,
     PageTitleComponent,
+    PageAccordionComponent,
 
     CardComponent,
     // Pipes

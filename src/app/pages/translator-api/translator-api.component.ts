@@ -41,6 +41,7 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
     translationApiFlag: {
         status: RequirementStatus.Pending,
       message: "Checking",
+      contentHtml: `Activate <span class="code">chrome://flags/#translation-api</span>`,
     }
   }
 
@@ -120,6 +121,10 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => {
       subscription.unsubscribe();
     });
+  }
+
+  getAllRequirements() {
+    return [this.requirements.translationApiFlag];
   }
 
   reset() {

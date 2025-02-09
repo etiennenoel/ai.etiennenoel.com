@@ -4,5 +4,6 @@ export interface RequirementInterface {
   translationApiFlag: {
     status: RequirementStatus,
     message: string;
+    contentHtml: string;
   }
 }

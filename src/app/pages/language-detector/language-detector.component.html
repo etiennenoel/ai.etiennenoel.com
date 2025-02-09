@@ -1,27 +1,33 @@
-<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
-  <a href="/public" class="btn btn-light mt-4 mb-4"><i class="bi bi-house"></i> Home</a>
+<div class="container" xmlns="http://www.w3.org/1999/html">
 
-  <div class="row mb-3">
-    <div class="col-12">
-      <h1>Language Detector API</h1>
+  <app-page-title [title]="'Language Detector API'" [icon]="'bi-globe2'">
+    <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api?tab=readme-ov-file#language-detection" target="_blank"><i
+      class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
+    <a class="btn btn-light" href="https://github.com/webmachinelearning/translation-api/pull/38/files#diff-5e793325cd2bfc452e268a4aa2f02b4024dd9584bd1db3c2595f61f1ecf7b985" target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
+  </app-page-title>
 
-      <a href="https://github.com/webmachinelearning/translation-api?tab=readme-ov-file#language-detection"
-         target="_blank">Explainer</a>
-    </div>
-  </div>
 
   @if (error) {
     <div class="alert alert-danger m-0 mb-2">{{ error }}</div>
   }
 
-  <div class="row mt-5">
-    <div class="col-12 col-md-6">
-      <h3>Requirements</h3>
-      <p>Make sure that all the requirements are green.</p>
+  <div class="row mb-3">
+    <div class="col-12">
 
-      <app-requirement [status]="apiFlag.status" [message]="apiFlag.message">
-        Activate <span class="code">chrome://flags/#language-detection-api</span>
-      </app-requirement>
+      <app-page-accordion
+        [requirementsStatus]="this.apiFlag.status"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="getRequirements()"
+      >
+        <div #debugInformation>
+          <p>To manually install and uninstall language packs: <span class="code">chrome://on-device-translation-internals/</span>
+          </p>
+          <p class="mt-1">Models are <strong>located</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Application Support/Google/Chrome/TranslateKit/models/</span>
+          </p>
+          <p class="mt-1">Models are <strong>cached</strong> in: (MacOS) <span class="code">/Users/$&#123;username&#125;/Library/Caches/Google/Chrome/Default/Cache/Cache_Data/</span>
+          </p>
+        </div>
+      </app-page-accordion>
     </div>
   </div>
 

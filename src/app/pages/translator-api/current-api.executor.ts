@@ -29,7 +29,8 @@ export class CurrentApiExecutor implements ApiExecutorInterface {
     return {
       translationApiFlag: {
         status: translationApiStatus,
-        message: translationApiMessage
+        message: translationApiMessage,
+        contentHtml: "Activate <span class=\"code\">chrome://flags/#translation-api</span>",
       }
     }
   }

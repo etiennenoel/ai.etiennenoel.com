@@ -8,6 +8,7 @@ import {LocaleEnum} from '../../enums/locale.enum';
 import {FormControl} from '@angular/forms';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ActivatedRoute, Router} from '@angular/router';
+import {RequirementInterface} from '../../interfaces/requirement.interface';
 
 
 @Component({
@@ -18,9 +19,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class LanguageDetectorComponent extends BaseComponent implements OnInit {
 
-  public apiFlag: RequirementStatusInterface = {
+  public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
-    message: 'Pending'
+    message: 'Pending',
+    contentHtml: `Activate <span class="code">chrome://flags/#language-detection-api</span>`,
   }
 
   availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
@@ -134,6 +136,10 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }
+  }
+
+  getRequirements() {
+    return [this.apiFlag];
   }
 
   get availabilityCode(): string {
