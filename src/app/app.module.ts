@@ -35,6 +35,8 @@ import {CardComponent} from './components/card/card.component';
 import {LanguageDetectorComponent} from './pages/language-detector/language-detector.component';
 import {RequirementComponent} from './components/requirement/requirement.component';
 import {IndexComponent} from './pages/index/index.component';
+import {SidebarComponent} from './components/sidebar/sidebar.component';
+import {LayoutComponent} from './components/layout/layout.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import {IndexComponent} from './pages/index/index.component';
     RequirementComponent,
 
     IndexComponent,
+    SidebarComponent,
+    LayoutComponent,
 
     CardComponent,
     // Pipes
