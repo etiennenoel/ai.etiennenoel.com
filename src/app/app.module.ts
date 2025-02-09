@@ -37,6 +37,7 @@ import {RequirementComponent} from './components/requirement/requirement.compone
 import {IndexComponent} from './pages/index/index.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
+import {PageTitleComponent} from './components/page-title/page-title.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import {LayoutComponent} from './components/layout/layout.component';
     IndexComponent,
     SidebarComponent,
     LayoutComponent,
+    PageTitleComponent,
 
     CardComponent,
     // Pipes
