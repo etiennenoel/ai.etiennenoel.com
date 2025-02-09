@@ -1,5 +1,5 @@
 import {RequirementInterface} from './requirement.interface';
-import {TaskStatus} from '../../../../enums/task-status.enum';
+import {TaskStatus} from '../../../enums/task-status.enum';
 import {Step0} from './step-0.interface';
 
 export interface ApiExecutorInterface {

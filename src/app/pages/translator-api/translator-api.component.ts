@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {TaskStatus} from "../../../enums/task-status.enum";
-import {RequirementStatus} from "../../../enums/requirement-status.enum";
-import {languages} from "../../../constants/languages.constants";
-import {TranslatorApiVersionEnum} from "../../../enums/translator-api-version.enum";
+import {TaskStatus} from "../../enums/task-status.enum";
+import {RequirementStatus} from "../../enums/requirement-status.enum";
+import {languages} from "../../constants/languages.constants";
+import {TranslatorApiVersionEnum} from "../../enums/translator-api-version.enum";
 import {CurrentApiExecutor} from "./current-api.executor";
 import {ExplainerApiExecutor} from "./explainer-api.executor";
 import {RequirementInterface} from "./interfaces/requirement.interface";
@@ -15,7 +15,7 @@ import {Subscription} from 'rxjs';
 import {Step2} from './interfaces/step-2.interface';
 import {
   SearchSelectDropdownOptionsInterface
-} from '../../../interfaces/search-select-dropdown-options.interface';
+} from '../../interfaces/search-select-dropdown-options.interface';
 
 @Component({
   selector: 'app-translator-api',

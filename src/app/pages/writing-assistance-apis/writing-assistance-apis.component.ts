@@ -1,28 +1,28 @@
 import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl} from '@angular/forms';
-import {WriterToneEnum} from '../../../enums/writer-tone.enum';
-import {RequirementStatus} from '../../../enums/requirement-status.enum';
+import {WriterToneEnum} from '../../enums/writer-tone.enum';
+import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {RequirementInterface} from './interfaces/requirement.interface';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {TaskStatus} from '../../../enums/task-status.enum';
-import {BaseComponent} from '../../../components/base/base.component';
-import {WriterLengthEnum} from '../../../enums/writer-length.enum';
-import {WriterFormatEnum} from '../../../enums/writer-format.enum';
-import {LocaleEnum} from '../../../enums/locale.enum';
-import {ExecutionPerformanceResultInterface} from '../../../interfaces/execution-performance-result.interface';
-import {ToastStore} from '../../../stores/toast.store';
+import {TaskStatus} from '../../enums/task-status.enum';
+import {BaseComponent} from '../../components/base/base.component';
+import {WriterLengthEnum} from '../../enums/writer-length.enum';
+import {WriterFormatEnum} from '../../enums/writer-format.enum';
+import {LocaleEnum} from '../../enums/locale.enum';
+import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
+import {ToastStore} from '../../stores/toast.store';
 import {ActiveTabEnum} from './active-tab.enum';
 import {window} from 'rxjs';
-import {RewriterToneEnum} from '../../../enums/rewriter-tone.enum';
-import {RewriterFormatEnum} from '../../../enums/rewriter-format.enum';
-import {RewriterLengthEnum} from '../../../enums/rewriter-length.enum';
-import {SummarizerTypeEnum} from '../../../enums/summarizer-type.enum';
-import {SummarizerFormatEnum} from '../../../enums/summarizer-format.enum';
-import {SummarizerLengthEnum} from '../../../enums/summarizer-length.enum';
-import {WriterApiComponent} from '../../../components/writer-api/writer-api.component';
-import {RewriterApiComponent} from '../../../components/rewriter-api/rewriter-api.component';
-import {SummarizerApiComponent} from '../../../components/summarizer-api/summarizer-api.component';
+import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
+import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
+import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
+import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
+import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
+import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
+import {WriterApiComponent} from '../../components/writer-api/writer-api.component';
+import {RewriterApiComponent} from '../../components/rewriter-api/rewriter-api.component';
+import {SummarizerApiComponent} from '../../components/summarizer-api/summarizer-api.component';
 
 
 @Component({

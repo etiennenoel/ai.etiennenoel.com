@@ -1,4 +1,4 @@
-import {RequirementStatus} from '../../../../enums/requirement-status.enum';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 
 export interface RequirementInterface {
   translationApiFlag: {

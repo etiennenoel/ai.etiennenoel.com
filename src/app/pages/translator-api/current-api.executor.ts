@@ -1,9 +1,9 @@
 import {RequirementInterface} from './interfaces/requirement.interface';
 import {ApiExecutorInterface} from './interfaces/api-executor.interface';
-import {RequirementStatus} from '../../../enums/requirement-status.enum';
+import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {isPlatformBrowser} from '@angular/common';
 import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
-import {TaskStatus} from '../../../enums/task-status.enum';
+import {TaskStatus} from '../../enums/task-status.enum';
 import {Step0} from './interfaces/step-0.interface';
 
 @Injectable()

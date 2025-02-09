@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {IndexComponent} from './pages/index/index.component';
 import {RootComponent} from './components/root/root.component';
-import {TranslatorApiComponent} from './pages/browser-ai/translator-api/translator-api.component';
+import {TranslatorApiComponent} from './pages/translator-api/translator-api.component';
 import {
   WritingAssistanceApisComponent
-} from './pages/browser-ai/writing-assistance-apis/writing-assistance-apis.component';
-import {PromptApiComponent} from './pages/browser-ai/prompt-api/prompt-api.component';
-import {LanguageDetectorComponent} from './pages/browser-ai/language-detector/language-detector.component';
-import {BrowserAIIndexComponent} from './pages/browser-ai/index/browser-ai-index.component';
+} from './pages/writing-assistance-apis/writing-assistance-apis.component';
+import {PromptApiComponent} from './pages/prompt-api/prompt-api.component';
+import {LanguageDetectorComponent} from './pages/language-detector/language-detector.component';
+import {IndexComponent} from './pages/index/index.component';
 
 const routes: Routes = [
   {
@@ -20,8 +19,8 @@ const routes: Routes = [
         component: IndexComponent,
       },
       {
-        path: "browser-ai",
-        component: BrowserAIIndexComponent,
+        path: "",
+        component: IndexComponent,
         children: [
           {
             path: "translator-api",

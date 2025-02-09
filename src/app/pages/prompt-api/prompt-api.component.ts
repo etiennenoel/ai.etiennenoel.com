@@ -1,19 +1,19 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {MediaInformationInterface} from './media-information.interface';
-import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
-import {BaseComponent} from '../../../components/base/base.component';
-import {RequirementStatusInterface} from '../../../interfaces/requirement-status.interface';
-import {RequirementStatus} from '../../../enums/requirement-status.enum';
+import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
+import {BaseComponent} from '../../components/base/base.component';
+import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
+import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {LocaleEnum} from '../../../enums/locale.enum';
+import {LocaleEnum} from '../../enums/locale.enum';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PromptInitialRoleEnum} from '../../../enums/prompt-initial-role.enum';
-import {AILanguageModelParamsInterface} from '../../../interfaces/ai-language-model-params.interface';
-import {TaskStatus} from '../../../enums/task-status.enum';
-import {PromptTypeEnum} from '../../../enums/prompt-type.enum';
-import {PromptRoleEnum} from '../../../enums/prompt-role.enum';
-import {PromptInterface} from '../../../components/prompt/prompt.interface';
+import {PromptInitialRoleEnum} from '../../enums/prompt-initial-role.enum';
+import {AILanguageModelParamsInterface} from '../../interfaces/ai-language-model-params.interface';
+import {TaskStatus} from '../../enums/task-status.enum';
+import {PromptTypeEnum} from '../../enums/prompt-type.enum';
+import {PromptRoleEnum} from '../../enums/prompt-role.enum';
+import {PromptInterface} from '../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 
