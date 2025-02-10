@@ -24,6 +24,11 @@
           <span>Language Detector API</span>
         </a>
       </li>
+      <li [class.active]="this.currentRoute === RouteEnum.WriterApi">
+        <a class="btn stretched-link" routerLink="/writer-api">
+          <i class="bi bi-pencil-square"></i>
+          <span>Writer API</span></a>
+      </li>
       <li [class.active]="this.currentRoute === RouteEnum.WritingAssistanceApis">
         <a class="btn stretched-link" routerLink="/writing-assistance-apis">
           <i class="bi bi-pencil-square"></i>

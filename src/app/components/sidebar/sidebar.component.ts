@@ -54,6 +54,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.WritingAssistanceApis;
     } else if(url.endsWith('prompt-api')) {
       this.currentRoute = RouteEnum.PromptApi;
+    } else if(url.endsWith('writer-api')) {
+      this.currentRoute = RouteEnum.WriterApi;
     }else if(url.endsWith('/')) {
       this.currentRoute = RouteEnum.Home;
     }

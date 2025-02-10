@@ -9,6 +9,7 @@ import {PromptApiComponent} from './pages/prompt-api/prompt-api.component';
 import {LanguageDetectorComponent} from './pages/language-detector/language-detector.component';
 import {IndexComponent} from './pages/index/index.component';
 import {LayoutComponent} from './components/layout/layout.component';
+import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 
 const routes: Routes = [
     {
@@ -26,6 +27,10 @@ const routes: Routes = [
             {
               path: "translator-api",
               component: TranslatorApiComponent
+            },
+            {
+              path: "writer-api",
+              component: WriterApiComponent,
             },
             {
               path: "writing-assistance-apis",

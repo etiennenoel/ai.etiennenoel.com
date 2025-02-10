@@ -15,7 +15,7 @@ import {EnumToSearchSelectDropdownOptionsPipe} from './pipes/enum-to-search-sele
 import {
   WritingAssistanceApisComponent
 } from './pages/writing-assistance-apis/writing-assistance-apis.component';
-import {WriterApiComponent} from './components/writer-api/writer-api.component';
+import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {CodeEditorComponent} from './components/code-editor/code-editor.component';
 import {
   SearchSelectMultipleDropdownComponent

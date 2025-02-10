@@ -1,5 +1,5 @@
-import {Component, Directive, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {RouterOutlet} from "@angular/router";
+import {Component, Directive, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 import {Subscription} from 'rxjs';
 import {BaseComponent} from '../base/base.component';
@@ -9,6 +9,7 @@ import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {FormControl} from '@angular/forms';
 import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
+import {DOCUMENT} from '@angular/common';
 
 declare global {
   interface Window { ai: any; }
@@ -41,6 +42,7 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     if(options?.emitChangeEvent ?? true) {
       this.useStreamingChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { useStreaming: value}, queryParamsHandling: 'merge' });
   }
 
   // </editor-fold>
@@ -112,6 +114,8 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     if(options?.emitChangeEvent ?? true) {
       this.expectedInputLanguagesChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { expectedInputLanguages: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -138,6 +142,8 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     if(options?.emitChangeEvent ?? true) {
       this.expectedContextLanguagesChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { expectedContextLanguages: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -163,10 +169,97 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     if(options?.emitChangeEvent ?? true) {
       this.outputLanguageChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { outputLanguage: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
   outputLanguageChange = new EventEmitter<LocaleEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Context">
+  private _context: string | null = null;
+  public contextFormControl = new FormControl<string | null>("");
+
+  get context(): string | null {
+    return this._context;
+  }
+
+  @Input()
+  set context(value: string | null) {
+    this.setContext(value);
+  }
+
+  setContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._context = value;
+    this.contextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.contextChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { context: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  contextChange = new EventEmitter<string | null>();
+  // </editor-fold>
+
+
+  // <editor-fold desc="Input">
+  private _input: string | null = null;
+  public inputFormControl: FormControl<string | null> = new FormControl<string | null>(null);
+
+  get input(): string | null {
+    return this._input;
+  }
+
+  @Input()
+  set input(value: string | null) {
+    this.setInput(value);
+  }
+
+  setInput(value: string | null, options?: {updateFormControl?: boolean, emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._input = value;
+    if(options?.updateFormControl) {
+      this.inputFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    }
+
+    if(options?.emitChangeEvent ?? true) {
+      this.inputChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { input: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  inputChange = new EventEmitter<string | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Shared Context">
+  private _sharedContext: string | null = null;
+  public sharedContextFormControl = new FormControl<string | null>("");
+
+  get sharedContext(): string | null {
+    return this._sharedContext;
+  }
+
+  @Input()
+  set sharedContext(value: string | null) {
+    this.setSharedContext(value);
+  }
+
+  setSharedContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._sharedContext = value;
+    this.sharedContextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.sharedContextChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { sharedContext: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  sharedContextChange = new EventEmitter<string | null>();
   // </editor-fold>
 
   // <editor-fold desc="AbortControllerFromCreate">
@@ -221,18 +314,85 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
 
   public apiFlag: RequirementStatusInterface = {
     status: RequirementStatus.Pending,
-    message: 'Pending'
+    message: 'Pending',
+
   }
 
   private executionTimeInterval: any;
 
   public outputChunks: string[] = [];
 
+  constructor(
+    @Inject(DOCUMENT) document: Document,
+    protected readonly router: Router,
+    protected readonly route: ActivatedRoute,
+    ) {
+    super(document);
+  }
+
   override ngOnInit() {
     super.ngOnInit();
 
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if(params["useStreaming"]) {
+        this.useStreamingFormControl.setValue(params["useStreaming"]);
+      }
+
+      if (params['input']) {
+        this.inputFormControl.setValue(params['input']);
+      }
+
+      if (params['context']) {
+        this.contextFormControl.setValue(params['context']);
+      }
+
+      if (params['sharedContext']) {
+        this.sharedContextFormControl.setValue(params['sharedContext']);
+      }
+
+      if (params['expectedInputLanguages']) {
+        if (!Array.isArray(params['expectedInputLanguages'])) {
+          this.expectedInputLanguagesFormControl.setValue([params['expectedInputLanguages']]);
+        } else {
+          this.expectedInputLanguagesFormControl.setValue(params['expectedInputLanguages']);
+        }
+
+      }
+      if (params['expectedContextLanguages']) {
+        if (!Array.isArray(params['expectedContextLanguages'])) {
+          this.expectedContextLanguagesFormControl.setValue([params['expectedContextLanguages']]);
+        } else {
+          this.expectedContextLanguagesFormControl.setValue(params['expectedContextLanguages']);
+        }
+      }
+
+      if (params['outputLanguage']) {
+        this.outputLanguageFormControl.setValue(params['outputLanguage']);
+      }
+    }));
+
     this.subscriptions.push(this.useStreamingFormControl.valueChanges.subscribe((value) => {
       this.setUseStreaming(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
+      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.sharedContextFormControl.valueChanges.subscribe((value) => {
+      this.setSharedContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
+      this.setInput(value, {updateFormControl: false, emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
+      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
   }
 

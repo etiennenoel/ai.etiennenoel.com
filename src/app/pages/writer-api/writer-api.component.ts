@@ -6,11 +6,13 @@ import {FormControl} from '@angular/forms';
 import {WriterToneEnum} from '../../enums/writer-tone.enum';
 import {WriterFormatEnum} from '../../enums/writer-format.enum';
 import {WriterLengthEnum} from '../../enums/writer-length.enum';
-import {BaseWritingAssistanceApiComponent} from '../base-writing-assistance-api/base-writing-assistance-api.component';
+import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../utils/text.utils';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
+import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 @Component({
@@ -20,12 +22,6 @@ import {LocaleEnum} from '../../enums/locale.enum';
   styleUrl: './writer-api.component.scss'
 })
 export class WriterApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
-
-  @Input()
-  input: string = "";
-
-  @Input()
-  sharedContext: string = "";
 
   // <editor-fold desc="Tone">
   private _tone: WriterToneEnum | null = WriterToneEnum.Neutral;
@@ -46,35 +42,11 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     if(options?.emitChangeEvent ?? true) {
       this.toneChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { writerTone: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
   toneChange = new EventEmitter<WriterToneEnum | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="Context">
-  private _context: string | null = null;
-  public contextFormControl = new FormControl<string | null>("");
-
-  get context(): string | null {
-    return this._context;
-  }
-
-  @Input()
-  set context(value: string | null) {
-   this.setContext(value);
-  }
-
-  setContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
-    this._context = value;
-    this.contextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
-    if(options?.emitChangeEvent ?? true) {
-      this.contextChange.emit(value);
-    }
-  }
-
-  @Output()
-  contextChange = new EventEmitter<string | null>();
   // </editor-fold>
 
   // <editor-fold desc="Format">
@@ -96,6 +68,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     if(options?.emitChangeEvent ?? true) {
       this.formatChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { writerFormat: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -121,6 +94,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     if(options?.emitChangeEvent ?? true) {
       this.lengthChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { writerLength: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -128,6 +102,15 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
   // </editor-fold>
 
   protected outputStatusMessage: string = "";
+
+  apiFlagContentHtml = `Activate <span class=\"code\">chrome://flags/#writer-api-for-gemini-nano</span>`;
+
+  getRequirement(): RequirementInterface {
+    return {
+      ...this.apiFlag,
+      contentHtml: this.apiFlagContentHtml,
+    }
+  }
 
   get checkAvailabilityCode() {
     return `window.ai.writer.availability({
@@ -140,6 +123,15 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
 })`
   }
 
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(DOCUMENT) document: Document,
+    router: Router,
+    route: ActivatedRoute,
+  ) {
+    super(document, router, route);
+  }
+
   get writeCode() {
     if(this.useStreamingFormControl.value) {
       return `const abortController = new AbortController();
@@ -148,7 +140,7 @@ const writer = await window.ai.writer.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
-  sharedContext: '${this.sharedContext}',
+  sharedContext: '${this.sharedContextFormControl.value}',
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
   expectedContextLanguages: ${JSON.stringify(this.expectedContextLanguagesFormControl.value)},
   outputLanguage: '${this.outputLanguageFormControl.value}',
@@ -160,7 +152,7 @@ const writer = await window.ai.writer.create({
   signal: abortController.signal,
 })
 
-const stream: ReadableStream = writer.writeStreaming('${this.input}', {context: '${this.contextFormControl.value}'});
+const stream: ReadableStream = writer.writeStreaming('${this.inputFormControl.value}', {context: '${this.contextFormControl.value}'});
 
 for await (const chunk of stream) {
   // Do something with each 'chunk'
@@ -173,7 +165,7 @@ const writer = await window.ai.writer.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
-  sharedContext: '${this.sharedContext}',
+  sharedContext: '${this.sharedContextFormControl.value}',
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
   expectedContextLanguages: ${JSON.stringify(this.expectedContextLanguagesFormControl.value)},
   outputLanguage: '${this.outputLanguageFormControl.value}',
@@ -185,15 +177,8 @@ const writer = await window.ai.writer.create({
   signal: abortController.signal,
 })
 
-await writer.write('${this.input}', {context: '${this.contextFormControl.value}'})`;
+await writer.write('${this.inputFormControl.value}', {context: '${this.contextFormControl.value}'})`;
     }
-  }
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-  ) {
-    super(document);
   }
 
 
@@ -201,6 +186,24 @@ await writer.write('${this.input}', {context: '${this.contextFormControl.value}'
     super.ngOnInit();
 
     this.checkRequirements()
+
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params['writerTone']) {
+        this.toneFormControl.setValue(params['writerTone']);
+      }
+
+      if (params['writerFormat']) {
+        this.formatFormControl.setValue(params['writerFormat']);
+      }
+
+      if (params['writerLength']) {
+        this.lengthFormControl.setValue(params['writerLength']);
+      }
+
+      if (params['writerUseStreaming']) {
+        this.useStreamingFormControl.setValue(params['writerUseStreaming'] !== "false");
+      }
+    }));
 
     // Register form changes events
     this.subscriptions.push(this.toneFormControl.valueChanges.subscribe((value) => {
@@ -210,18 +213,8 @@ await writer.write('${this.input}', {context: '${this.contextFormControl.value}'
       this.setFormat(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
     this.subscriptions.push(this.lengthFormControl.valueChanges.subscribe((value) => {
-      this.setLength(value);
+      this.setLength(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
-      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
     this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
       this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
@@ -279,7 +272,7 @@ await writer.write('${this.input}', {context: '${this.contextFormControl.value}'
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
-        sharedContext: this.sharedContext,
+        sharedContext: this.sharedContextFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
         outputLanguage: this.outputLanguageFormControl.value,

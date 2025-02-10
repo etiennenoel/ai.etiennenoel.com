@@ -11,6 +11,7 @@ import {LocaleEnum} from '../../enums/locale.enum';
 import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
 import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
 import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 @Component({
@@ -22,9 +23,11 @@ import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
 export class RewriterApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
 
   @Input()
+  // @ts-ignore
   input: string = "";
 
   @Input()
+    // @ts-ignore
   sharedContext: string = "";
 
   // <editor-fold desc="Tone">
@@ -50,31 +53,6 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
 
   @Output()
   toneChange = new EventEmitter<RewriterToneEnum | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="Context">
-  private _context: string | null = "";
-  public contextFormControl = new FormControl<string | null>("");
-
-  get context(): string | null {
-    return this._context;
-  }
-
-  @Input()
-  set context(value: string | null) {
-   this.setContext(value);
-  }
-
-  setContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
-    this._context = value;
-    this.contextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
-    if(options?.emitChangeEvent ?? true) {
-      this.contextChange.emit(value);
-    }
-  }
-
-  @Output()
-  contextChange = new EventEmitter<string | null>();
   // </editor-fold>
 
   // <editor-fold desc="Format">
@@ -192,8 +170,10 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
+    router: Router,
+    route: ActivatedRoute,
   ) {
-    super(document);
+    super(document, router, route);
   }
 
 
@@ -220,10 +200,6 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     }));
     this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
       this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
-    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
-      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
 
   }

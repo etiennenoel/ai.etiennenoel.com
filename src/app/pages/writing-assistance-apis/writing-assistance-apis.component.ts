@@ -20,7 +20,7 @@ import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
 import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
 import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
-import {WriterApiComponent} from '../../components/writer-api/writer-api.component';
+import {WriterApiComponent} from '../writer-api/writer-api.component';
 import {RewriterApiComponent} from '../../components/rewriter-api/rewriter-api.component';
 import {SummarizerApiComponent} from '../../components/summarizer-api/summarizer-api.component';
 import {Title} from '@angular/platform-browser';
