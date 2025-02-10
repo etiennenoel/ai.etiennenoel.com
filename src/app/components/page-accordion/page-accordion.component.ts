@@ -19,11 +19,6 @@ export class PageAccordionComponent {
   @Output()
   checkRequirementsEvent = new EventEmitter<void>();
 
-  @Input()
-  outputStatus: TaskStatus = TaskStatus.Idle;
-
-  @Input()
-  outputCollapsed = true;
 
   checkRequirements() {
     this.checkRequirementsEvent.emit();

@@ -15,7 +15,7 @@ export class OutputComponent {
   status: TaskStatus = TaskStatus.Idle;
 
   @Input()
-  outputCollapsed: boolean = false;
+  outputCollapsed: boolean = true;
 
   @Input()
   executionPerformanceResult?: ExecutionPerformanceResultInterface;
