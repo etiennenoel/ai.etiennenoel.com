@@ -1,0 +1,25 @@
+<div class="container-fluid">
+
+  <app-page-title [title]="'Multimodal Prompt API'" [icon]="'bi-collection-play-fill'">
+    <a class="btn btn-light" href="https://github.com/webmachinelearning/prompt-api" target="_blank"><i
+      class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
+    <a class="btn btn-light disabled"
+       href=""
+       target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications (Not yet available)</span></a>
+  </app-page-title>
+
+  <div class="row mb-3">
+    <div class="col-12">
+
+      <app-page-accordion
+        [requirementsStatus]="this.apiFlag.status"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="[this.apiFlag]"
+      >
+        <div debugInformation>
+          No debug information available yet.
+        </div>
+      </app-page-accordion>
+    </div>
+  </div>
+</div>

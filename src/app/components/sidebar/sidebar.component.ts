@@ -50,7 +50,9 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.TranslatorApi;
     } else if(url.endsWith('language-detector-api')) {
       this.currentRoute = RouteEnum.LanguageDetectorApi;
-    } else if(url.endsWith('prompt-api')) {
+    } else if(url.endsWith('multimodal-prompt-api')) {
+      this.currentRoute = RouteEnum.MultimodalPromptApi;
+    }else if(url.endsWith('prompt-api')) {
       this.currentRoute = RouteEnum.PromptApi;
     } else if(url.endsWith('rewriter-api')) {
       this.currentRoute = RouteEnum.RewriterApi;

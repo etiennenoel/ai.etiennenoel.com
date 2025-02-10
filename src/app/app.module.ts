@@ -36,6 +36,7 @@ import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
+import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import {PageAccordionComponent} from './components/page-accordion/page-accordion
     PageAccordionComponent,
 
     CardComponent,
+    MultimodalPromptApiComponent,
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
 

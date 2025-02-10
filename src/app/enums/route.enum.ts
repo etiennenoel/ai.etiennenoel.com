@@ -5,5 +5,6 @@ export enum RouteEnum {
   RewriterApi = 'rewriter-api',
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',
+  MultimodalPromptApi = 'multimodal-prompt-api',
   Home = 'index'
 }

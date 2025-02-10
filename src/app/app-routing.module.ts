@@ -9,6 +9,7 @@ import {LayoutComponent} from './components/layout/layout.component';
 import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
 import {RewriterApiComponent} from './components/rewriter-api/rewriter-api.component';
+import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 
 const routes: Routes = [
     {
@@ -42,6 +43,10 @@ const routes: Routes = [
             {
               path: "prompt-api",
               component: PromptApiComponent,
+            },
+            {
+              path: "multimodal-prompt-api",
+              component: MultimodalPromptApiComponent,
             },
             {
               path: "language-detector-api",
