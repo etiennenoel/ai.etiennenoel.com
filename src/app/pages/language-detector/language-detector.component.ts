@@ -30,6 +30,8 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
 
   error?: Error;
 
+  outputCollapsed = true;
+
   output: string = "";
 
   detectionStatus = TaskStatus.Idle;
@@ -211,6 +213,7 @@ const results = await detector.detect("${this.inputFormControl.value}", {
   async detect() {
     try {
       const self = this;
+      this.outputCollapsed = false;
       this.detectionStatus = TaskStatus.Executing;
       const detector = await window.ai.languageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,

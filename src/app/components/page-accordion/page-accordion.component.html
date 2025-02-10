@@ -61,7 +61,35 @@
     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <div class="mt-1">
-          <ng-content #debugInformation></ng-content>
+          <ng-content select="[debugInformation]"></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed d-flex gap-2"
+              type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseOutput" aria-expanded="false" aria-controls="collapseOutput"
+
+              [class.bg-primary-subtle]="outputStatus === TaskStatus.Executing"
+              [class.bg-success-subtle]="outputStatus === TaskStatus.Completed"
+              [class.bg-danger-subtle]="outputStatus === TaskStatus.Error"
+      >
+        <i class="bi bi-terminal"></i>
+        <div class="flex-grow-1">Output</div>
+        <span class="badge"
+              [class.text-bg-secondary]="outputStatus === TaskStatus.Idle"
+              [class.text-bg-primary]="outputStatus === TaskStatus.Executing"
+              [class.text-bg-success]="outputStatus === TaskStatus.Completed"
+              [class.text-bg-danger]="outputStatus === TaskStatus.Error"
+        >{{ outputStatus }}</span>
+      </button>
+    </h2>
+    <div id="collapseOutput" class="accordion-collapse" [class.collapse]="outputCollapsed" data-bs-parent="#collapseOutput">
+      <div class="accordion-body">
+        <div class="mt-1">
+          <ng-content select="[output]"></ng-content>
         </div>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
@@ -20,10 +19,16 @@ export class PageAccordionComponent {
   @Output()
   checkRequirementsEvent = new EventEmitter<void>();
 
+  @Input()
+  outputStatus: TaskStatus = TaskStatus.Idle;
+
+  @Input()
+  outputCollapsed = true;
 
   checkRequirements() {
     this.checkRequirementsEvent.emit();
   }
 
   protected readonly RequirementStatus = RequirementStatus;
+  protected readonly TaskStatus = TaskStatus;
 }
