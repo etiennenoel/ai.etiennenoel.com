@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {ToastStore} from '../../stores/toast.store';
@@ -9,7 +18,7 @@ import {ToastStore} from '../../stores/toast.store';
   standalone: false,
   styleUrl: './output.component.scss'
 })
-export class OutputComponent {
+export class OutputComponent implements OnChanges, AfterViewInit {
 
   @Input()
   status: TaskStatus = TaskStatus.Idle;
@@ -40,7 +49,12 @@ export class OutputComponent {
 
   showDownloadProgress: boolean = true;
 
-  constructor(private readonly toastStore: ToastStore,) {
+  hasLoaded = false;
+
+  constructor(
+    private readonly toastStore: ToastStore,
+    private elRef:ElementRef
+    ) {
   }
 
   copyToClipboard(chunk: string) {
@@ -48,6 +62,19 @@ export class OutputComponent {
     this.toastStore.publish({
       message: "Copied to clipboard",
     })
+  }
+
+  ngAfterViewInit() {
+    this.hasLoaded = true;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(this.hasLoaded && (changes["status"])) {
+      // Scroll into view
+      this.elRef.nativeElement.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   }
 
   protected readonly TaskStatus = TaskStatus;
