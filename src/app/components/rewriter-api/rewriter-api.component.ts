@@ -12,6 +12,7 @@ import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
 import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
 import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
 import {ActivatedRoute, Router} from '@angular/router';
+import {RequirementInterface} from '../../interfaces/requirement.interface';
 
 
 @Component({
@@ -21,14 +22,6 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrl: './rewriter-api.component.scss'
 })
 export class RewriterApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
-
-  @Input()
-  // @ts-ignore
-  input: string = "";
-
-  @Input()
-    // @ts-ignore
-  sharedContext: string = "";
 
   // <editor-fold desc="Tone">
   private _tone: RewriterToneEnum | null = RewriterToneEnum.AsIs;
@@ -49,6 +42,7 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
     if(options?.emitChangeEvent ?? true) {
       this.toneChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { rewriterTone: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -74,6 +68,7 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
     if(options?.emitChangeEvent ?? true) {
       this.formatChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { rewriterFormat: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -99,6 +94,7 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
     if(options?.emitChangeEvent ?? true) {
       this.lengthChange.emit(value);
     }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { rewriterLength: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -106,6 +102,13 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
   // </editor-fold>
 
   protected outputStatusMessage: string = "";
+  apiFlagContentHtml = `Activate <span class="code">chrome://flags/#rewriter-api-for-gemini-nano</span>`;
+  getRequirement(): RequirementInterface {
+    return {
+      ...this.apiFlag,
+      contentHtml: this.apiFlagContentHtml,
+    }
+  }
 
   get checkAvailabilityCode() {
     return `window.ai.rewriter.availability({
@@ -182,6 +185,21 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
 
     this.checkRequirements()
 
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params['rewriterTone']) {
+        this.toneFormControl.setValue(params['rewriterTone']);
+      }
+
+      if (params['rewriterFormat']) {
+        this.formatFormControl.setValue(params['rewriterFormat']);
+      }
+
+      if (params['rewriterLength']) {
+        this.lengthFormControl.setValue(params['rewriterLength']);
+      }
+    }));
+
+
     // Register form changes events
     this.subscriptions.push(this.toneFormControl.valueChanges.subscribe((value) => {
       this.setTone(value, {emitChangeEvent: true, emitFormControlEvent: false});
@@ -192,16 +210,6 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     this.subscriptions.push(this.lengthFormControl.valueChanges.subscribe((value) => {
       this.setLength(value);
     }));
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
-      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
   }
 
   checkRequirements() {
@@ -233,12 +241,14 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       })
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityError = e;
       this.errorChange.emit(e);
     }
   }
 
   async rewrite() {
     this.status = TaskStatus.Executing;
+    this.outputCollapsed = false;
     this.outputStatusMessage = "Preparing and downloading model...";
     this.outputChunks = [];
     this.outputChunksChange.emit(this.outputChunks);
@@ -312,6 +322,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       this.status = TaskStatus.Error;
       this.outputStatusMessage = `Error: ${e}`;
       this.errorChange.emit(e);
+      this.error = e;
     } finally {
       this.stopExecutionTime();
     }

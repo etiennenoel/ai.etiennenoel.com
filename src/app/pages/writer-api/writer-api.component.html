@@ -1,6 +1,6 @@
 <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
 
-  <app-page-title [title]="'Writer API'" [icon]="'bi-globe2'">
+  <app-page-title [title]="'Writer API'" [icon]="'bi-pencil-square'">
     <a class="btn btn-light"
        href="https://github.com/webmachinelearning/writing-assistance-apis?tab=readme-ov-file#writer-api"
        target="_blank"><i
@@ -29,7 +29,16 @@
   <h2 class="display-6 mt-5"><i class="bi bi-play"></i> Playground</h2>
   <hr>
 
-  <div class="row">
+  <app-output
+    [status]="this.status"
+    [error]="this.error"
+    [downloadProgress]="this.loaded"
+    [outputCollapsed]="outputCollapsed"
+    [output]="this.output">
+
+  </app-output>
+
+  <div class="row mt-5">
     <div class="col-12 col-md-6">
       <h3 class="mt-3">Input:</h3>
       <textarea class="form-control" rows="8" [formControl]="inputFormControl"></textarea>
@@ -107,7 +116,7 @@
       </div>
     </div>
     <div class="d-grid mt-3">
-      <button class="btn btn-primary btn-lg">Write</button>
+      <button class="btn btn-primary btn-lg" (click)="write()">Write</button>
     </div>
   </div>
 
@@ -132,6 +141,10 @@
                 [class.code-success]="availabilityStatus === AvailabilityStatusEnum.Readily"
                 [class.code-dark]="availabilityStatus === AvailabilityStatusEnum.Unknown"
           >{{ availabilityStatus }}</span>
+
+          @if (availabilityError) {
+            <div class="alert alert-danger m-0 mt-2 mb-2">{{ availabilityError }}</div>
+          }
 
           <div class="row mt-5">
             <div class="col-12 d-grid">

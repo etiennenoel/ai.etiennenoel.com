@@ -24,15 +24,20 @@
           <span>Language Detector API</span>
         </a>
       </li>
+      <li [class.active]="this.currentRoute === RouteEnum.SummarizerApi">
+        <a class="btn stretched-link" routerLink="/summarizer-api">
+          <i class="bi bi-text-paragraph"></i>
+          <span>Summarizer API</span></a>
+      </li>
       <li [class.active]="this.currentRoute === RouteEnum.WriterApi">
         <a class="btn stretched-link" routerLink="/writer-api">
           <i class="bi bi-pencil-square"></i>
           <span>Writer API</span></a>
       </li>
-      <li [class.active]="this.currentRoute === RouteEnum.WritingAssistanceApis">
-        <a class="btn stretched-link" routerLink="/writing-assistance-apis">
-          <i class="bi bi-pencil-square"></i>
-          <span>Writing Assistance APIs</span></a>
+      <li [class.active]="this.currentRoute === RouteEnum.RewriterApi">
+        <a class="btn stretched-link" routerLink="/rewriter-api">
+          <i class="bi bi-arrow-clockwise"></i>
+          <span>Rewriter API</span></a>
       </li>
       <li [class.active]="this.currentRoute === RouteEnum.PromptApi">
         <a class="btn stretched-link" routerLink="/prompt-api">

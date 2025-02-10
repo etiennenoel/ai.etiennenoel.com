@@ -3,7 +3,7 @@ import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../base-writing-assistance-api/base-writing-assistance-api.component';
+import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../utils/text.utils';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
@@ -12,6 +12,7 @@ import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
 import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
+import {RequirementInterface} from '../../interfaces/requirement.interface';
 
 
 @Component({
@@ -21,14 +22,6 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrl: './summarizer-api.component.scss'
 })
 export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
-
-  @Input()
-    // @ts-ignore
-  input: string = "";
-
-  @Input()
-    // @ts-ignore
-  sharedContext: string = "";
 
   // <editor-fold desc="Type">
   private _type: SummarizerTypeEnum | null = SummarizerTypeEnum.Headline;
@@ -49,6 +42,8 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
     if(options?.emitChangeEvent ?? true) {
       this.typeChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerType: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -74,6 +69,8 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
     if(options?.emitChangeEvent ?? true) {
       this.formatChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerFormat: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -99,6 +96,8 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
     if(options?.emitChangeEvent ?? true) {
       this.lengthChange.emit(value);
     }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerLength: value}, queryParamsHandling: 'merge' });
   }
 
   @Output()
@@ -182,6 +181,21 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
 
     this.checkRequirements()
 
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params['summarizerType']) {
+        this.typeFormControl.setValue(params['summarizerType']);
+      }
+
+      if (params['summarizerFormat']) {
+        this.formatFormControl.setValue(params['summarizerFormat']);
+      }
+
+      if (params['summarizerLength']) {
+        this.lengthFormControl.setValue(params['summarizerLength']);
+      }
+    }));
+
+
     // Register form changes events
     this.subscriptions.push(this.typeFormControl.valueChanges.subscribe((value) => {
       this.setType(value, {emitChangeEvent: true, emitFormControlEvent: false});
@@ -192,16 +206,13 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     this.subscriptions.push(this.lengthFormControl.valueChanges.subscribe((value) => {
       this.setLength(value);
     }));
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
-      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
+  }
 
+  getRequirement(): RequirementInterface {
+    return {
+      ...this.apiFlag,
+      contentHtml: `Activate <span class="code">chrome://flags/#summarization-api-for-gemini-nano</span>`,
+    }
   }
 
   checkRequirements() {
@@ -234,11 +245,13 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unknown
       this.errorChange.emit(e);
+      this.availabilityError = e;
     }
   }
 
   async summarize() {
     this.status = TaskStatus.Executing;
+    this.outputCollapsed = false;
     this.outputStatusMessage = "Preparing and downloading model...";
     this.outputChunks = [];
     this.outputChunksChange.emit(this.outputChunks);
@@ -312,6 +325,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       this.status = TaskStatus.Error;
       this.outputStatusMessage = `Error: ${e}`;
       this.errorChange.emit(e);
+      this.error = e;
     } finally {
       this.stopExecutionTime();
     }

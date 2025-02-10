@@ -199,10 +199,6 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       if (params['writerLength']) {
         this.lengthFormControl.setValue(params['writerLength']);
       }
-
-      if (params['writerUseStreaming']) {
-        this.useStreamingFormControl.setValue(params['writerUseStreaming'] !== "false");
-      }
     }));
 
     // Register form changes events
@@ -215,10 +211,6 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     this.subscriptions.push(this.lengthFormControl.valueChanges.subscribe((value) => {
       this.setLength(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
-    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
-      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
   }
 
   checkRequirements() {
@@ -250,12 +242,14 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       })
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityError = e;
       this.errorChange.emit(e);
     }
   }
 
   async write() {
     this.status = TaskStatus.Executing;
+    this.outputCollapsed = false;
     this.outputStatusMessage = "Preparing and downloading model...";
     this.loaded = 0;
     this.outputChunks = [];
@@ -330,6 +324,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       this.status = TaskStatus.Error;
       this.outputStatusMessage = `Error: ${e}`;
       this.errorChange.emit(e);
+      this.error = e;
     } finally {
       this.stopExecutionTime();
     }

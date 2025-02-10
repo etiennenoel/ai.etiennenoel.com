@@ -1,15 +1,14 @@
 <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
 
-  <app-page-title [title]="'Rewriter API'" [icon]="'bi-arrow-clockwise'">
+  <app-page-title [title]="'Summarizer API'" [icon]="'bi-text-paragraph'">
     <a class="btn btn-light"
-       href="https://github.com/webmachinelearning/writing-assistance-apis?tab=readme-ov-file#rewriter-api"
+       href="https://github.com/webmachinelearning/writing-assistance-apis?tab=readme-ov-file#summarizer-api"
        target="_blank"><i
       class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
     <a class="btn btn-light"
-       href="https://github.com/webmachinelearning/writing-assistance-apis/blob/main/index.bs#L751" target="_blank"><i
+       href="https://github.com/webmachinelearning/writing-assistance-apis/blob/main/index.bs#L124" target="_blank"><i
       class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
   </app-page-title>
-
 
   <div class="row mb-3">
     <div class="col-12">
@@ -28,6 +27,7 @@
 
   <h2 class="display-6 mt-5"><i class="bi bi-play"></i> Playground</h2>
   <hr>
+
 
   <app-output
     [status]="this.status"
@@ -54,36 +54,36 @@
       <div class="row">
         <div class="col-4">
           <div class="mb-3">
-            <label for="rewriter-tone" class="form-label">Tone</label>
-            <app-search-select-dropdown id="rewriter-tone"
-                                        [options]="RewriterToneEnum | enumToSearchSelectDropdownOptions"
-                                        [control]="toneFormControl"
-                                        [name]="'rewriterTone'"></app-search-select-dropdown>
+            <label for="summarizer-tone" class="form-label">Tone</label>
+            <app-search-select-dropdown id="summarizer-tone"
+                                        [options]="SummarizerTypeEnum | enumToSearchSelectDropdownOptions"
+                                        [control]="typeFormControl"
+                                        [name]="'summarizerType'"></app-search-select-dropdown>
           </div>
         </div>
         <div class="col-4">
           <div class="mb-3">
-            <label for="rewriter-format" class="form-label">Format</label>
-            <app-search-select-dropdown id="rewriter-format"
-                                        [options]="RewriterFormatEnum | enumToSearchSelectDropdownOptions"
+            <label for="summarizer-format" class="form-label">Format</label>
+            <app-search-select-dropdown id="summarizer-format"
+                                        [options]="SummarizerFormatEnum | enumToSearchSelectDropdownOptions"
                                         [control]="formatFormControl"
-                                        [name]="'rewriterFormat'"></app-search-select-dropdown>
+                                        [name]="'summarizerFormat'"></app-search-select-dropdown>
           </div>
         </div>
         <div class="col-4">
           <div class="mb-3">
-            <label for="rewriter-length" class="form-label">Length</label>
-            <app-search-select-dropdown id="rewriter-length"
-                                        [options]="RewriterLengthEnum | enumToSearchSelectDropdownOptions"
+            <label for="summarizer-length" class="form-label">Length</label>
+            <app-search-select-dropdown id="summarizer-length"
+                                        [options]="SummarizerLengthEnum | enumToSearchSelectDropdownOptions"
                                         [control]="lengthFormControl"
-                                        [name]="'rewriterLength'"></app-search-select-dropdown>
+                                        [name]="'summarizerLength'"></app-search-select-dropdown>
           </div>
         </div>
 
         <div class="col-6">
           <div class="mb-3">
-            <label for="rewriter-expected-input-languages" class="form-label">Expected Input Languages</label>
-            <app-search-select-multiple-dropdown id="rewriter-expected-input-languages"
+            <label for="summarizer-expected-input-languages" class="form-label">Expected Input Languages</label>
+            <app-search-select-multiple-dropdown id="summarizer-expected-input-languages"
                                                  [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
                                                  [control]="expectedInputLanguagesFormControl"
                                                  [name]="'expectedInputLanguages'"></app-search-select-multiple-dropdown>
@@ -91,8 +91,8 @@
         </div>
         <div class="col-6">
           <div class="mb-3">
-            <label for="rewriter-expected-context-languages" class="form-label">Expected Context Languages</label>
-            <app-search-select-multiple-dropdown id="rewriter-expected-context-languages"
+            <label for="summarizer-expected-context-languages" class="form-label">Expected Context Languages</label>
+            <app-search-select-multiple-dropdown id="summarizer-expected-context-languages"
                                                  [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
                                                  [control]="expectedContextLanguagesFormControl"
                                                  [name]="'expectedContextLanguages'"></app-search-select-multiple-dropdown>
@@ -100,8 +100,8 @@
         </div>
         <div class="col-6">
           <div class="mb-3">
-            <label for="rewriter-output-language" class="form-label">Output Language</label>
-            <app-search-select-dropdown id="rewriter-output-language"
+            <label for="summarizer-output-language" class="form-label">Output Language</label>
+            <app-search-select-dropdown id="summarizer-output-language"
                                         [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
                                         [control]="outputLanguageFormControl"
                                         [name]="'outputLanguage'"></app-search-select-dropdown>
@@ -110,15 +110,16 @@
         </div>
         <div class="col-12">
           <div class="mb-3">
-            <label for="rewriter-context" class="form-label">Context</label>
-            <textarea class="form-control" id="rewriter-context" rows="3" [formControl]="contextFormControl"></textarea>
+            <label for="summarizer-context" class="form-label">Shared Context</label>
+            <textarea class="form-control" id="summarizer-context" rows="3"
+                      [formControl]="sharedContextFormControl"></textarea>
           </div>
 
         </div>
       </div>
     </div>
     <div class="d-grid mt-3">
-      <button class="btn btn-primary btn-lg" (click)="rewrite()">Rewrite</button>
+      <button class="btn btn-primary btn-lg" (click)="summarize()">Sumarize</button>
     </div>
   </div>
 
@@ -126,7 +127,7 @@
   <hr>
 
   <div class="row">
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-xl-6">
       <div class="card mt-3">
         <div class="card-header">
           <h4>Availability</h4>
@@ -156,7 +157,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-xl-6">
       <div class="card mt-3">
         <div class="card-header d-flex">
           <h4 class="flex-grow-1 m-0">Execute</h4>
@@ -169,7 +170,7 @@
         </div>
         <div class="card-body">
           <h5>Code</h5>
-          <code-editor [code]="rewriteCode" [readonly]="true" [height]="'250px'"></code-editor>
+          <code-editor [code]="summarizeCode" [readonly]="true" [height]="'250px'"></code-editor>
 
           <div class="mt-3 mb-3 d-flex">
           </div>
@@ -179,7 +180,7 @@
 
           <div class="row mt-2">
             <div class="col-12 d-grid">
-              <button class="btn btn-primary d-block" (click)="rewrite()">Rewrite</button>
+              <button class="btn btn-primary d-block" (click)="summarize()">Summarize</button>
             </div>
           </div>
 

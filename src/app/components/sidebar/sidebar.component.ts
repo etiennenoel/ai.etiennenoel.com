@@ -50,12 +50,14 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.TranslatorApi;
     } else if(url.endsWith('language-detector-api')) {
       this.currentRoute = RouteEnum.LanguageDetectorApi;
-    } else if(url.endsWith('writing-assistance-apis')) {
-      this.currentRoute = RouteEnum.WritingAssistanceApis;
     } else if(url.endsWith('prompt-api')) {
       this.currentRoute = RouteEnum.PromptApi;
-    } else if(url.endsWith('writer-api')) {
+    } else if(url.endsWith('rewriter-api')) {
+      this.currentRoute = RouteEnum.RewriterApi;
+    }else if(url.endsWith('writer-api')) {
       this.currentRoute = RouteEnum.WriterApi;
+    } else if(url.endsWith('summarizer-api')) {
+      this.currentRoute = RouteEnum.SummarizerApi;
     }else if(url.endsWith('/')) {
       this.currentRoute = RouteEnum.Home;
     }

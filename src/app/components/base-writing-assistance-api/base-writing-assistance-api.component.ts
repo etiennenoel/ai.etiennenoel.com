@@ -21,6 +21,12 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
 
   public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
+  public outputCollapsed = true;
+
+  public error?: Error;
+
+  public availabilityError?: Error;
+
   // <editor-fold desc="Use Streaming">
   private _useStreaming: boolean | null = false;
   public useStreamingFormControl = new FormControl<boolean>(false);
