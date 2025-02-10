@@ -23,6 +23,7 @@ import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {WriterApiComponent} from '../../components/writer-api/writer-api.component';
 import {RewriterApiComponent} from '../../components/rewriter-api/rewriter-api.component';
 import {SummarizerApiComponent} from '../../components/summarizer-api/summarizer-api.component';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -130,6 +131,7 @@ export class WritingAssistanceApisComponent extends BaseComponent implements OnI
     private readonly router: Router,
     private route: ActivatedRoute,
     private readonly toastStore: ToastStore,
+    private readonly title: Title,
               ) {
     super(document);
   }
@@ -168,6 +170,8 @@ export class WritingAssistanceApisComponent extends BaseComponent implements OnI
 
   override ngOnInit() {
     super.ngOnInit();
+
+    this.title.setTitle('Writing Assistance APIs | AI Playground | etiennenoel.com');
 
     this.checkRewriterRequirements();
     this.checkSummarizerRequirements();

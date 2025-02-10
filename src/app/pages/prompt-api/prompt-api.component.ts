@@ -15,6 +15,8 @@ import {PromptTypeEnum} from '../../enums/prompt-type.enum';
 import {PromptRoleEnum} from '../../enums/prompt-role.enum';
 import {PromptInterface} from '../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {Title} from '@angular/platform-browser';
+import {RequirementInterface} from '../../interfaces/requirement.interface';
 
 
 @Component({
@@ -185,13 +187,15 @@ export class PromptApiComponent extends BaseComponent implements OnInit {
     @Inject(DOCUMENT) document: Document,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly title: Title,
   ) {
     super(document);
   }
 
-  public apiFlag: RequirementStatusInterface = {
+  public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
-    message: 'Pending'
+    message: 'Pending',
+    contentHtml: 'Activate <span class="code">chrome://flags/#content-api-for-gemini-nano</span>'
   }
 
   checkRequirements() {
@@ -328,6 +332,8 @@ const session = await window.ai.languageModel.create({
 
   override ngOnInit() {
     super.ngOnInit();
+
+    this.title.setTitle("Prompt API | AI Playground | etiennenoel.com")
 
     this.checkRequirements()
 

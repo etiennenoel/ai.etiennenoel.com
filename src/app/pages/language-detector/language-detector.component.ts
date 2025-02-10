@@ -9,6 +9,7 @@ import {FormControl} from '@angular/forms';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -91,12 +92,15 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
     @Inject(DOCUMENT) document: Document,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly title: Title,
   ) {
     super(document);
   }
 
   override ngOnInit() {
     super.ngOnInit();
+
+    this.title.setTitle('Language Detector API | AI Playground | etiennenoel.com');
 
     this.checkRequirements()
 

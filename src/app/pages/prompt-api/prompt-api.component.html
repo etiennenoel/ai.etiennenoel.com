@@ -1,44 +1,24 @@
 <div class="container-fluid">
 
-  <a href="/public" class="btn btn-light mt-4 mb-4"><i class="bi bi-house"></i> Home</a>
+  <app-page-title [title]="'Prompt API'" [icon]="'bi-input-cursor-text'">
+    <a class="btn btn-light" href="https://github.com/webmachinelearning/prompt-api" target="_blank"><i
+      class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
+    <a class="btn btn-light disabled"
+       href="https://github.com/webmachinelearning/translation-api/pull/38/files#diff-5e793325cd2bfc452e268a4aa2f02b4024dd9584bd1db3c2595f61f1ecf7b985"
+       target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications (Not yet available)</span></a>
+  </app-page-title>
 
-  <h2>Prompt API</h2>
+  <div class="row mb-3">
+    <div class="col-12">
 
-  <a href="https://github.com/webmachinelearning/prompt-api" target="_blank">Explainer</a>
-
-  <div class="row mt-3">
-    <div class="col-12 col-md-6">
-      <h4 class="mt-3 text-muted">Requirements</h4>
-
-      <div class="card">
-        <div class="card-body d-flex">
-          <div class="flex-grow-1">Activate <span class="code">chrome://flags/#content-api-for-gemini-nano</span></div>
-
-          @if (apiFlag.status === RequirementStatus.Pending) {
-            <div class="text-primary">
-              <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-              {{ apiFlag.message }}
-            </div>
-          } @else if (apiFlag.status === RequirementStatus.Pass) {
-            <div class="text-success">
-              <i class="bi bi-check-circle-fill text-success"></i>
-              {{ apiFlag.message }}
-            </div>
-          } @else if (apiFlag.status === RequirementStatus.Fail) {
-            <div class="text-danger">
-              <i class="bi bi-x-circle-fill"></i>
-              {{ apiFlag.message }}
-            </div>
-          }
+      <app-page-accordion
+        [requirementsStatus]="this.apiFlag.status"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="[this.apiFlag]"
+      >
+        <div #debugInformation>
         </div>
-      </div>
-
-      <button class="btn btn-sm btn-outline-primary mt-3" (click)="checkRequirements()"><i
-        class="bi bi-arrow-clockwise"></i>
-        Check requirements
-      </button>
+      </app-page-accordion>
     </div>
   </div>
 

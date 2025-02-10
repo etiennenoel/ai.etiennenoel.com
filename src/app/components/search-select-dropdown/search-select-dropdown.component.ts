@@ -43,6 +43,11 @@ export class SearchSelectDropdownComponent implements OnInit, AfterViewInit {
 
   dropdown: any;
 
+  focused = false;
+
+  @Input()
+  placeholder: string = "Select...";
+
   private _cursorPosition = -1;
 
   get cursorPosition(): number {

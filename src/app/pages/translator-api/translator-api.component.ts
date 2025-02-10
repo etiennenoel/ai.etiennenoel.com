@@ -16,6 +16,7 @@ import {Step2} from './interfaces/step-2.interface';
 import {
   SearchSelectDropdownOptionsInterface
 } from '../../interfaces/search-select-dropdown-options.interface';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-translator-api',
@@ -62,6 +63,7 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
       private readonly explainerApiExecutor: ExplainerApiExecutor,
       private readonly router: Router,
       private route: ActivatedRoute,
+      private title: Title,
       ) {
 
     this.apiExecutor = currentApiExecutor;
@@ -70,6 +72,8 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.title.setTitle('Translator API | AI Playground | etiennenoel.com');
+
     this.subscriptions.push(this.apiVersion.valueChanges.subscribe((value) => {
       this.router.navigate(['.'], { relativeTo: this.route, queryParams: { apiVersion: value}, queryParamsHandling: 'merge' });
 

@@ -34,6 +34,11 @@ export class SearchSelectMultipleDropdownComponent implements OnInit, AfterViewI
   @Input()
   name: string = ""
 
+  focused: boolean = false;
+
+  @Input()
+  placeholder: string = "Select...";
+
   @ViewChild("dropdownMenu")
   dropdownMenuElement!: ElementRef;
 
@@ -43,7 +48,11 @@ export class SearchSelectMultipleDropdownComponent implements OnInit, AfterViewI
 
   dropdown: any;
 
+  dropdownOpen = false;
+
   private _cursorPosition = -1;
+
+  @ViewChild('inputElement') inputElement!: ElementRef;
 
   get cursorPosition(): number {
     return this._cursorPosition;
@@ -64,7 +73,8 @@ export class SearchSelectMultipleDropdownComponent implements OnInit, AfterViewI
       this.cursorPosition = -1;
 
       this.filterOptions();
-      this.dropdown.show();
+
+      this.updateDropdown(true)
     }));
 
     this.filterOptions();
@@ -77,6 +87,14 @@ export class SearchSelectMultipleDropdownComponent implements OnInit, AfterViewI
 
     // @ts-ignore
     this.dropdown = new bootstrap.Dropdown(this.dropdownMenuElement.nativeElement);
+  }
+
+  getPlaceholder(): string {
+    if(this.control && this.control.value && this.control.value.length > 0) {
+      return "";
+    }
+
+    return this.placeholder;
   }
 
   keyUp(event: any) {
@@ -159,14 +177,21 @@ export class SearchSelectMultipleDropdownComponent implements OnInit, AfterViewI
     return option ? option.label : key;
   }
 
+  updateDropdown(show?: boolean) {
+    if(this.dropdownOpen && !show) {
+      this.dropdown.hide();
+      this.dropdownOpen = false;
+    } else {
+      this.dropdown.show();
+      this.dropdownOpen = true;
+    }
+  }
+
   dropdownClicked() {
     this.filterOptions()
 
-    this.dropdown.show();
-  }
+    this.inputElement.nativeElement.focus();
 
-  closeDropdown() {
-    this.dropdown.hide()
+    this.updateDropdown()
   }
-
 }
