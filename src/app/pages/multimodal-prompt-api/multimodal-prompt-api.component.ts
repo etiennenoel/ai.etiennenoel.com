@@ -233,6 +233,22 @@ const output = await languageModel.prompt([
 ]);`;
   }
 
+  getMedia(): HTMLImageElement | HTMLAudioElement {
+    switch (this.media?.type) {
+      case 'image':
+        const image = new Image();
+        image.src = URL.createObjectURL(this.media?.content);
+        return image;
+
+      case 'audio':
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(this.media?.content);
+        return audio;
+    }
+
+    throw new Error(`Unsupported media type: '${this.media.type}'.`);
+  }
+
   async execute() {
     try {
       this.status = TaskStatus.Executing;
@@ -250,7 +266,7 @@ const output = await languageModel.prompt([
         this.promptFormControl.value,
         {
           type: this.media.type,
-          data: this.media.content,
+          data: this.getMedia(),
         }
       ]);
     } catch (e: any) {
