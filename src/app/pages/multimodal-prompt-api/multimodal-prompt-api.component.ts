@@ -233,16 +233,14 @@ const output = await languageModel.prompt([
 ]);`;
   }
 
-  getMedia(): HTMLImageElement | HTMLAudioElement {
+  async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap> {
     if(!this.media) {
       throw new Error("No media provided.")
     }
 
     switch (this.media.type) {
       case 'image':
-        const image = new Image();
-        image.src = URL.createObjectURL(this.media.content);
-        return image;
+        return createImageBitmap(this.media.content);
 
       case 'audio':
         const audio = new Audio();
@@ -252,6 +250,7 @@ const output = await languageModel.prompt([
 
     throw new Error(`Unsupported media type: '${this.media.type}'.`);
   }
+
 
   async execute() {
     try {
@@ -270,7 +269,7 @@ const output = await languageModel.prompt([
         this.promptFormControl.value,
         {
           type: this.media.type,
-          data: this.getMedia(),
+          data: await this.getMedia(),
         }
       ]);
     } catch (e: any) {
