@@ -228,7 +228,7 @@ const output = await languageModel.prompt([
   "${this.promptFormControl.value ?? ""}",
   {
     type: "${this.media?.type}",
-    data: ${this.media?.content},
+    data: createImageBitmap(fileSystemFileHandle.getFile()),
   }
 ]);`;
   }
