@@ -234,15 +234,19 @@ const output = await languageModel.prompt([
   }
 
   getMedia(): HTMLImageElement | HTMLAudioElement {
-    switch (this.media?.type) {
+    if(!this.media) {
+      throw new Error("No media provided.")
+    }
+
+    switch (this.media.type) {
       case 'image':
         const image = new Image();
-        image.src = URL.createObjectURL(this.media?.content);
+        image.src = URL.createObjectURL(this.media.content);
         return image;
 
       case 'audio':
         const audio = new Audio();
-        audio.src = URL.createObjectURL(this.media?.content);
+        audio.src = URL.createObjectURL(this.media.content);
         return audio;
     }
 
