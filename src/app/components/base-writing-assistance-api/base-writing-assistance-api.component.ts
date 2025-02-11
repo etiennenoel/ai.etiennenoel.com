@@ -210,7 +210,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
   contextChange = new EventEmitter<string | null>();
   // </editor-fold>
 
-
   // <editor-fold desc="Input">
   private _input: string | null = null;
   public inputFormControl: FormControl<string | null> = new FormControl<string | null>(null);
