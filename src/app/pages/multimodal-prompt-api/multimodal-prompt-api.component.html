@@ -17,7 +17,43 @@
         [requirements]="[this.apiFlag]"
       >
         <div debugInformation>
-          No debug information available yet.
+          <h5>Activate all the flags</h5>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Flag</th>
+                <th>Value to select</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="code">chrome://flags/#optimization-guide-on-device-model</span></td>
+                <td><span class="code code-info">Enabled Bypass*</span></td>
+              </tr>
+              <tr>
+                <td><span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span></td>
+                <td><span class="code code-info">Enabled</span></td>
+              </tr>
+              <tr>
+                <td><span class="code">chrome://flags/#optimization-guide-debug-logs</span></td>
+                <td><span class="code code-info">Enabled</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5 class="mt-4">Verify that Gemini Nano has been downloaded</h5>
+          <ol style="line-height: 2;">
+            <li>Navigate to <span class="code">chrome://components</span></li>
+            <li>Search for <span class="code">Optimization Guide On Device Model</span> on the page.</li>
+            <li>Click on <span class="code">Check for update</span></li>
+            <li>Ensure that it says <span class="code code-info">Up-to-date</span></li>
+          </ol>
+        </div>
+
+        <div faq>
+          <h5>It seems like the page is stuck</h5>
+          <p>After you have clicked on <button class="btn btn-sm btn-primary" (click)="execute()">Execute</button> for the first time, Chrome has to download Gemini Nano. This can take a while (5-10 minutes). While this is happening, the page can seem frozen or like nothing is happening. Give it time then try to restart your browser.</p>
         </div>
       </app-page-accordion>
     </div>
