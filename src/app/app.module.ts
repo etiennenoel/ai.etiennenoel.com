@@ -37,6 +37,7 @@ import {LayoutComponent} from './components/layout/layout.component';
 import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multim
     ReactiveFormsModule,
     FormsModule,
     DragDropModule,
+    MagienoDragAndDropComponent,
   ],
   providers: [
     provideClientHydration(withEventReplay()),
