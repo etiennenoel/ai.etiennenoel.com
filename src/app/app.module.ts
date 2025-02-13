@@ -22,9 +22,6 @@ import {ToastComponent} from './components/toast/toast.component';
 import {RewriterApiComponent} from './components/rewriter-api/rewriter-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
 import {PromptApiComponent} from './pages/prompt-api/prompt-api.component';
-import {
-  DragAndDropFileSystemHandleComponent
-} from './components/drag-and-drop-file-system-handle/drag-and-drop-file-system-handle.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PromptComponent} from './components/prompt/prompt.component';
 import {OutputComponent} from './components/output/output.component';
@@ -81,8 +78,6 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
     StepContainerVisualStatusDirective,
     ToastComponent,
 
-    // Components
-    DragAndDropFileSystemHandleComponent,
   ],
   imports: [
     BrowserModule,
