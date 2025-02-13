@@ -8,7 +8,7 @@ import {IndexComponent} from './pages/index/index.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
-import {RewriterApiComponent} from './components/rewriter-api/rewriter-api.component';
+import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component';
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 
 const routes: Routes = [

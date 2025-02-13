@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';

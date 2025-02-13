@@ -138,7 +138,7 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
     } else if (isPlatformBrowser(this.platformId) && this.window && !("languageDetector" in this.window.ai)) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'window.ai.languageDetector' is not defined. Activate the flag.";
-    } else {
+    } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }

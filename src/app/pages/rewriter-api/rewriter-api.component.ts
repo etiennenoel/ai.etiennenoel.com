@@ -3,7 +3,7 @@ import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../base-writing-assistance-api/base-writing-assistance-api.component';
+import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../utils/text.utils';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
@@ -222,7 +222,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     else if (isPlatformBrowser(this.platformId) && !("rewriter" in this.window.ai)) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'window.ai.rewriter' is not defined. Activate the flag.";
-    } else {
+    }
+    else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }

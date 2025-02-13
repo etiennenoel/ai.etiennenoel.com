@@ -39,7 +39,6 @@
         @for (requirement of requirements; track $index) {
           <app-requirement [status]="requirement.status" [message]="requirement.message">
             <div [innerHTML]="requirement.contentHtml"></div>
-<!--            Activate <span class="code">chrome://flags/#translation-api</span>-->
           </app-requirement>
         }
 

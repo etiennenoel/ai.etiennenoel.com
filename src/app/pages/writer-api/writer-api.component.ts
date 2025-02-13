@@ -223,7 +223,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     else if (isPlatformBrowser(this.platformId) && !("writer" in this.window.ai)) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'window.ai.writer' is not defined. Activate the flag.";
-    } else {
+    } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }

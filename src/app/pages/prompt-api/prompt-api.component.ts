@@ -205,7 +205,7 @@ export class PromptApiComponent extends BaseComponent implements OnInit {
     } else if (isPlatformBrowser(this.platformId) && this.window && !("languageModel" in this.window.ai)) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'window.ai.languageModel' is not defined. Activate the flag.";
-    } else {
+    } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }

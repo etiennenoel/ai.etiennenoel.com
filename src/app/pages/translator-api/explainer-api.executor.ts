@@ -24,9 +24,12 @@ export class ExplainerApiExecutor implements ApiExecutorInterface {
     else if (isPlatformBrowser(this.platformId) && !("translator" in window.ai)) {
       translationApiStatus = RequirementStatus.Fail;
       translationApiMessage = "'window.ai.translator' is not defined. Activate the flag.";
-    } else {
+    } else if(isPlatformBrowser(this.platformId)) {
       translationApiStatus = RequirementStatus.Pass;
       translationApiMessage = "Passed";
+    } else {
+        translationApiStatus = RequirementStatus.Pending;
+        translationApiMessage = "Checking";
     }
 
     return {

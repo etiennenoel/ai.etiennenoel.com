@@ -21,9 +21,12 @@ export class CurrentApiExecutor implements ApiExecutorInterface {
     if (isPlatformBrowser(this.platformId) && (!window.hasOwnProperty('translation') || window.translation.hasOwnProperty('createTranslator'))) {
       translationApiStatus = RequirementStatus.Fail;
       translationApiMessage = "'window.translation' is not defined. Activate the flag.";
-    } else {
+    } else if(isPlatformBrowser(this.platformId)) {
       translationApiStatus = RequirementStatus.Pass;
       translationApiMessage = "Passed";
+    } else {
+      translationApiStatus = RequirementStatus.Pending;
+      translationApiMessage = "Checking";
     }
 
     return {
