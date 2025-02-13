@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnChanges, Output, PLATFORM_ID, SimpleChanges} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
-
+import {isPlatformBrowser} from '@angular/common';
 @Component({
   selector: 'app-page-accordion',
   templateUrl: './page-accordion.component.html',
@@ -20,8 +20,17 @@ export class PageAccordionComponent {
   checkRequirementsEvent = new EventEmitter<void>();
 
 
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {
+  }
+
   checkRequirements() {
     this.checkRequirementsEvent.emit();
+  }
+
+  isPlatformBrowser() {
+    return isPlatformBrowser(this.platformId);;
   }
 
   protected readonly RequirementStatus = RequirementStatus;
