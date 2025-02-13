@@ -2,6 +2,8 @@
      (drop)="onDropEvent($event); $event.preventDefault();"
      (dragenter)="onDragEnterEvent($event);  $event.preventDefault();"
      (dragover)="onDragOverEvent($event); $event.preventDefault();"
-     (dragleave)="onDragLeaveEvent($event);  $event.preventDefault()">
+     (dragleave)="onDragLeaveEvent($event);  $event.preventDefault()"
+     (click)="click()"
+>
   <ng-content></ng-content>
 </div>

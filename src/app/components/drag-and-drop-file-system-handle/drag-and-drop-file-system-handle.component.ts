@@ -1,5 +1,7 @@
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
 import {RouterOutlet} from "@angular/router";
+import {ShowOpenFilePickerOptionsInterface} from './show-open-file-picker-options.interface';
+import {Observable, Subject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'file-drag-and-drop-file-system-handle',
@@ -7,7 +9,7 @@ import {RouterOutlet} from "@angular/router";
   styleUrl: './drag-and-drop-file-system-handle.component.scss',
   standalone: false,
 })
-export class DragAndDropFileSystemHandleComponent {
+export class DragAndDropFileSystemHandleComponent implements OnChanges, OnDestroy {
   hasEnteredDropZone = false;
 
   @Output()
@@ -30,6 +32,24 @@ export class DragAndDropFileSystemHandleComponent {
 
   @Output()
   onFileSystemEntriesDropped: EventEmitter<FileSystemEntry[]> = new EventEmitter<FileSystemEntry[]>();
+
+  @Input()
+  showOpenFilePickerOptions?: ShowOpenFilePickerOptionsInterface
+
+  @Input()
+  clickEvents?: Observable<void>;
+
+  private subscriptions: Subscription[] = [];
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes["clickEvents"] && this.clickEvents) {
+      this.subscriptions.push(this.clickEvents.subscribe(() => this.openFilePicker()));
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
 
   async onDropEvent(event: DragEvent) {
     if(!event.dataTransfer) {
@@ -101,5 +121,18 @@ export class DragAndDropFileSystemHandleComponent {
     this.hasEnteredDropZone = false;
 
     this.onDragLeave.emit(event);
+  }
+
+  async openFilePicker() {
+    if("showOpenFilePicker" in window) {
+      // @ts-ignore
+      const fileSystemFileHandles = await window.showOpenFilePicker(this.showOpenFilePickerOptions);
+
+      this.onFileSystemHandlesDropped.emit(fileSystemFileHandles);
+    }
+  }
+
+  click() {
+    this.openFilePicker();
   }
 }
