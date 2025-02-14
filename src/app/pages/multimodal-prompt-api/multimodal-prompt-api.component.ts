@@ -265,11 +265,13 @@ const output = await languageModel.prompt([
 
       const languageModel = await this.window?.ai.languageModel.create();
 
+      const media = await this.getMedia();
+
       this.output = await languageModel.prompt([
         this.promptFormControl.value,
         {
           type: this.media.type,
-          data: await this.getMedia(),
+          data: media,
         }
       ]);
     } catch (e: any) {
