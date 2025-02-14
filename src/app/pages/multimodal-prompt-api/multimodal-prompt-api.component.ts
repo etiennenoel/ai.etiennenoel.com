@@ -271,7 +271,7 @@ const output = await languageModel.prompt([
         this.promptFormControl.value,
         {
           type: this.media.type,
-          data: media,
+          content: media,
         }
       ]);
     } catch (e: any) {
