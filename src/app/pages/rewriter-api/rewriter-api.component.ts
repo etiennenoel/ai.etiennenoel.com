@@ -13,6 +13,9 @@ import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
 import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
 
 
 @Component({
@@ -175,6 +178,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager
   ) {
     super(document, router, route);
   }
@@ -247,6 +251,21 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     }
   }
 
+  saveAnonymousAnalytics(output: any) {
+    this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Rewriter, {
+      tone: this.toneFormControl.value,
+      format: this.formatFormControl.value,
+      length: this.lengthFormControl.value,
+      sharedContext: this.sharedContextFormControl.value,
+      expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+      expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+      outputLanguage: this.outputLanguageFormControl.value,
+      input: this.input,
+      context: this.contextFormControl.value,
+    }, output)).then(() => {});
+
+  }
+
   async rewrite() {
     this.status = TaskStatus.Executing;
     this.outputCollapsed = false;
@@ -317,6 +336,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
 
         this.output = output;
       }
+
+      this.saveAnonymousAnalytics(this.output);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

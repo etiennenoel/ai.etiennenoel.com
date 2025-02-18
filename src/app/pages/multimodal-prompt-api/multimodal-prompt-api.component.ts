@@ -10,6 +10,9 @@ import {MediaInformationInterface} from '../prompt-api/media-information.interfa
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {FormControl} from '@angular/forms';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -109,6 +112,7 @@ export class MultimodalPromptApiComponent extends BaseComponent implements OnIni
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly title: Title,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager
   ) {
     super(document);
   }
@@ -251,6 +255,15 @@ const output = await languageModel.prompt([
     throw new Error(`Unsupported media type: '${this.media.type}'.`);
   }
 
+  saveAnonymousAnalytics(mediaBase64: string, output: any) {
+    this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Prompt, {
+      prompt: this.promptFormControl.value,
+      media: {
+        type: this.media?.type ?? "Undefined",
+        contentInBase64: mediaBase64,
+      }
+    }, output)).then(() => {});
+  }
 
   async execute() {
     try {
@@ -274,6 +287,9 @@ const output = await languageModel.prompt([
           content: media,
         }
       ]);
+
+      // todo: Convert the media into base64
+      this.saveAnonymousAnalytics("", this.output);
     } catch (e: any) {
       this.status = TaskStatus.Error;
       this.error = e;

@@ -35,6 +35,11 @@ import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
+import {AnonymousAnalyticsManager} from './managers/anonymous-analytics.manager';
+import {
+  AnonymousAnalyticsOverlayComponent
+} from './components/anonymous-analytics-overlay/anonymous-analytics-overlay.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -78,6 +83,8 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
     StepContainerVisualStatusDirective,
     ToastComponent,
 
+    AnonymousAnalyticsOverlayComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -86,6 +93,7 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
     FormsModule,
     DragDropModule,
     MagienoDragAndDropComponent,
+    NgbModule,
   ],
   providers: [
     provideClientHydration(withEventReplay()),
@@ -93,6 +101,9 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
     // Translator API
     ExplainerApiExecutor,
     CurrentApiExecutor,
+
+    // Managers
+    AnonymousAnalyticsManager,
 
     // Stores
     ToastStore,

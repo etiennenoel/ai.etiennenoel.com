@@ -13,6 +13,9 @@ import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
 
 
 @Component({
@@ -171,6 +174,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager
   ) {
     super(document, router, route);
   }
@@ -249,6 +253,21 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     }
   }
 
+  saveAnonymousAnalytics(output: any) {
+    this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Summarizer, {
+      type: this.typeFormControl.value,
+      format: this.formatFormControl.value,
+      length: this.lengthFormControl.value,
+      sharedContext: this.sharedContext,
+      expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+      expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+      outputLanguage: this.outputLanguageFormControl.value,
+      input: this.input,
+      context: this.contextFormControl.value,
+    }, output)).then(() => {});
+
+  }
+
   async summarize() {
     this.status = TaskStatus.Executing;
     this.outputCollapsed = false;
@@ -310,15 +329,15 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
           this.outputChunks.push(chunk);
           this.outputChunksChange.emit(this.outputChunks);
         }
-
       }
       else {
         const output = await summarizer.summarize(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
+
         this.executionPerformance.totalNumberOfWords = TextUtils.countWords(output);
         this.emitExecutionPerformanceChange();
-
-        this.output = output;
       }
+
+      this.saveAnonymousAnalytics(this.output);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

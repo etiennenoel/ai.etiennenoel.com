@@ -10,13 +10,14 @@ import {RequirementInterface} from "./interfaces/requirement.interface";
 import {ApiExecutorInterface} from "./interfaces/api-executor.interface";
 import {Step1} from "./interfaces/step-1.interface";
 import {Step0} from "./interfaces/step-0.interface";
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {Step2} from './interfaces/step-2.interface';
-import {
-  SearchSelectDropdownOptionsInterface
-} from '../../interfaces/search-select-dropdown-options.interface';
+import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
 
 @Component({
   selector: 'app-translator-api',
@@ -64,6 +65,7 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
       private readonly router: Router,
       private route: ActivatedRoute,
       private title: Title,
+      private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager,
       ) {
 
     this.apiExecutor = currentApiExecutor;
@@ -211,6 +213,12 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
     }
 
     const response = await this.apiExecutor.executeStep2(this.sourceLanguage.value, this.targetLanguage.value, this.content.value);
+
+    await this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Translator, {
+      sourceLanguage: this.sourceLanguage.value,
+      targetLanguage: this.targetLanguage.value,
+      content: this.content.value,
+    }, response));
 
     this.steps.step2.translatedContent = response.translatedContent;
     this.steps.step2.log = response.log;

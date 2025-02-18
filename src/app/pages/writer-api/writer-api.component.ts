@@ -13,6 +13,9 @@ import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-sele
 import {LocaleEnum} from '../../enums/locale.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {ActivatedRoute, Router} from '@angular/router';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
 
 
 @Component({
@@ -128,6 +131,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager
   ) {
     super(document, router, route);
   }
@@ -247,6 +251,21 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     }
   }
 
+  saveAnonymousAnalytics(output: any) {
+    this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Writer, {
+      tone: this.toneFormControl.value,
+      format: this.formatFormControl.value,
+      length: this.lengthFormControl.value,
+      sharedContext: this.sharedContextFormControl.value,
+      expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+      expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+      outputLanguage: this.outputLanguageFormControl.value,
+      input: this.input,
+      context: this.contextFormControl.value,
+    }, output)).then(() => {});
+
+  }
+
   async write() {
     this.status = TaskStatus.Executing;
     this.outputCollapsed = false;
@@ -318,6 +337,8 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
 
         this.output = output;
       }
+
+      this.saveAnonymousAnalytics(this.output);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

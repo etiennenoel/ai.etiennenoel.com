@@ -17,6 +17,9 @@ import {PromptInterface} from '../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Title} from '@angular/platform-browser';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
 
 
 @Component({
@@ -188,6 +191,7 @@ export class PromptApiComponent extends BaseComponent implements OnInit {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly title: Title,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager
   ) {
     super(document);
   }
@@ -285,6 +289,17 @@ const session = await window.ai.languageModel.create({
     return code;
   }
 
+  saveAnonymousAnalytics(prompt: any, output: any) {
+    this.anonymousAnalyticsManager.save(new AnalyticsSessionModel(ApiEnum.Prompt, {
+      topK: this.topKFormControl.value,
+      temperature: this.temperatureFormControl.value,
+      expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+      systemPrompt: this.systemPromptFormControl.value,
+      initialPrompts: this.initialPrompts,
+      prompt,
+    }, output)).then(() => {});
+  }
+
   async execute() {
     try {
       this.status = TaskStatus.Executing;
@@ -304,24 +319,25 @@ const session = await window.ai.languageModel.create({
         signal: abortController.signal,
       });
 
+      let prompt: any;
+
       switch (this.promptTypeFormControl.value) {
         case PromptTypeEnum.SequenceAILanguageModelPrompt:
-          this.output = await session.prompt(this.prompts, {
-            signal: abortController.signal,
-          });
-
+          prompt = this.prompts;
           break;
         case PromptTypeEnum.String:
-          this.output = await session.prompt(this.stringPromptFormControl.value, {
-            signal: abortController.signal,
-          });
+          prompt = this.stringPromptFormControl.value
           break;
         case PromptTypeEnum.AILanguageModelPrompt:
-          this.output = await session.prompt(this.prompt, {
-            signal: abortController.signal,
-          });
+          prompt = this.prompt;
           break;
       }
+
+      this.output = await session.prompt(prompt, {
+        signal: abortController.signal,
+      });
+
+      this.saveAnonymousAnalytics(prompt, this.output);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

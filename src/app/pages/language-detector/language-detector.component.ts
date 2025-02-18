@@ -2,7 +2,6 @@ import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} fro
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {FormControl} from '@angular/forms';
@@ -10,6 +9,9 @@ import {TaskStatus} from '../../enums/task-status.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
+import {AnonymousAnalyticsManager} from '../../managers/anonymous-analytics.manager';
+import {AnalyticsSessionModel} from '../../models/analytics-session.model';
+import {ApiEnum} from '../../enums/api.enum';
 
 
 @Component({
@@ -95,6 +97,7 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly title: Title,
+    private readonly anonymousAnalyticsManager: AnonymousAnalyticsManager,
   ) {
     super(document);
   }
@@ -228,6 +231,13 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.results = await detector.detect(this.inputFormControl.value, {
         //signal: abortController.signal,
       });
+
+      const analyticsSession = new AnalyticsSessionModel(ApiEnum.LanguageDetector, {
+        value: this.inputFormControl.value,
+      },
+        this.results);
+
+      await this.anonymousAnalyticsManager.save(analyticsSession);
 
       this.detectionStatus = TaskStatus.Completed;
     } catch (e: any) {
