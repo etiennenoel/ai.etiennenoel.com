@@ -13,6 +13,7 @@ import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-sele
 import {LocaleEnum} from '../../enums/locale.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -128,8 +129,9 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    title: Title,
   ) {
-    super(document, router, route);
+    super(document, router, route, title);
   }
 
   get writeCode() {
@@ -255,6 +257,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     this.outputChunks = [];
     this.outputChunksChange.emit(this.outputChunks);
     this.output = "";
+    this.error = undefined;
     this.outputStatusMessage = "Running query...";
 
     try {

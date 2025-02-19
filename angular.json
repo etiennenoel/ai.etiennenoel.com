@@ -65,6 +65,37 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/app/environments/environment.ts",
+                  "with": "src/app/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "chrome-dev": {
+              "index": {
+                "input": "src/index.chrome-dev.html",
+                "output": "index.html"
+              },
+              "fileReplacements": [
+                {
+                  "replace": "src/app/environments/environment.ts",
+                  "with": "src/app/environments/environment.chrome-dev.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -92,6 +123,9 @@
           "configurations": {
             "production": {
               "buildTarget": "chromium.etiennenoel.com:build:production"
+            },
+            "chrome-dev": {
+              "buildTarget": "chromium.etiennenoel.com:build:chrome-dev"
             },
             "development": {
               "buildTarget": "chromium.etiennenoel.com:build:development"

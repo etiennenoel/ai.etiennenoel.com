@@ -4,6 +4,7 @@ import {BaseComponent} from '../../components/base/base.component';
 import {DOCUMENT} from '@angular/common';
 import {RouteEnum} from '../../enums/route.enum';
 import {Title} from '@angular/platform-browser';
+import {BasePageComponent} from '../../components/base/base-page.component';
 
 @Component({
   selector: 'app-index',
@@ -11,21 +12,21 @@ import {Title} from '@angular/platform-browser';
   standalone: false,
   styleUrl: './index.component.scss'
 })
-export class IndexComponent extends BaseComponent implements OnInit {
+export class IndexComponent extends BasePageComponent implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) document: Document,
     protected readonly route: ActivatedRoute,
     protected readonly router: Router,
-    private readonly title: Title,
+    title: Title,
   ) {
-    super(document);
+    super(document, title);
   }
 
   override ngOnInit() {
     super.ngOnInit();
 
-    this.title.setTitle("API Playground | etiennenoel.com")
+    this.setTitle("API Playground")
   }
 
 }

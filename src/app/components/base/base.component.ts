@@ -1,7 +1,9 @@
-import {Component, Directive, Input, OnDestroy, OnInit} from '@angular/core';
-import {RouterOutlet} from "@angular/router";
+import {Directive, OnDestroy, OnInit} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {Subscription} from 'rxjs';
+import {Environment} from '../../environments/environment';
+import {EnvironmentNameEnum} from '../../enums/environment-name.enum';
+import {Title} from '@angular/platform-browser';
 
 @Directive()
 export abstract class BaseComponent implements OnInit, OnDestroy {
@@ -9,7 +11,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 
   protected window: Window | null;
 
-  constructor(protected readonly document: Document) {
+  constructor(
+    protected readonly document: Document,
+    ) {
     this.window = this.document?.defaultView;
   }
 

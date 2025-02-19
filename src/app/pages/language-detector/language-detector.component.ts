@@ -10,6 +10,7 @@ import {TaskStatus} from '../../enums/task-status.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
+import {BasePageComponent} from '../../components/base/base-page.component';
 
 
 @Component({
@@ -18,7 +19,7 @@ import {Title} from '@angular/platform-browser';
   standalone: false,
   styleUrl: './language-detector.component.scss'
 })
-export class LanguageDetectorComponent extends BaseComponent implements OnInit {
+export class LanguageDetectorComponent extends BasePageComponent implements OnInit {
 
   public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
@@ -94,15 +95,15 @@ export class LanguageDetectorComponent extends BaseComponent implements OnInit {
     @Inject(DOCUMENT) document: Document,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly title: Title,
+    title: Title,
   ) {
-    super(document);
+    super(document, title);
   }
 
   override ngOnInit() {
     super.ngOnInit();
 
-    this.title.setTitle('Language Detector API | AI Playground | etiennenoel.com');
+    this.setTitle('Language Detector API | AI Playground');
 
     this.checkRequirements()
 
@@ -215,6 +216,8 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       const self = this;
       this.outputCollapsed = false;
       this.detectionStatus = TaskStatus.Executing;
+      this.error = undefined;
+
       const detector = await window.ai.languageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         monitor(m: any) {

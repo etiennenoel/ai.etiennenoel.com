@@ -13,6 +13,7 @@ import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -171,8 +172,9 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    title: Title,
   ) {
-    super(document, router, route);
+    super(document, router, route, title);
   }
 
 
@@ -254,6 +256,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     this.outputCollapsed = false;
     this.outputStatusMessage = "Preparing and downloading model...";
     this.outputChunks = [];
+    this.error = undefined;
     this.outputChunksChange.emit(this.outputChunks);
     this.output = "";
     this.outputStatusMessage = "Running query...";

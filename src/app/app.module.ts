@@ -35,49 +35,45 @@ import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
+import {Environment} from './environments/environment';
 
 @NgModule({
   declarations: [
+    // Global components
     RootComponent,
-    IndexComponent,
-
-    CodeEditorComponent,
-
-    WriterApiComponent,
-    RewriterApiComponent,
-
-    SummarizerApiComponent,
-    PromptComponent,
-    OutputComponent,
-    RequirementComponent,
-
-    IndexComponent,
-    SidebarComponent,
     LayoutComponent,
+    SidebarComponent,
+
+    // Layout components
+    CardComponent,
+    CodeEditorComponent,
+    OutputComponent,
     PageTitleComponent,
     PageAccordionComponent,
-
-    CardComponent,
-    MultimodalPromptApiComponent,
-    // Pipes
-    EnumToSearchSelectDropdownOptionsPipe,
-
+    PromptComponent,
+    RequirementComponent,
     SearchSelectDropdownComponent,
     SearchSelectMultipleDropdownComponent,
-
-    // Directives
-    StepContainerVisualStatusDirective,
-
     StepStatusIconComponent,
     StepTitleComponent,
-
-    // Browser AI APIs
-    LanguageDetectorComponent,
-    PromptApiComponent,
-    TranslatorApiComponent,
     StepContainerVisualStatusDirective,
     ToastComponent,
 
+    // Pages
+    IndexComponent,
+    LanguageDetectorComponent,
+    PromptApiComponent,
+    RewriterApiComponent,
+    SummarizerApiComponent,
+    TranslatorApiComponent,
+    WriterApiComponent,
+    MultimodalPromptApiComponent,
+
+    // Pipes
+    EnumToSearchSelectDropdownOptionsPipe,
+
+    // Directives
+    StepContainerVisualStatusDirective,
   ],
   imports: [
     BrowserModule,

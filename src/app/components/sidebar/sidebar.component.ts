@@ -3,6 +3,7 @@ import {BaseComponent} from '../base/base.component';
 import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {RouteEnum} from '../../enums/route.enum';
+import {Environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-sidebar',
@@ -74,4 +75,5 @@ export class SidebarComponent extends BaseComponent implements OnInit {
   }
 
   protected readonly RouteEnum = RouteEnum;
+  protected readonly Environment = Environment;
 }

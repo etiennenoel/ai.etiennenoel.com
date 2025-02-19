@@ -1,7 +1,6 @@
-import {Component, Directive, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
+import {Directive, EventEmitter, Inject, Input, Output} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
-import {Subscription} from 'rxjs';
 import {BaseComponent} from '../base/base.component';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
@@ -10,6 +9,8 @@ import {FormControl} from '@angular/forms';
 import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {DOCUMENT} from '@angular/common';
+import {BasePageComponent} from '../base/base-page.component';
+import {Title} from '@angular/platform-browser';
 
 declare global {
   interface Window { ai: any; }
@@ -17,7 +18,7 @@ declare global {
 
 
 @Directive()
-export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
+export abstract class BaseWritingAssistanceApiComponent extends BasePageComponent {
 
   public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
@@ -28,8 +29,8 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
   public availabilityError?: Error;
 
   // <editor-fold desc="Use Streaming">
-  private _useStreaming: boolean | null = false;
-  public useStreamingFormControl = new FormControl<boolean>(false);
+  private _useStreaming: boolean | null = true;
+  public useStreamingFormControl = new FormControl<boolean>(true);
   @Output()
   useStreamingChange = new EventEmitter<boolean | null>();
 
@@ -158,7 +159,7 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
 
   // <editor-fold desc="OutputLanguage">
   private _outputLanguage: LocaleEnum | null = null;
-  public outputLanguageFormControl: FormControl<LocaleEnum | null> = new FormControl<LocaleEnum | null>(null);
+  public outputLanguageFormControl: FormControl<LocaleEnum | null> = new FormControl<LocaleEnum | null>(LocaleEnum.en);
 
   get outputLanguage(): LocaleEnum | null {
     return this._outputLanguage;
@@ -331,16 +332,41 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     @Inject(DOCUMENT) document: Document,
     protected readonly router: Router,
     protected readonly route: ActivatedRoute,
+    title: Title,
     ) {
-    super(document);
+    super(document, title);
   }
 
   override ngOnInit() {
     super.ngOnInit();
 
+    this.subscriptions.push(this.useStreamingFormControl.valueChanges.subscribe((value) => {
+      this.setUseStreaming(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
+      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.sharedContextFormControl.valueChanges.subscribe((value) => {
+      this.setSharedContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
+      this.setInput(value, {updateFormControl: false, emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
+      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if(params["useStreaming"]) {
-        this.useStreamingFormControl.setValue(params["useStreaming"]);
+        this.useStreamingFormControl.setValue(params["useStreaming"] === "true");
       }
 
       if (params['input']) {
@@ -374,30 +400,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
       if (params['outputLanguage']) {
         this.outputLanguageFormControl.setValue(params['outputLanguage']);
       }
-    }));
-
-    this.subscriptions.push(this.useStreamingFormControl.valueChanges.subscribe((value) => {
-      this.setUseStreaming(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
-      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
-    this.subscriptions.push(this.sharedContextFormControl.valueChanges.subscribe((value) => {
-      this.setSharedContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
-      this.setInput(value, {updateFormControl: false, emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
-      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
   }
 
