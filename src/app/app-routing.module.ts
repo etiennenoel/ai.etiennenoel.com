@@ -10,6 +10,7 @@ import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
 import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component';
 import {Environment} from './environments/environment';
+import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 
 const layouts: Routes = [
   {
@@ -43,8 +44,6 @@ const layouts: Routes = [
 ];
 
 if (Environment.multimodal) {
-  const {MultimodalPromptApiComponent} = await import('./pages/multimodal-prompt-api/multimodal-prompt-api.component');
-
   // Append Routes based on the environment
   layouts.push({
     path: "multimodal-prompt-api",

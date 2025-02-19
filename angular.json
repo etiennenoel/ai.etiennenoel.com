@@ -65,7 +65,6 @@
           },
           "configurations": {
             "production": {
-
               "budgets": [
                 {
                   "type": "initial",
@@ -83,8 +82,8 @@
             "chrome-dev": {
               "fileReplacements": [
                 {
-                  "replace": "projects/app/src/environments/environment.ts",
-                  "with": "projects/app/src/environments/environment.chrome-dev.ts"
+                  "replace": "src/app/environments/environment.ts",
+                  "with": "src/app/environments/environment.chrome-dev.ts"
                 }
               ],
               "budgets": [
@@ -114,6 +113,9 @@
           "configurations": {
             "production": {
               "buildTarget": "chromium.etiennenoel.com:build:production"
+            },
+            "chrome-dev": {
+              "buildTarget": "chromium.etiennenoel.com:build:chrome-dev"
             },
             "development": {
               "buildTarget": "chromium.etiennenoel.com:build:development"

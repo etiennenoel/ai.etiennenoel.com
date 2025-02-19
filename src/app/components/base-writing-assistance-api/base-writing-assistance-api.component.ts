@@ -1,7 +1,6 @@
-import {Component, Directive, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
+import {Directive, EventEmitter, Inject, Input, Output} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
-import {Subscription} from 'rxjs';
 import {BaseComponent} from '../base/base.component';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
@@ -158,7 +157,7 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
 
   // <editor-fold desc="OutputLanguage">
   private _outputLanguage: LocaleEnum | null = null;
-  public outputLanguageFormControl: FormControl<LocaleEnum | null> = new FormControl<LocaleEnum | null>(null);
+  public outputLanguageFormControl: FormControl<LocaleEnum | null> = new FormControl<LocaleEnum | null>(LocaleEnum.en);
 
   get outputLanguage(): LocaleEnum | null {
     return this._outputLanguage;

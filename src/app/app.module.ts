@@ -37,16 +37,6 @@ import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multim
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 import {Environment} from './environments/environment';
 
-const conditionalDeclarations = [];
-
-if (Environment.multimodal) {
-  const {MultimodalPromptApiComponent} = await import('./pages/multimodal-prompt-api/multimodal-prompt-api.component');
-
-  // Append Routes based on the environment
-  conditionalDeclarations.push(MultimodalPromptApiComponent);
-}
-
-
 @NgModule({
   declarations: [
     // Global components
@@ -77,14 +67,13 @@ if (Environment.multimodal) {
     SummarizerApiComponent,
     TranslatorApiComponent,
     WriterApiComponent,
+    MultimodalPromptApiComponent,
 
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
 
     // Directives
     StepContainerVisualStatusDirective,
-
-    ...conditionalDeclarations,
   ],
   imports: [
     BrowserModule,

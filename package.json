@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:chrome-de": "ng serve --configuration chrome-dev",
+    "start:chrome-dev": "ng serve --configuration chrome-dev",
     "build": "ng build",
     "build:chrome-dev": "ng build --configuration chrome-dev",
     "watch": "ng build --watch --configuration development",
