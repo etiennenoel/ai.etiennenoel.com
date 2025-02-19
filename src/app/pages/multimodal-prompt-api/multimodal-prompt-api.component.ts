@@ -10,6 +10,7 @@ import {MediaInformationInterface} from '../prompt-api/media-information.interfa
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {FormControl} from '@angular/forms';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
+import {BasePageComponent} from '../../components/base/base-page.component';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -17,7 +18,7 @@ import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
   standalone: false,
   styleUrl: './multimodal-prompt-api.component.scss'
 })
-export class MultimodalPromptApiComponent extends BaseComponent implements OnInit {
+export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
   medias: MediaInformationInterface[] = [];
 
   media?: MediaInformationInterface;
@@ -108,9 +109,9 @@ export class MultimodalPromptApiComponent extends BaseComponent implements OnIni
     @Inject(DOCUMENT) document: Document,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly title: Title,
+    title: Title,
   ) {
-    super(document);
+    super(document, title);
   }
 
   public apiFlag: RequirementInterface = {
@@ -122,7 +123,7 @@ export class MultimodalPromptApiComponent extends BaseComponent implements OnIni
   override ngOnInit() {
     super.ngOnInit();
 
-    this.title.setTitle("Multimodal Prompt API (Experimental) | AI Playground | etiennenoel.com")
+    this.setTitle("Multimodal Prompt API (Experimental) | AI Playground")
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['prompt']) {

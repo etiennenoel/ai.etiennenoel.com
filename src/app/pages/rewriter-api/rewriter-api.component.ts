@@ -13,6 +13,7 @@ import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
 import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {Title} from '@angular/platform-browser';
 
 
 @Component({
@@ -175,8 +176,9 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     @Inject(DOCUMENT) document: Document,
     router: Router,
     route: ActivatedRoute,
+    title: Title,
   ) {
-    super(document, router, route);
+    super(document, router, route, title);
   }
 
 

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {TaskStatus} from "../../enums/task-status.enum";
 import {RequirementStatus} from "../../enums/requirement-status.enum";
@@ -17,6 +17,8 @@ import {
   SearchSelectDropdownOptionsInterface
 } from '../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
+import {BasePageComponent} from '../../components/base/base-page.component';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'app-translator-api',
@@ -24,7 +26,7 @@ import {Title} from '@angular/platform-browser';
   standalone: false,
   styleUrl: './translator-api.component.scss'
 })
-export class TranslatorApiComponent implements OnInit, OnDestroy {
+export class TranslatorApiComponent extends BasePageComponent implements OnInit, OnDestroy {
   apiVersion = new FormControl<TranslatorApiVersionEnum>(TranslatorApiVersionEnum.Current);
 
   languages = languages;
@@ -54,8 +56,6 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
     step2: Step2,
   };
 
-  public subscriptions: Subscription[] = [];
-
   protected readonly StepStatus = TaskStatus;
 
   constructor(
@@ -63,16 +63,20 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
       private readonly explainerApiExecutor: ExplainerApiExecutor,
       private readonly router: Router,
       private route: ActivatedRoute,
-      private title: Title,
+      @Inject(DOCUMENT) document: Document,
+      title: Title,
       ) {
+    super(document, title)
 
     this.apiExecutor = currentApiExecutor;
     this.apiVersion.setValue(TranslatorApiVersionEnum.Current);
   }
 
 
-  ngOnInit() {
-    this.title.setTitle('Translator API | AI Playground | etiennenoel.com');
+  override ngOnInit() {
+    super.ngOnInit();
+
+    this.setTitle('Translator API | AI Playground');
 
     this.subscriptions.push(this.apiVersion.valueChanges.subscribe((value) => {
       this.router.navigate(['.'], { relativeTo: this.route, queryParams: { apiVersion: value}, queryParamsHandling: 'merge' });
@@ -119,12 +123,6 @@ export class TranslatorApiComponent implements OnInit, OnDestroy {
     }));
 
     this.reset();
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach((subscription) => {
-      subscription.unsubscribe();
-    });
   }
 
   getAllRequirements() {

@@ -9,6 +9,8 @@ import {FormControl} from '@angular/forms';
 import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {DOCUMENT} from '@angular/common';
+import {BasePageComponent} from '../base/base-page.component';
+import {Title} from '@angular/platform-browser';
 
 declare global {
   interface Window { ai: any; }
@@ -16,7 +18,7 @@ declare global {
 
 
 @Directive()
-export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
+export abstract class BaseWritingAssistanceApiComponent extends BasePageComponent {
 
   public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
@@ -330,8 +332,9 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
     @Inject(DOCUMENT) document: Document,
     protected readonly router: Router,
     protected readonly route: ActivatedRoute,
+    title: Title,
     ) {
-    super(document);
+    super(document, title);
   }
 
   override ngOnInit() {
