@@ -9,7 +9,49 @@ import {LayoutComponent} from './components/layout/layout.component';
 import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
 import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component';
-import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+import {Environment} from './environments/environment';
+
+const layouts: Routes = [
+  {
+    path: "",
+    component: IndexComponent,
+  },
+  {
+    path: "translator-api",
+    component: TranslatorApiComponent
+  },
+  {
+    path: "summarizer-api",
+    component: SummarizerApiComponent,
+  },
+  {
+    path: "writer-api",
+    component: WriterApiComponent,
+  },
+  {
+    path: "rewriter-api",
+    component: RewriterApiComponent,
+  },
+  {
+    path: "prompt-api",
+    component: PromptApiComponent,
+  },
+  {
+    path: "language-detector-api",
+    component: LanguageDetectorComponent,
+  }
+];
+
+if (Environment.multimodal) {
+  const {MultimodalPromptApiComponent} = await import('./pages/multimodal-prompt-api/multimodal-prompt-api.component');
+
+  // Append Routes based on the environment
+  layouts.push({
+    path: "multimodal-prompt-api",
+    component: MultimodalPromptApiComponent,
+  });
+}
+
 
 const routes: Routes = [
     {
@@ -19,45 +61,13 @@ const routes: Routes = [
         {
           path: "",
           component: LayoutComponent,
-          children: [
-            {
-              path: "",
-              component: IndexComponent,
-            },
-            {
-              path: "translator-api",
-              component: TranslatorApiComponent
-            },
-            {
-              path: "summarizer-api",
-              component: SummarizerApiComponent,
-            },
-            {
-              path: "writer-api",
-              component: WriterApiComponent,
-            },
-            {
-              path: "rewriter-api",
-              component: RewriterApiComponent,
-            },
-            {
-              path: "prompt-api",
-              component: PromptApiComponent,
-            },
-            {
-              path: "multimodal-prompt-api",
-              component: MultimodalPromptApiComponent,
-            },
-            {
-              path: "language-detector-api",
-              component: LanguageDetectorComponent,
-            }
-          ]
+          children: layouts,
         }
       ]
     },
   ]
 ;
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -35,49 +35,56 @@ import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
+import {Environment} from './environments/environment';
+
+const conditionalDeclarations = [];
+
+if (Environment.multimodal) {
+  const {MultimodalPromptApiComponent} = await import('./pages/multimodal-prompt-api/multimodal-prompt-api.component');
+
+  // Append Routes based on the environment
+  conditionalDeclarations.push(MultimodalPromptApiComponent);
+}
+
 
 @NgModule({
   declarations: [
+    // Global components
     RootComponent,
-    IndexComponent,
-
-    CodeEditorComponent,
-
-    WriterApiComponent,
-    RewriterApiComponent,
-
-    SummarizerApiComponent,
-    PromptComponent,
-    OutputComponent,
-    RequirementComponent,
-
-    IndexComponent,
-    SidebarComponent,
     LayoutComponent,
+    SidebarComponent,
+
+    // Layout components
+    CardComponent,
+    CodeEditorComponent,
+    OutputComponent,
     PageTitleComponent,
     PageAccordionComponent,
-
-    CardComponent,
-    MultimodalPromptApiComponent,
-    // Pipes
-    EnumToSearchSelectDropdownOptionsPipe,
-
+    PromptComponent,
+    RequirementComponent,
     SearchSelectDropdownComponent,
     SearchSelectMultipleDropdownComponent,
+    StepStatusIconComponent,
+    StepTitleComponent,
+    StepContainerVisualStatusDirective,
+    ToastComponent,
+
+    // Pages
+    IndexComponent,
+    LanguageDetectorComponent,
+    PromptApiComponent,
+    RewriterApiComponent,
+    SummarizerApiComponent,
+    TranslatorApiComponent,
+    WriterApiComponent,
+
+    // Pipes
+    EnumToSearchSelectDropdownOptionsPipe,
 
     // Directives
     StepContainerVisualStatusDirective,
 
-    StepStatusIconComponent,
-    StepTitleComponent,
-
-    // Browser AI APIs
-    LanguageDetectorComponent,
-    PromptApiComponent,
-    TranslatorApiComponent,
-    StepContainerVisualStatusDirective,
-    ToastComponent,
-
+    ...conditionalDeclarations,
   ],
   imports: [
     BrowserModule,
