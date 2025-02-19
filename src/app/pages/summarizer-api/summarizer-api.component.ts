@@ -254,6 +254,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     this.outputCollapsed = false;
     this.outputStatusMessage = "Preparing and downloading model...";
     this.outputChunks = [];
+    this.error = undefined;
     this.outputChunksChange.emit(this.outputChunks);
     this.output = "";
     this.outputStatusMessage = "Running query...";

@@ -254,6 +254,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     this.outputChunks = [];
     this.outputChunksChange.emit(this.outputChunks);
     this.output = "";
+    this.error = undefined;
     this.outputStatusMessage = "Running query...";
     this.loaded = 0;
 

@@ -289,6 +289,7 @@ const session = await window.ai.languageModel.create({
     try {
       this.status = TaskStatus.Executing;
       const abortController = new AbortController();
+      this.error = undefined;
 
       const session = await window.ai.languageModel.create({
         topK: this.topKFormControl.value,

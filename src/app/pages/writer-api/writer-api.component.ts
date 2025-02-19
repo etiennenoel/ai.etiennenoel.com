@@ -255,6 +255,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     this.outputChunks = [];
     this.outputChunksChange.emit(this.outputChunks);
     this.output = "";
+    this.error = undefined;
     this.outputStatusMessage = "Running query...";
 
     try {

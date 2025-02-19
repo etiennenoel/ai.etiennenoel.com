@@ -27,8 +27,8 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
   public availabilityError?: Error;
 
   // <editor-fold desc="Use Streaming">
-  private _useStreaming: boolean | null = false;
-  public useStreamingFormControl = new FormControl<boolean>(false);
+  private _useStreaming: boolean | null = true;
+  public useStreamingFormControl = new FormControl<boolean>(true);
   @Output()
   useStreamingChange = new EventEmitter<boolean | null>();
 
@@ -337,9 +337,33 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
   override ngOnInit() {
     super.ngOnInit();
 
+    this.subscriptions.push(this.useStreamingFormControl.valueChanges.subscribe((value) => {
+      this.setUseStreaming(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
+      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
+      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
+    this.subscriptions.push(this.sharedContextFormControl.valueChanges.subscribe((value) => {
+      this.setSharedContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
+      this.setInput(value, {updateFormControl: false, emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
+      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
+
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if(params["useStreaming"]) {
-        this.useStreamingFormControl.setValue(params["useStreaming"]);
+        this.useStreamingFormControl.setValue(params["useStreaming"] === "true");
       }
 
       if (params['input']) {
@@ -373,30 +397,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseComponent {
       if (params['outputLanguage']) {
         this.outputLanguageFormControl.setValue(params['outputLanguage']);
       }
-    }));
-
-    this.subscriptions.push(this.useStreamingFormControl.valueChanges.subscribe((value) => {
-      this.setUseStreaming(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.expectedContextLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedContextLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.outputLanguageFormControl.valueChanges.subscribe((value) => {
-      this.setOutputLanguage(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-
-    this.subscriptions.push(this.sharedContextFormControl.valueChanges.subscribe((value) => {
-      this.setSharedContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
-      this.setInput(value, {updateFormControl: false, emitChangeEvent: true, emitFormControlEvent: false});
-    }));
-    this.subscriptions.push(this.contextFormControl.valueChanges.subscribe((value) => {
-      this.setContext(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
   }
 

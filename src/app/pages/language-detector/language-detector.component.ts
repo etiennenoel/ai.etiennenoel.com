@@ -215,6 +215,8 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       const self = this;
       this.outputCollapsed = false;
       this.detectionStatus = TaskStatus.Executing;
+      this.error = undefined;
+
       const detector = await window.ai.languageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         monitor(m: any) {
