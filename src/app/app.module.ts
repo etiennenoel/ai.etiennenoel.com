@@ -5,8 +5,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {RootComponent} from './components/root/root.component';
 import {TranslatorApiComponent} from './pages/translator-api/translator-api.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ExplainerApiExecutor} from "./pages/translator-api/explainer-api.executor";
-import {CurrentApiExecutor} from "./pages/translator-api/current-api.executor";
 import {StepStatusIconComponent} from "./components/step-status-icon/step-status-icon.component";
 import {StepTitleComponent} from "./components/step-title/step-title.component";
 import {StepContainerVisualStatusDirective} from "./directives/step-container-visual-status.directive";
@@ -85,10 +83,6 @@ import {Environment} from './environments/environment';
   ],
   providers: [
     provideClientHydration(withEventReplay()),
-
-    // Translator API
-    ExplainerApiExecutor,
-    CurrentApiExecutor,
 
     // Stores
     ToastStore,
