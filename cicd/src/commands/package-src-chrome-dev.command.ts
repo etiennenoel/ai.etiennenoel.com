@@ -77,6 +77,8 @@ export class PackageSrcChromeDevCommand implements CommandInterface<any> {
 
     // todo: Move index.chrome-dev.html to index.html
 
+    // todo: Apply licenses on top of every file.
+
     return ExitCodeEnum.Success;
   }
 }
