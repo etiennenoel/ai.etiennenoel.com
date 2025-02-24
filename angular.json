@@ -90,6 +90,7 @@
                 "input": "src/index.chrome-dev.html",
                 "output": "index.html"
               },
+              "baseHref": "/web-ai-demos/built-in-ai-playground/",
               "fileReplacements": [
                 {
                   "replace": "src/app/environments/environment.ts",
