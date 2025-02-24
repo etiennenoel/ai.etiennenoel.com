@@ -1,0 +1,24 @@
+{
+  "name": "cicd",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "cicd:build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "package-src:chrome-dev": "pristine package-src:chrome-dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@pristine-ts/cli": "^0.0.366",
+    "@pristine-ts/file": "^0.0.366",
+    "@pristine-ts/common": "^0.0.366",
+    "@pristine-ts/core": "^0.0.366",
+    "tsyringe": "^4.8.0"
+  },
+  "pristine": {
+    "appModule": {
+      "cjsPath": "./dist/cjs/cicd.module.js"
+    }
+  }
+}

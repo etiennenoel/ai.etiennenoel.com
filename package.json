@@ -1,5 +1,5 @@
 {
-  "name": "chromium.etiennenoel.com",
+  "name": "AI Playground",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -8,8 +8,7 @@
     "build": "ng build",
     "build:chrome-dev": "ng build --configuration chrome-dev",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:chromium.etiennenoel.com": "node dist/chromium.etiennenoel.com/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {

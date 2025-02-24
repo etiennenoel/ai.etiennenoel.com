@@ -10,7 +10,9 @@ import {WriterApiComponent} from './pages/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
 import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component';
 import {Environment} from './environments/environment';
+// @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+// @end
 
 const layouts: Routes = [
   {
@@ -43,6 +45,7 @@ const layouts: Routes = [
   }
 ];
 
+// @start-remove-in-chrome-dev
 if (Environment.multimodal) {
   // Append Routes based on the environment
   layouts.push({
@@ -50,7 +53,7 @@ if (Environment.multimodal) {
     component: MultimodalPromptApiComponent,
   });
 }
-
+// @end
 
 const routes: Routes = [
     {
