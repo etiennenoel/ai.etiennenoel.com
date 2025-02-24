@@ -50,7 +50,8 @@ export class CodeEditorComponent implements AfterViewInit {
     // @ts-ignore
     this.editor = ace.edit(this.editorElement.nativeElement, {
       mode: "ace/mode/javascript",
-      selectionStyle: "text"
+      selectionStyle: "text",
+      useWorker: false,
     });
 
     this.editor.setReadOnly(this.readonly)
