@@ -5,6 +5,8 @@ export enum RouteEnum {
   RewriterApi = 'rewriter-api',
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',
+  // @start-remove-in-chrome-dev
   MultimodalPromptApi = 'multimodal-prompt-api',
+  // @end
   Home = 'index'
 }

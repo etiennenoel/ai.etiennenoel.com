@@ -44,6 +44,7 @@
           <i class="bi bi-input-cursor-text"></i>
           <span>Prompt API</span></a>
       </li>
+<!-- @start-remove-in-chrome-dev -->
       @if(Environment.multimodal) {
         <li [class.active]="this.currentRoute === RouteEnum.MultimodalPromptApi">
           <a class="btn stretched-link" routerLink="/multimodal-prompt-api">
@@ -53,6 +54,7 @@
           </a>
         </li>
       }
+<!-- @end -->
     </ul>
   </nav>
 

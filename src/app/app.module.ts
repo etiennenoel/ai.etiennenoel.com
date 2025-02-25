@@ -31,7 +31,9 @@ import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
+// @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+// @end
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 import {Environment} from './environments/environment';
 
@@ -65,7 +67,10 @@ import {Environment} from './environments/environment';
     SummarizerApiComponent,
     TranslatorApiComponent,
     WriterApiComponent,
+
+// @start-remove-in-chrome-dev
     MultimodalPromptApiComponent,
+// @end
 
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
