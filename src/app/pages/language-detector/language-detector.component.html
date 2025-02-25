@@ -36,7 +36,10 @@
         [error]="this.error"
         [downloadProgress]="this.loaded"
         [outputCollapsed]="outputCollapsed"
-        [output]="this.output">
+        [output]="this.output"
+        (abortExecution)="abortTriggered()"
+        (abortExecutionFromCreate)="abortFromCreateTriggered()"
+      >
         @if (results.length > 0) {
           <div style="height: 500px; overflow: auto">
             <table class="table table-responsive">

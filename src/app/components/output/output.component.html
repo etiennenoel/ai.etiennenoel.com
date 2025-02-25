@@ -37,8 +37,8 @@
 
           @if(status === TaskStatus.Executing) {
             <div class="mb-5">
-              <button class="btn btn-danger" (click)="abortExecution.emit()">Abort execution</button>
-              <button class="btn btn-danger ms-3" (click)="abortExecutionFromCreate.emit()">Abort from 'create' signal execution</button>
+              <button class="btn btn-danger" (click)="abortExecutionHandler()">Abort execution</button>
+              <button class="btn btn-danger ms-3" (click)="abortExecutionFromCreateHandler()">Abort from 'create' signal execution</button>
             </div>
           }
 

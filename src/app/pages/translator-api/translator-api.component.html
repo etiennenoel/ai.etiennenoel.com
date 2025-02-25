@@ -37,7 +37,10 @@
     [error]="this.error"
     [downloadProgress]="this.loaded"
     [outputCollapsed]="outputCollapsed"
-    [output]="this.output">
+    [output]="this.output"
+    (abortExecution)="abortTriggered()"
+    (abortExecutionFromCreate)="abortFromCreateTriggered()"
+  >
 
   </app-output>
 

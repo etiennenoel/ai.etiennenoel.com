@@ -434,6 +434,16 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
     clearInterval(this.executionTimeInterval);
   }
 
+  abortTriggered() {
+    console.log(`abortTriggered`)
+    this.abortController?.abort();
+  }
+
+  abortFromCreateTriggered() {
+    console.log(`abortFromCreateTriggered`)
+    this.abortControllerFromCreate?.abort();
+  }
+
   public readonly RequirementStatus = RequirementStatus;
   public readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
 }

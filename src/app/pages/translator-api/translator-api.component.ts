@@ -89,6 +89,38 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
   public statusChange = new EventEmitter<TaskStatus>();
   // </editor-fold>
 
+  // <editor-fold desc="AbortControllerFromCreate">
+  private _abortControllerFromCreate: AbortController | null = null;
+
+  get abortControllerFromCreate(): AbortController | null {
+    return this._abortControllerFromCreate;
+  }
+
+  set abortControllerFromCreate(value: AbortController | null) {
+    this._abortControllerFromCreate = value;
+    this.abortControllerFromCreateChange.emit(value);
+  }
+
+  @Output()
+  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="AbortController">
+  private _abortController: AbortController | null = null;
+
+  get abortController(): AbortController | null {
+    return this._abortController;
+  }
+
+  set abortController(value: AbortController | null) {
+    this._abortController = value;
+    this.abortControllerChange.emit(value);
+  }
+
+  @Output()
+  abortControllerChange = new EventEmitter<AbortController | null>();
+  // </editor-fold>
+
   requirements: RequirementInterface = {
     translationApiFlag: {
         status: RequirementStatus.Pending,
@@ -256,6 +288,16 @@ await translator.translate("${this.content.value}")
       this.status = TaskStatus.Error;
       this.error = e;
     }
+  }
+
+  abortTriggered() {
+    console.log(`abortTriggered`)
+    this.abortController?.abort();
+  }
+
+  abortFromCreateTriggered() {
+    console.log(`abortFromCreateTriggered`)
+    this.abortControllerFromCreate?.abort();
   }
 
   protected readonly RequirementStatus = RequirementStatus;

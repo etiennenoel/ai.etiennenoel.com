@@ -77,5 +77,13 @@ export class OutputComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  abortExecutionHandler() {
+    this.abortExecution.emit();
+  }
+
+  abortExecutionFromCreateHandler() {
+    this.abortExecutionFromCreate.emit();
+  }
+
   protected readonly TaskStatus = TaskStatus;
 }

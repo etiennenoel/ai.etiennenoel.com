@@ -83,6 +83,38 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   loadedChange = new EventEmitter<number>();
   // </editor-fold>
 
+  // <editor-fold desc="AbortControllerFromCreate">
+  private _abortControllerFromCreate: AbortController | null = null;
+
+  get abortControllerFromCreate(): AbortController | null {
+    return this._abortControllerFromCreate;
+  }
+
+  set abortControllerFromCreate(value: AbortController | null) {
+    this._abortControllerFromCreate = value;
+    this.abortControllerFromCreateChange.emit(value);
+  }
+
+  @Output()
+  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="AbortController">
+  private _abortController: AbortController | null = null;
+
+  get abortController(): AbortController | null {
+    return this._abortController;
+  }
+
+  set abortController(value: AbortController | null) {
+    this._abortController = value;
+    this.abortControllerChange.emit(value);
+  }
+
+  @Output()
+  abortControllerChange = new EventEmitter<AbortController | null>();
+  // </editor-fold>
+
   inputFormControl = new FormControl<string>("");
 
   results: {
@@ -238,6 +270,17 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.detectionStatus = TaskStatus.Error;
     }
   }
+
+  abortTriggered() {
+    console.log(`abortTriggered`)
+    this.abortController?.abort();
+  }
+
+  abortFromCreateTriggered() {
+    console.log(`abortFromCreateTriggered`)
+    this.abortControllerFromCreate?.abort();
+  }
+
 
   protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
   protected readonly LocaleEnum = LocaleEnum;
