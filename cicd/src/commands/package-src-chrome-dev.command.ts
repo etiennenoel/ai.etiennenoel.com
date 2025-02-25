@@ -1,9 +1,9 @@
 import {CommandInterface, ConsoleManager, ExitCodeEnum} from '@pristine-ts/cli';
-import {DirectoryManager, FileManager} from '@pristine-ts/file';
+import {DirectoryListResultEnum, DirectoryManager, FileManager} from '@pristine-ts/file';
 import {injectable} from 'tsyringe';
 import {ServiceDefinitionTagEnum, tag} from '@pristine-ts/common';
 import {PathManager} from '@pristine-ts/core';
-import {mkdir} from 'node:fs/promises';
+import {mkdir, readFile, rename, writeFile} from 'node:fs/promises';
 import {FileInfoInterface} from '@pristine-ts/file/dist/types/interfaces/file-info.interface';
 
 @injectable()
@@ -75,9 +75,56 @@ export class PackageSrcChromeDevCommand implements CommandInterface<any> {
       monitor,
     })
 
-    // todo: Move index.chrome-dev.html to index.html
+    // Move
+    await rename(`${destinationFolder}/src/index.chrome-dev.html`, `${destinationFolder}/src/index.html`);
 
-    // todo: Apply licenses on top of every file.
+    // Apply licenses
+    const license = `/**
+ * Copyright ${(new Date()).getFullYear()} Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+`;
+
+    const htmlLicense = `<!--
+ Copyright ${(new Date()).getFullYear()} Google LLC
+ SPDX-License-Identifier: Apache-2.0
+-->
+`;
+
+    const files: FileInfoInterface[] = (await this.directoryManager.list(`${destinationFolder}`, {
+      recurse: true,
+      match: (file) => {
+        const fileExtensions = [
+          "html",
+          "ts",
+          "scss",
+        ];
+
+        return fileExtensions.includes(file.extension);
+      },
+      resultType: DirectoryListResultEnum.FileInfoObject,
+    })) as FileInfoInterface[];
+
+    // Loop over the files and prepend the license.
+    for (const file of files) {
+      // Read the file, prepend the license and write it back. Use the NodeJS default fs module.
+      const filePath = file.fullPath;
+      const fileContent = await readFile(filePath, { encoding: "utf-8" });
+      let newContent = fileContent;
+      switch (file.extension) {
+        case "html":
+          newContent = htmlLicense + fileContent;
+          break;
+        case "ts":
+        case "scss":
+          newContent = license + fileContent;
+          break;
+        default:
+          break;
+      }
+
+      await writeFile(filePath, newContent, { encoding: "utf-8" });
+    }
 
     return ExitCodeEnum.Success;
   }
