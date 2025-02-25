@@ -261,6 +261,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     this.loaded = 0;
 
     try {
+      const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
@@ -276,7 +277,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
         monitor(m: any)  {
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
-            this.loaded = e.loaded;
+            self.loaded = e.loaded;
           });
         },
         signal: this.abortControllerFromCreate.signal,

@@ -232,6 +232,7 @@ await translator.translate("${this.content.value}")
 
   async translate() {
     try {
+      const self = this;
       this.status = TaskStatus.Executing;
       this.outputCollapsed = false;
       this.error = undefined;
@@ -243,7 +244,7 @@ await translator.translate("${this.content.value}")
         targetLanguage: this.targetLanguage.value,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
-            this.loaded = e.loaded;
+            self.loaded = e.loaded;
           });
         },
       });

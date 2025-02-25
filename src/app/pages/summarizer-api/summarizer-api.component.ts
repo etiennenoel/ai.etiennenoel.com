@@ -263,6 +263,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     this.loaded = 0;
 
     try {
+      const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
@@ -278,7 +279,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
         monitor(m: any)  {
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
-            this.loaded = e.loaded;
+            self.loaded = e.loaded;
           });
         },
         signal: this.abortControllerFromCreate.signal,
