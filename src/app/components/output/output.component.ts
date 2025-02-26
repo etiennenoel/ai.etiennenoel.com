@@ -57,6 +57,10 @@ export class OutputComponent implements OnChanges, AfterViewInit {
     ) {
   }
 
+  getDownloadProgress() {
+    return Math.floor(this.downloadProgress * 100);
+  }
+
   copyToClipboard(chunk: string) {
     navigator.clipboard.writeText(chunk)
     this.toastStore.publish({
