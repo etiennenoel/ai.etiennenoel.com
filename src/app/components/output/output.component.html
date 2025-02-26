@@ -12,7 +12,22 @@
               [class.bg-danger-subtle]="status === TaskStatus.Error"
       >
         <i class="bi bi-terminal"></i>
-        <div class="flex-grow-1">Output</div>
+
+        <div class="flex-grow-1 d-flex align-items-center gap-2">
+
+          <div>Output</div>
+
+          @if (status === TaskStatus.Executing) {
+            <div class="">
+              <button class="btn btn-danger btn-sm" (click)="abortExecutionHandler()">Abort execution</button>
+              <button class="btn btn-danger btn-sm ms-3" (click)="abortExecutionFromCreateHandler()">Abort from 'create'
+                signal
+                execution
+              </button>
+            </div>
+          }
+        </div>
+
         <span class="badge"
               [class.text-bg-secondary]="status === TaskStatus.Idle"
               [class.text-bg-primary]="status === TaskStatus.Executing"
@@ -21,32 +36,20 @@
         >{{ status }}</span>
       </button>
     </h2>
-    <div id="collapseOutput" class="accordion-collapse" [class.collapse]="outputCollapsed" data-bs-parent="#collapseOutput">
-      <div class="accordion-body">
-        <div class="mt-1">
-          @if (status !== TaskStatus.Idle) {
-            <div class="mb-5">
-              <h6 class="mt-4">Model download progress</h6>
-              <div class="progress mt-2 mb-2" role="progressbar" aria-label="Basic example" aria-valuenow="0"
-                   aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
-              </div>
-              <span class="text-muted">Model downloading...</span>
-            </div>
-          }
+    <div id="collapseOutput" class="accordion-collapse" [class.collapse]="outputCollapsed"
+         data-bs-parent="#collapseOutput">
+      <div class="accordion-body p-0">
+        <div class="mt-1 p-3">
 
-          @if(status === TaskStatus.Executing) {
-            <div class="mb-5">
-              <button class="btn btn-danger" (click)="abortExecutionHandler()">Abort execution</button>
-              <button class="btn btn-danger ms-3" (click)="abortExecutionFromCreateHandler()">Abort from 'create' signal execution</button>
-            </div>
-          }
 
-          @if(error) {
+          @if (error) {
             <div class="alert alert-danger">{{ error }}</div>
           }
 
-          <div>{{ this.output }} <button class="btn btn-link" *ngIf="this.output != ''" (click)="copyToClipboard(this.output)"><i class="bi bi-copy"></i></button></div>
+          <div>{{ this.output }}
+            <button class="btn btn-link" *ngIf="this.output != ''" (click)="copyToClipboard(this.output)"><i
+              class="bi bi-copy"></i></button>
+          </div>
 
           @if (outputChunks.length > 0 && status !== TaskStatus.Idle) {
 
@@ -62,7 +65,9 @@
                 @for (chunk of outputChunks; track $index) {
                   <tr>
                     <td>{{ $index }}</td>
-                    <td>{{ chunk }} <button class="btn btn-link" (click)="copyToClipboard(chunk)"><i class="bi bi-copy"></i></button> </td>
+                    <td>{{ chunk }}
+                      <button class="btn btn-link" (click)="copyToClipboard(chunk)"><i class="bi bi-copy"></i></button>
+                    </td>
                   </tr>
                 }
 
@@ -73,23 +78,36 @@
           <ng-content></ng-content>
 
           <!-- This below is deprecated, should use the footer direclty -->
-          @if(this.executionPerformanceResult?.elapsedTime) {
+          @if (this.executionPerformanceResult?.elapsedTime) {
             <div class="flex-fill">Elapsed time: <strong>{{ this.executionPerformanceResult?.elapsedTime }} ms</strong>
             </div>
           }
 
-          @if(this.executionPerformanceResult?.firstResponseIn || this.executionPerformanceResult?.firstResponseNumberOfWords) {
-            <div class="flex-fill">First Response: <strong>{{ this.executionPerformanceResult?.firstResponseIn ?? "N/A" }}</strong>
-              ms, <strong>{{ this.executionPerformanceResult?.firstResponseNumberOfWords ?? "N/A" }} words</strong></div>
+          @if (this.executionPerformanceResult?.firstResponseIn || this.executionPerformanceResult?.firstResponseNumberOfWords) {
+            <div class="flex-fill">First Response:
+              <strong>{{ this.executionPerformanceResult?.firstResponseIn ?? "N/A" }}</strong>
+              ms, <strong>{{ this.executionPerformanceResult?.firstResponseNumberOfWords ?? "N/A" }} words</strong>
+            </div>
           }
 
-          @if(this.executionPerformanceResult?.totalExecutionTime || this.executionPerformanceResult?.totalNumberOfWords) {
-            <div class="flex-fill">Total: <strong>{{ this.executionPerformanceResult?.totalExecutionTime ?? "N/A" }} ms</strong>,
+          @if (this.executionPerformanceResult?.totalExecutionTime || this.executionPerformanceResult?.totalNumberOfWords) {
+            <div class="flex-fill">Total: <strong>{{ this.executionPerformanceResult?.totalExecutionTime ?? "N/A" }}
+              ms</strong>,
               <strong>{{ this.executionPerformanceResult?.totalNumberOfWords ?? "N/A" }} words</strong></div>
           }
 
         </div>
+        <div class="border-top border-1 p-3 bg-light m-0">
+          @if (status !== TaskStatus.Idle) {
+            <h6 class="mt-0">Model download:</h6>
+            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
+                 aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
+            </div>
+          }
+        </div>
       </div>
+
     </div>
   </div>
 </div>
