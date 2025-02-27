@@ -71,9 +71,6 @@
 
   </app-output>
 
-  <div class="alert alert-warning mt-3">Currently, only <strong><i class="bi bi-music-note"></i> Audio</strong> prompts or only <strong><i
-    class="bi bi-images "></i> Image</strong> prompts are supported. Mix and match are not yet supported.</div>
-
   <h4>Prompt Types</h4>
 
   <div class="btn-group" role="group">
@@ -84,6 +81,9 @@
     <input type="radio" class="btn-check" name="prompt-type" id="audio_prompt_type" autocomplete="off" value="audio" [formControl]="promptTypesFormControl">
     <label class="btn btn-outline-primary" for="audio_prompt_type"><i class="bi bi-music-note"></i> Audio</label>
   </div>
+
+  <div class="alert alert-warning mt-3">Currently, only <strong><i class="bi bi-music-note"></i> Audio</strong> prompts or only <strong><i
+    class="bi bi-images "></i> Image</strong> prompts are supported. Mix and match are not yet supported.</div>
 
   <div class="row mt-5">
     <div class="col-12">
