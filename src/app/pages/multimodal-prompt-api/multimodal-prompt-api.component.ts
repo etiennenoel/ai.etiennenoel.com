@@ -274,7 +274,7 @@ const output = await languageModel.prompt([
 
     let type = "audio/mpeg";
 
-    switch (type) {
+    switch (audioSample.format) {
       case "wav":
         type = "audio/wav";
         break;
