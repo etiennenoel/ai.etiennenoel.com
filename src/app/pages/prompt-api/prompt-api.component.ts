@@ -230,7 +230,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.error = e;
     }
   }

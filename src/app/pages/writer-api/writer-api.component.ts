@@ -243,7 +243,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
         outputLanguage: this.outputLanguageFormControl.value
       })
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.availabilityError = e;
       this.errorChange.emit(e);
     }

@@ -217,7 +217,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
     try {
       this.availabilityStatus = await window.ai.languageModel.availability({})
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.error = e;
     }
   }

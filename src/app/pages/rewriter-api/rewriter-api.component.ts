@@ -243,7 +243,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
         outputLanguage: this.outputLanguageFormControl.value
       })
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.availabilityError = e;
       this.errorChange.emit(e);
     }

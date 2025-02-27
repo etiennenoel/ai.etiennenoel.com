@@ -245,7 +245,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
         outputLanguage: this.outputLanguageFormControl.value
       })
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unknown
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.errorChange.emit(e);
       this.availabilityError = e;
     }
