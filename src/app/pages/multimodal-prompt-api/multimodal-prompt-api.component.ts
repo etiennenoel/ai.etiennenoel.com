@@ -115,7 +115,16 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       duration: "00:00:15",
       language: "English",
       format: "mp3",
-      channels: "unknown",
+      channels: "stereo",
+    },
+    {
+      filename: "audio_clip_1_woman_english_mono.wav",
+      title: "Audio Clip #1",
+      speaker: "woman",
+      duration: "00:00:15",
+      language: "English",
+      format: "wav",
+      channels: "mono",
     }
   ];
 
@@ -263,9 +272,22 @@ const output = await languageModel.prompt([
     const audioFile = await fetch(`./audio/${audioSample.filename}`);
     const audioArrayBuffer = await audioFile.arrayBuffer();
 
+    let type = "audio/mpeg";
+
+    switch (type) {
+      case "wav":
+        type = "audio/wav";
+        break;
+      case "mp3":
+        type = "audio/mpeg";
+        break;
+      default:
+        throw new Error(`Unsupported audio format: '${type}'.`);
+    }
+
     const media: MediaInformationInterface = {
       type: 'audio',
-      content: new Blob([audioArrayBuffer], {type: "audio/mpeg"}),
+      content: new Blob([audioArrayBuffer], {type: type}),
       audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
       filename: audioSample.filename,
       includeInPrompt: true,
