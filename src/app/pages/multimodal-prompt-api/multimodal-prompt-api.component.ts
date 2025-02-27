@@ -316,7 +316,7 @@ const output = await languageModel.prompt([
 
     const media: MediaInformationInterface = {
       type: 'audio',
-      content: new Blob([], {type: type}),
+      content: new Blob([audioArrayBuffer], {type: type}),
       audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
       filename: audioSample.filename,
       includeInPrompt: true,
@@ -379,11 +379,11 @@ const output = await languageModel.prompt([
       const media = await this.getMedia();
 
       this.output = await languageModel.prompt([
-        this.promptFormControl.value,
         {
           type: this.media.type,
           content: media,
-        }
+        },
+        this.promptFormControl.value,
       ]);
     } catch (e: any) {
       this.status = TaskStatus.Error;
