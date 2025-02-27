@@ -29,7 +29,30 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
 
   public availabilityError?: Error;
 
+  // <editor-fold desc="Prompt Types">
+  private _promptTypes: "image" | "audio" | null = "image";
   public promptTypesFormControl: FormControl<"image" | "audio" | null> = new FormControl<"image" | "audio">("image");
+
+  get promptTypes(): "image" | "audio" | null {
+    return this._promptTypes;
+  }
+
+  set promptTypes(value: "image" | "audio" | null) {
+    this.setPromptTypes(value);
+  }
+
+  setPromptTypes(value: "image" | "audio" | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._promptTypes = value;
+    this.promptTypesFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.promptTypesChange.emit(value);
+    }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { promptTypes: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  promptTypesChange = new EventEmitter<"image" | "audio" | null>();
+  // </editor-fold>
 
   // <editor-fold desc="Task Status">
   private _status: TaskStatus = TaskStatus.Idle;
@@ -110,18 +133,18 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   audioSamples: AudioSampleInterface[] = [
     {
       filename: "audio_clip_1_woman_english.mp3",
-      title: "Audio Clip #1",
+      title: "Audio Clip #1 (Stereo) (.mp3)",
       speaker: "woman",
-      duration: "00:00:15",
+      duration: "00:00:16",
       language: "English",
       format: "mp3",
       channels: "stereo",
     },
     {
       filename: "audio_clip_1_woman_english_mono.wav",
-      title: "Audio Clip #1",
+      title: "Audio Clip #1 (Mono) (.wav)",
       speaker: "woman",
-      duration: "00:00:15",
+      duration: "00:00:16",
       language: "English",
       format: "wav",
       channels: "mono",
@@ -161,11 +184,17 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       if (params['prompt']) {
         this.promptFormControl.setValue(params['prompt']);
       }
+      if (params['promptTypes']) {
+        this.promptTypesFormControl.setValue(params['promptTypes']);
+      }
     }));
 
     this.subscriptions.push(this.promptFormControl.valueChanges.subscribe((value) => {
       this.setPrompt(value, {emitChangeEvent: true, emitFormControlEvent: false});
+    }));
 
+    this.subscriptions.push(this.promptTypesFormControl.valueChanges.subscribe((value) => {
+      this.setPromptTypes(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
 
     this.checkRequirements()
