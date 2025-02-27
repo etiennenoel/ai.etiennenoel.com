@@ -385,6 +385,8 @@ const output = await languageModel.prompt([
         },
         this.promptFormControl.value,
       ]);
+
+      this.status = TaskStatus.Completed;
     } catch (e: any) {
       this.status = TaskStatus.Error;
       this.error = e;
