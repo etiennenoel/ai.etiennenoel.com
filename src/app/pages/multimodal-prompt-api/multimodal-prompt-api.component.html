@@ -71,6 +71,20 @@
 
   </app-output>
 
+  <div class="alert alert-warning mt-3">Currently, only <strong><i class="bi bi-music-note"></i> Audio</strong> prompts or only <strong><i
+    class="bi bi-images "></i> Image</strong> prompts are supported. Mix and match are not yet supported.</div>
+
+  <h4>Prompt Types</h4>
+
+  <div class="btn-group" role="group">
+    <input type="radio" class="btn-check" name="prompt-type" id="image_prompt_type" autocomplete="off" checked value="image" [formControl]="promptTypesFormControl">
+    <label class="btn btn-outline-primary" for="image_prompt_type"><i
+      class="bi bi-images "></i> Image</label>
+
+    <input type="radio" class="btn-check" name="prompt-type" id="audio_prompt_type" autocomplete="off" value="audio" [formControl]="promptTypesFormControl">
+    <label class="btn btn-outline-primary" for="audio_prompt_type"><i class="bi bi-music-note"></i> Audio</label>
+  </div>
+
   <div class="row mt-5">
     <div class="col-12">
       <h3>Prompt</h3>
@@ -118,12 +132,60 @@
         }
       </div>
 
+      <div class="dropdown mt-2 mb-4">
+        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Choose an @if(promptTypesFormControl.value === "audio") {
+          <strong><i class="bi bi-music-note"></i>audio</strong>
+        } @else if (promptTypesFormControl.value === "image") {
+          <strong> <i
+            class="bi bi-images "></i> image</strong>
+        } sample
+
+        </button>
+        <ul class="dropdown-menu">
+          @if(promptTypesFormControl.value === "audio") {
+
+            @for (audioSample of audioSamples; track $index) {
+              <li><button class="dropdown-item d-flex gap-3 align-items-center" (click)="selectAudioSample(audioSample)">
+                <div style="width: 50px;" class="text-center">
+                  <i class="bi bi-volume-up-fill"></i>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                  <strong>{{ audioSample.title }}</strong>
+                  <div>Speaker: <strong>{{ audioSample.speaker }}</strong></div>
+                  <div>Duration(HH:MM:SS): {{ audioSample.duration  }}</div>
+                  <div>Language: <strong>{{ audioSample.language }}</strong></div>
+                  <div>Format: <strong>{{ audioSample.format }}</strong></div>
+                  <div>Channels: <strong>{{ audioSample.channels }}</strong></div>
+                </div>
+              </button></li>
+            }
+          }
+          @if(promptTypesFormControl.value === "image") {
+            <li>
+              @for (imageSample of imageSamples; track $index) {
+              <button class="dropdown-item d-flex flex-column align-items-center" (click)="selectImageSample(imageSample)">
+                <img [src]="'./images/' + imageSample.filename" style="width: 100px;" class="img-fluid rounded"/>
+              </button>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+
+      <p>or</p>
+
       <magieno-drag-and-drop (onFileSystemHandlesDropped)="onFileSystemHandlesDropped($event)" class="d-block" style="height: 150px;">
         <div class="d-flex flex-column h-100 w-100">
           <div class="align-content-center flex-fill">
 
-            Click or drag and drop an <strong><i class="bi bi-music-note"></i>audio</strong> file or <strong> <i
-            class="bi bi-images "></i> image</strong> here
+            Click or drag and drop an
+            @if(promptTypesFormControl.value === "audio") {
+              <strong><i class="bi bi-music-note"></i>audio</strong>
+            } @else if (promptTypesFormControl.value === "image") {
+              <strong> <i
+                class="bi bi-images "></i> image</strong>
+            } file here
           </div>
         </div>
       </magieno-drag-and-drop>

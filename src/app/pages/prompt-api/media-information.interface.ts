@@ -3,9 +3,11 @@ export interface MediaInformationInterface {
 
   content: Blob;
 
+  audioBuffer?: AudioBuffer;
+
   filename: string;
 
   includeInPrompt: boolean;
 
-  fileSystemFileHandle: FileSystemFileHandle;
+  fileSystemFileHandle?: FileSystemFileHandle;
 }

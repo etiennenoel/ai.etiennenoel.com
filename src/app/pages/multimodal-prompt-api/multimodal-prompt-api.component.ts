@@ -11,6 +11,8 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {FormControl} from '@angular/forms';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {BasePageComponent} from '../../components/base/base-page.component';
+import {AudioSampleInterface} from '../../interfaces/audio-sample.interface';
+import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -26,6 +28,8 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   error?: Error;
 
   public availabilityError?: Error;
+
+  public promptTypesFormControl: FormControl<"image" | "audio" | null> = new FormControl<"image" | "audio">("image");
 
   // <editor-fold desc="Task Status">
   private _status: TaskStatus = TaskStatus.Idle;
@@ -44,8 +48,8 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   // </editor-fold>
 
   // <editor-fold desc="Prompt">
-  private _prompt: string | null = "Describe this image";
-  public promptFormControl: FormControl<string | null> = new FormControl<string | null>("Describe this image");
+  private _prompt: string | null = "Describe this.";
+  public promptFormControl: FormControl<string | null> = new FormControl<string | null>("Describe this.");
 
   get prompt(): string | null {
     return this._prompt;
@@ -103,6 +107,25 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
 
   public outputCollapsed = true;
 
+  audioSamples: AudioSampleInterface[] = [
+    {
+      filename: "audio_clip_1_woman_english.mp3",
+      title: "Audio Clip #1",
+      speaker: "woman",
+      duration: "00:00:15",
+      language: "English",
+      format: "mp3",
+      channels: "unknown",
+    }
+  ];
+
+  imageSamples: ImageSampleInterface[] = [
+    {
+      filename: "palm_tree.jpg",
+      title: "Palm Tree",
+      format: "jpg",
+    }
+  ];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -232,6 +255,40 @@ const output = await languageModel.prompt([
     content: createImageBitmap(fileSystemFileHandle.getFile()),
   }
 ]);`;
+  }
+
+  async selectAudioSample(audioSample: AudioSampleInterface) {
+    // Append to medias but also this.media until we support more than one prompt.
+    const audioContext = new AudioContext();
+    const audioFile = await fetch(`./audio/${audioSample.filename}`);
+    const audioArrayBuffer = await audioFile.arrayBuffer();
+
+    const media: MediaInformationInterface = {
+      type: 'audio',
+      content: new Blob([audioArrayBuffer], {type: "audio/mpeg"}),
+      audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
+      filename: audioSample.filename,
+      includeInPrompt: true,
+    };
+
+    this.media = media;
+
+    this.medias.push(media);
+  }
+
+  async selectImageSample(imageSample: ImageSampleInterface) {
+    const imageFile = await fetch(`./images/${imageSample.filename}`);
+    const imageBlob = await imageFile.blob();
+
+    const media: MediaInformationInterface = {
+      type: 'image',
+      content: imageBlob,
+      filename: imageSample.filename,
+      includeInPrompt: true,
+    };
+
+    this.media = media;
+    this.medias.push(media);
   }
 
   async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap> {
