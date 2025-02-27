@@ -13,20 +13,7 @@
       >
         <i class="bi bi-terminal"></i>
 
-        <div class="flex-grow-1 d-flex align-items-center gap-2">
-
-          <div>Output</div>
-
-          @if (status === TaskStatus.Executing) {
-            <div class="">
-              <button class="btn btn-danger btn-sm" (click)="abortExecutionHandler()">Abort execution</button>
-              <button class="btn btn-danger btn-sm ms-3" (click)="abortExecutionFromCreateHandler()">Abort from 'create'
-                signal
-                execution
-              </button>
-            </div>
-          }
-        </div>
+        <div class="flex-grow-1">Output</div>
 
         <span class="badge"
               [class.text-bg-secondary]="status === TaskStatus.Idle"
@@ -97,13 +84,22 @@
           }
 
         </div>
-        <div class="border-top border-1 p-3 bg-light m-0">
+        <div class="border-top border-1 p-3 bg-light m-0 d-flex gap-2 align-items-center">
           @if (status !== TaskStatus.Idle) {
-            <h6 class="mt-0">Model download:</h6>
-            <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
-                 aria-valuemin="0" aria-valuemax="100">
-              <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
+            <div class="flex-grow-1 me-4">
+              <h6 class="mt-0">Model download:</h6>
+              <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
+                   aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
+              </div>
             </div>
+          }
+          @if (status === TaskStatus.Executing) {
+            <button class="btn btn-danger btn-sm" (click)="abortExecutionHandler()">Abort execution</button>
+            <button class="btn btn-danger btn-sm ms-2" (click)="abortExecutionFromCreateHandler()">Abort from 'create'
+              signal
+              execution
+            </button>
           }
         </div>
       </div>
