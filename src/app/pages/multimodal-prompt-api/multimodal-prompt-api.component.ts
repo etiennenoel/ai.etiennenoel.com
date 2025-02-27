@@ -316,7 +316,7 @@ const output = await languageModel.prompt([
 
     const media: MediaInformationInterface = {
       type: 'audio',
-      content: new Blob([audioArrayBuffer], {type: type}),
+      content: new Blob([], {type: type}),
       audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
       filename: audioSample.filename,
       includeInPrompt: true,
