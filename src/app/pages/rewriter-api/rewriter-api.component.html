@@ -143,7 +143,7 @@
                 [class.code-warning]="availabilityStatus === AvailabilityStatusEnum.AfterDownload || availabilityStatus === AvailabilityStatusEnum.Downloadable"
                 [class.code-danger]="availabilityStatus === AvailabilityStatusEnum.No || availabilityStatus === AvailabilityStatusEnum.Unavailable"
                 [class.code-success]="availabilityStatus === AvailabilityStatusEnum.Readily || availabilityStatus === AvailabilityStatusEnum.Available"
-                [class.code-dark]="availabilityStatus === AvailabilityStatusEnum.Downloading"
+                [class.code-dark]="availabilityStatus === AvailabilityStatusEnum.Unknown"
           >{{ availabilityStatus }}</span>
 
           @if (availabilityError) {
