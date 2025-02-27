@@ -313,7 +313,7 @@ const output = await languageModel.prompt([
     this.medias.push(media);
   }
 
-  async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap> {
+  async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
     if(!this.media) {
       throw new Error("No media provided.")
     }
@@ -323,9 +323,11 @@ const output = await languageModel.prompt([
         return createImageBitmap(this.media.content);
 
       case 'audio':
-        const audio = new Audio();
-        audio.src = URL.createObjectURL(this.media.content);
-        return audio;
+        if(!this.media.audioBuffer) {
+          throw new Error("Audio buffer invalid.");
+        }
+
+        return this.media.audioBuffer;
     }
 
     throw new Error(`Unsupported media type: '${this.media.type}'.`);
