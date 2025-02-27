@@ -15,6 +15,7 @@ import {Title} from '@angular/platform-browser';
 import {BasePageComponent} from '../../components/base/base-page.component';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
+import {LocaleEnum} from '../../enums/locale.enum';
 
 @Component({
   selector: 'app-translator-api',
@@ -303,4 +304,5 @@ await translator.translate("${this.content.value}")
   protected readonly RequirementStatus = RequirementStatus;
   protected readonly TranslatorApiVersionEnum = TranslatorApiVersionEnum;
   protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
+  protected readonly LocaleEnum = LocaleEnum;
 }

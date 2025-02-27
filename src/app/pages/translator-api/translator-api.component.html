@@ -51,7 +51,7 @@
         <div class="col-3">
           <div class="mb-3">
             <label for="source_language" class="form-label">Source Language</label>
-            <app-search-select-dropdown id="source_language" [options]="languageOptions"
+            <app-search-select-dropdown id="source_language" [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
                                         [control]="sourceLanguage"></app-search-select-dropdown>
           </div>
 
@@ -59,7 +59,7 @@
         <div class="col-3">
           <div class="mb-3">
             <label for="target_language" class="form-label">Target Language</label>
-            <app-search-select-dropdown id="target_language" [options]="languageOptions"
+            <app-search-select-dropdown id="target_language" [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
                                         [control]="targetLanguage"></app-search-select-dropdown>
           </div>
 
