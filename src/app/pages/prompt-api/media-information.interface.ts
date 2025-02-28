@@ -3,9 +3,7 @@ export interface MediaInformationInterface {
 
   content: Blob;
 
-  audioBuffer?: AudioBuffer;
-
-  filename: string;
+  title: string;
 
   includeInPrompt: boolean;
 

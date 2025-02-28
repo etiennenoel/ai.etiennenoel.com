@@ -13,6 +13,9 @@ import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {BasePageComponent} from '../../components/base/base-page.component';
 import {AudioSampleInterface} from '../../interfaces/audio-sample.interface';
 import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
+import {MediaInformationType} from '../prompt-api/media-information.type';
+import {ImageInformationType} from '../prompt-api/image-information.type';
+import {AudioInformationType} from '../prompt-api/audio-information.type';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -21,9 +24,9 @@ import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
   styleUrl: './multimodal-prompt-api.component.scss'
 })
 export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
-  medias: MediaInformationInterface[] = [];
+  medias: MediaInformationType[] = [];
 
-  media?: MediaInformationInterface;
+  media?: MediaInformationType;
 
   error?: Error;
 
@@ -230,6 +233,69 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
     return URL.createObjectURL(media.content);
   }
 
+  async getAudioInformation(options: Partial<{fileSystemFileHandle: FileSystemFileHandle, filename: string, title: string}>): Promise<AudioInformationType> {
+    const audioContext = new AudioContext();
+    let title: string = options.title ?? "";
+    let arrayBuffer: ArrayBuffer;
+    let type: string = "";
+
+    if(options.fileSystemFileHandle) {
+      const file = await options.fileSystemFileHandle.getFile();
+      arrayBuffer = await file.arrayBuffer();
+
+      if(title === "") {
+        title = options.fileSystemFileHandle.name;
+      }
+
+      // Extract extension
+      type = file.name.split('.').pop() ?? "";
+    }
+    else if(options.filename) {
+      const audioFile = await fetch(`./audio/${options.filename}`);
+      arrayBuffer = await audioFile.arrayBuffer();
+
+      if(title === "") {
+        title = options.filename;
+      }
+
+      // Extract extension
+      type = options.filename.split('.').pop() ?? "";
+    } else {
+      throw new Error("No file provided.");
+    }
+
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    let mimeType: string;
+    switch (type) {
+      case "wav":
+        mimeType = "audio/wav";
+        break;
+      case "mp3":
+        mimeType = "audio/mpeg";
+        break;
+      default:
+        throw new Error(`Unsupported audio format: '${type}'.`);
+    }
+
+    // convert seconds to 00:00:00 format
+    const duration = Math.floor(audioBuffer.duration);
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = duration % 60;
+    const durationString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    return {
+      type: "audio",
+      title,
+      audioBuffer,
+      channels: audioBuffer.numberOfChannels === 1 ? "mono" : "stereo",
+      duration: durationString,
+      mimeType,
+
+    }
+  }
+
   onFileSystemHandlesDropped(fileSystemHandles: FileSystemHandle[]) {
     fileSystemHandles.forEach(async (fileSystemHandle) => {
       if (fileSystemHandle.kind === "directory") {
@@ -240,7 +306,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       const file = await fileSystemFileHandle.getFile()
 
       if (file.type.startsWith("image")) {
-        const media: MediaInformationInterface = {
+        const media: ImageInformationType = {
           type: 'image',
           content: file,
           filename: file.name,
@@ -251,12 +317,13 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
         this.media = media;
         this.medias.push(media);
       } else if (file.type.startsWith("audio")) {
-        const media: MediaInformationInterface = {
+        const media: AudioInformationType = {
           type: 'audio',
           content: file,
           filename: file.name,
           includeInPrompt: true,
           fileSystemFileHandle,
+
         };
 
         this.media = media;
@@ -362,6 +429,13 @@ const output = await languageModel.prompt([
     throw new Error(`Unsupported media type: '${this.media.type}'.`);
   }
 
+  getDuration(media: MediaInformationInterface) {
+    return "00:00:00";
+  }
+
+  getChannels(media: MediaInformationInterface) {
+    return "stereo";
+  }
 
   async execute() {
     try {
