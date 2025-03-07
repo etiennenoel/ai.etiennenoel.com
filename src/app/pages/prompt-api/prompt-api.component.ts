@@ -508,11 +508,11 @@ const session = await window.ai.languageModel.create({
   }
 
   getImageSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
   }
 
   getAudioSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
   }
 
   onFileSystemHandlesDropped(fileSystemHandles: FileSystemHandle[]) {
@@ -527,16 +527,16 @@ const session = await window.ai.languageModel.create({
       if (file.type.startsWith("image")) {
         this.medias.push({
           type: 'image',
-          content: file,
-          filename: file.name,
+          blob: file,
+          title: file.name,
           includeInPrompt: true,
           fileSystemFileHandle,
         });
       } else if (file.type.startsWith("audio")) {
         this.medias.push({
           type: 'audio',
-          content: file,
-          filename: file.name,
+          blob: file,
+          title: file.name,
           includeInPrompt: true,
           fileSystemFileHandle,
         });

@@ -13,6 +13,9 @@ import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {BasePageComponent} from '../../components/base/base-page.component';
 import {AudioSampleInterface} from '../../interfaces/audio-sample.interface';
 import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
+import {MediaInformationType} from '../prompt-api/media-information.type';
+import {ImageInformationType} from '../prompt-api/image-information.type';
+import {AudioInformationType} from '../prompt-api/audio-information.type';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -21,9 +24,7 @@ import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
   styleUrl: './multimodal-prompt-api.component.scss'
 })
 export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
-  medias: MediaInformationInterface[] = [];
-
-  media?: MediaInformationInterface;
+  medias: MediaInformationType[] = [];
 
   error?: Error;
 
@@ -223,11 +224,109 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   }
 
   getImageSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
   }
 
   getAudioSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
+  }
+
+  async getImageInformation(options: Partial<{fileSystemFileHandle: FileSystemFileHandle, filename: string, title: string}>): Promise<ImageInformationType>  {
+    let title: string = options.title ?? "";
+    let blob: Blob;
+
+    if(options.fileSystemFileHandle) {
+      blob = await options.fileSystemFileHandle.getFile()
+
+      if(title === "") {
+        title = options.fileSystemFileHandle.name;
+      }
+    }
+    else if(options.filename) {
+      const imageFile = await fetch(`./images/${options.filename}`);
+      blob = await imageFile.blob();
+
+      if(title === "") {
+        title = options.filename;
+      }
+    }
+    else {
+      throw new Error("No file provided.");
+    }
+
+    return {
+      type: "image",
+      includeInPrompt: true,
+      title,
+      fileSystemFileHandle: options.fileSystemFileHandle,
+      blob,
+    }
+  }
+
+  async getAudioInformation(options: Partial<{fileSystemFileHandle: FileSystemFileHandle, filename: string, title: string}>): Promise<AudioInformationType> {
+    const audioContext = new AudioContext();
+    let title: string = options.title ?? "";
+    let arrayBuffer: ArrayBuffer;
+    let type: string = "";
+
+    if(options.fileSystemFileHandle) {
+      const file = await options.fileSystemFileHandle.getFile();
+      arrayBuffer = await file.arrayBuffer();
+
+      if(title === "") {
+        title = options.fileSystemFileHandle.name;
+      }
+
+      // Extract extension
+      type = file.name.split('.').pop() ?? "";
+    }
+    else if(options.filename) {
+      const audioFile = await fetch(`./audio/${options.filename}`);
+      arrayBuffer = await audioFile.arrayBuffer();
+
+      if(title === "") {
+        title = options.filename;
+      }
+
+      // Extract extension
+      type = options.filename.split('.').pop() ?? "";
+    } else {
+      throw new Error("No file provided.");
+    }
+
+    const blob = new Blob([arrayBuffer], {type: type});
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    let mimeType: string;
+    switch (type) {
+      case "wav":
+        mimeType = "audio/wav";
+        break;
+      case "mp3":
+        mimeType = "audio/mpeg";
+        break;
+      default:
+        throw new Error(`Unsupported audio format: '${type}'.`);
+    }
+
+    // convert seconds to 00:00:00 format
+    const duration = Math.floor(audioBuffer.duration);
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = duration % 60;
+    const durationString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    return {
+      type: "audio",
+      title,
+      audioBuffer,
+      channels: audioBuffer.numberOfChannels === 1 ? "mono" : "stereo",
+      duration: durationString,
+      mimeType,
+      includeInPrompt: true,
+      fileSystemFileHandle: options.fileSystemFileHandle,
+      blob,
+    }
   }
 
   onFileSystemHandlesDropped(fileSystemHandles: FileSystemHandle[]) {
@@ -240,27 +339,17 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       const file = await fileSystemFileHandle.getFile()
 
       if (file.type.startsWith("image")) {
-        const media: MediaInformationInterface = {
-          type: 'image',
-          content: file,
-          filename: file.name,
-          includeInPrompt: true,
-          fileSystemFileHandle,
-        };
+        const imageInformation = await this.getImageInformation({
+          fileSystemFileHandle: fileSystemFileHandle,
+        });
 
-        this.media = media;
-        this.medias.push(media);
+        this.medias.push(imageInformation);
       } else if (file.type.startsWith("audio")) {
-        const media: MediaInformationInterface = {
-          type: 'audio',
-          content: file,
-          filename: file.name,
-          includeInPrompt: true,
-          fileSystemFileHandle,
-        };
+        const audioInformation = await this.getAudioInformation({
+          fileSystemFileHandle: fileSystemFileHandle,
+        })
 
-        this.media = media;
-        this.medias.push(media);
+        this.medias.push(audioInformation);
       } else {
         this.error = new Error(`Unsupported file type '${file.type}' for '${file.name}'.`);
       }
@@ -286,82 +375,89 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   get executeCode(): string {
     return `const languageModel = await window.ai.languageModel.create();
 
+const audioContext = new AudioContext();
+const file = await options.fileSystemFileHandle.getFile();
+
 const output = await languageModel.prompt([
   "${this.promptFormControl.value ?? ""}",
   {
-    type: "${this.media?.type}",
-    content: createImageBitmap(fileSystemFileHandle.getFile()),
-  }
+    type: "image",
+    content: createImageBitmap(file),
+  },{
+    type: "audio",
+    content: await audioContext.decodeAudioData(await file.arrayBuffer()),
+  },
 ]);`;
   }
 
   async selectAudioSample(audioSample: AudioSampleInterface) {
-    // Append to medias but also this.media until we support more than one prompt.
-    const audioContext = new AudioContext();
-    const audioFile = await fetch(`./audio/${audioSample.filename}`);
-    const audioArrayBuffer = await audioFile.arrayBuffer();
-
-    let type = "audio/mpeg";
-
-    switch (audioSample.format) {
-      case "wav":
-        type = "audio/wav";
-        break;
-      case "mp3":
-        type = "audio/mpeg";
-        break;
-      default:
-        throw new Error(`Unsupported audio format: '${type}'.`);
-    }
-
-    const media: MediaInformationInterface = {
-      type: 'audio',
-      content: new Blob([audioArrayBuffer], {type: type}),
-      audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
+    const audioInformation = await this.getAudioInformation({
       filename: audioSample.filename,
-      includeInPrompt: true,
-    };
+      title: audioSample.title,
+    })
 
-    this.media = media;
-
-    this.medias.push(media);
+    this.medias.push(audioInformation);
   }
 
   async selectImageSample(imageSample: ImageSampleInterface) {
-    const imageFile = await fetch(`./images/${imageSample.filename}`);
-    const imageBlob = await imageFile.blob();
-
-    const media: MediaInformationInterface = {
-      type: 'image',
-      content: imageBlob,
+    const imageInformation = await this.getImageInformation({
       filename: imageSample.filename,
-      includeInPrompt: true,
-    };
+      title: imageSample.title,
+    });
 
-    this.media = media;
-    this.medias.push(media);
+    this.medias.push(imageInformation);
   }
 
-  async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
-    if(!this.media) {
-      throw new Error("No media provided.")
-    }
-
-    switch (this.media.type) {
+  async getMedia(media: MediaInformationInterface): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
+    switch (media.type) {
       case 'image':
-        return createImageBitmap(this.media.content);
+        return createImageBitmap(media.blob);
 
       case 'audio':
-        if(!this.media.audioBuffer) {
+        const audioInformation = media as AudioInformationType;
+        if(!audioInformation.audioBuffer) {
           throw new Error("Audio buffer invalid.");
         }
 
-        return this.media.audioBuffer;
+        return audioInformation.audioBuffer;
     }
-
-    throw new Error(`Unsupported media type: '${this.media.type}'.`);
   }
 
+  getDuration(media: MediaInformationInterface) {
+    if(media.type !== "audio") {
+      throw new Error(`Invalid media, cannot get duration for type: '${media.type}'.`);
+    }
+
+    return (media as AudioInformationType).duration;
+  }
+
+  getChannels(media: MediaInformationInterface) {
+    if(media.type !== "audio") {
+      throw new Error(`Invalid media, cannot get channels for type: '${media.type}'.`);
+    }
+
+    switch((media as AudioInformationType).channels) {
+      case "mono":
+        return "Mono";
+      case "stereo":
+        return "Stereo";
+      default:
+        return (media as AudioInformationType).channels;
+    }
+  }
+
+  prompts(): any[] {
+    const prompts: any[] = this.medias.filter(media => media.includeInPrompt).map((media) => {
+      return {
+        type: media.type,
+        content:  this.getMedia(media),
+      }
+    });
+
+    prompts.unshift(this.promptFormControl.value)
+
+    return prompts;
+  }
 
   async execute() {
     try {
@@ -370,21 +466,11 @@ const output = await languageModel.prompt([
       this.output = "";
       this.loaded = 0;
 
-      if(!this.media) {
-        throw new Error("No media provided.")
-      }
-
       const languageModel = await this.window?.ai.languageModel.create();
 
-      const media = await this.getMedia();
+      const prompts: any[] = this.prompts();
 
-      this.output = await languageModel.prompt([
-        {
-          type: this.media.type,
-          content: media,
-        },
-        this.promptFormControl.value,
-      ]);
+      this.output = await languageModel.prompt(prompts);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

@@ -154,12 +154,12 @@
               <div class="p-2">
                 <img class="img-fluid" [src]="getImageSrc(media)"/></div>
               <div class="flex-grow-1">
-                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.filename }}</h6>
+                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.title }}</h6>
               </div>
             } @else if (media.type === 'audio') {
               <div class="flex-grow-1">
                 <audio [src]="getAudioSrc(media)" controls></audio>
-                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.filename }}</h6>
+                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.title }}</h6>
               </div>
             }
 

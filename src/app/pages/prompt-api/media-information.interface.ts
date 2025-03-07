@@ -1,11 +1,9 @@
 export interface MediaInformationInterface {
   type: "audio" | "image";
 
-  content: Blob;
+  blob: Blob;
 
-  audioBuffer?: AudioBuffer;
-
-  filename: string;
+  title: string;
 
   includeInPrompt: boolean;
 
