@@ -294,6 +294,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       throw new Error("No file provided.");
     }
 
+    const blob = new Blob([arrayBuffer], {type: type});
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
     let mimeType: string;
@@ -324,7 +325,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       mimeType,
       includeInPrompt: true,
       fileSystemFileHandle: options.fileSystemFileHandle,
-      blob: new Blob([arrayBuffer], {type: type}),
+      blob,
     }
   }
 
