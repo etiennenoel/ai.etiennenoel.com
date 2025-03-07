@@ -26,8 +26,6 @@ import {AudioInformationType} from '../prompt-api/audio-information.type';
 export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
   medias: MediaInformationType[] = [];
 
-  media?: MediaInformationType;
-
   error?: Error;
 
   public availabilityError?: Error;
@@ -344,14 +342,12 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
           fileSystemFileHandle: fileSystemFileHandle,
         });
 
-        this.media = imageInformation;
         this.medias.push(imageInformation);
       } else if (file.type.startsWith("audio")) {
         const audioInformation = await this.getAudioInformation({
           fileSystemFileHandle: fileSystemFileHandle,
         })
 
-        this.media = audioInformation;
         this.medias.push(audioInformation);
       } else {
         this.error = new Error(`Unsupported file type '${file.type}' for '${file.name}'.`);
@@ -393,7 +389,6 @@ const output = await languageModel.prompt([
       title: audioSample.title,
     })
 
-    this.media = audioInformation;
     this.medias.push(audioInformation);
   }
 
@@ -403,25 +398,21 @@ const output = await languageModel.prompt([
       title: imageSample.title,
     });
 
-    this.media = imageInformation;
     this.medias.push(imageInformation);
   }
 
-  async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
-    if(!this.media) {
-      throw new Error("No media provided.")
-    }
-
-    switch (this.media.type) {
+  async getMedia(media: MediaInformationInterface): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
+    switch (media.type) {
       case 'image':
-        return createImageBitmap(this.media.blob);
+        return createImageBitmap(media.blob);
 
       case 'audio':
-        if(!this.media.audioBuffer) {
+        const audioInformation = media as AudioInformationType;
+        if(!audioInformation.audioBuffer) {
           throw new Error("Audio buffer invalid.");
         }
 
-        return this.media.audioBuffer;
+        return audioInformation.audioBuffer;
     }
   }
 
@@ -455,21 +446,18 @@ const output = await languageModel.prompt([
       this.output = "";
       this.loaded = 0;
 
-      if(!this.media) {
-        throw new Error("No media provided.")
-      }
-
       const languageModel = await this.window?.ai.languageModel.create();
 
-      const media = await this.getMedia();
+      const prompts: any[] = this.medias.map((media) => {
+        return {
+          type: media.type,
+          content:  this.getMedia(media),
+        }
+      })
 
-      this.output = await languageModel.prompt([
-        {
-          type: this.media.type,
-          content: media,
-        },
-        this.promptFormControl.value,
-      ]);
+      prompts.unshift(this.promptFormControl.value)
+
+      this.output = await languageModel.prompt(prompts);
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {
