@@ -71,19 +71,19 @@
 
   </app-output>
 
-  <h4 class="mt-4">Prompt Types</h4>
+<!--  <h4 class="mt-4">Prompt Types</h4>-->
 
-  <div class="btn-group" role="group">
-    <input type="radio" class="btn-check" name="prompt-type" id="image_prompt_type" autocomplete="off" checked value="image" [formControl]="promptTypesFormControl">
-    <label class="btn btn-outline-primary" for="image_prompt_type"><i
-      class="bi bi-images "></i> Image</label>
+<!--  <div class="btn-group" role="group">-->
+<!--    <input type="radio" class="btn-check" name="prompt-type" id="image_prompt_type" autocomplete="off" checked value="image" [formControl]="promptTypesFormControl">-->
+<!--    <label class="btn btn-outline-primary" for="image_prompt_type"><i-->
+<!--      class="bi bi-images "></i> Image</label>-->
 
-    <input type="radio" class="btn-check" name="prompt-type" id="audio_prompt_type" autocomplete="off" value="audio" [formControl]="promptTypesFormControl">
-    <label class="btn btn-outline-primary" for="audio_prompt_type"><i class="bi bi-music-note"></i> Audio</label>
-  </div>
+<!--    <input type="radio" class="btn-check" name="prompt-type" id="audio_prompt_type" autocomplete="off" value="audio" [formControl]="promptTypesFormControl">-->
+<!--    <label class="btn btn-outline-primary" for="audio_prompt_type"><i class="bi bi-music-note"></i> Audio</label>-->
+<!--  </div>-->
 
-  <div class="alert alert-warning mt-3">Currently, only <strong><i class="bi bi-music-note"></i> Audio</strong> prompts or only <strong><i
-    class="bi bi-images "></i> Image</strong> prompts are supported. Mix and match are not yet supported.</div>
+<!--  <div class="alert alert-warning mt-3">Currently, only <strong><i class="bi bi-music-note"></i> Audio</strong> prompts or only <strong><i-->
+<!--    class="bi bi-images "></i> Image</strong> prompts are supported. Mix and match are not yet supported.</div>-->
 
   <div class="row mt-5">
     <div class="col-12">
@@ -109,7 +109,7 @@
               <div class="p-2 d-flex flex-column align-items-center" style="height: inherit;">
                 <img style="height: 100%;" class="img-fluid rounded" [src]="getImageSrc(media)"/></div>
               <div class="flex-grow-1">
-                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.filename }}</h6>
+                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.title }}</h6>
               </div>
             } @else if (media.type === 'audio') {
               <div>
@@ -117,7 +117,7 @@
               </div>
 
               <div class="flex-grow-1 d-flex flex-column gap-3 ms-3">
-                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.filename }}</h6>
+                <h6 class="m-0 p-0 mt-2 ms-2">{{ media.title }}</h6>
                 <div><i class="bi bi-headphones"></i> <strong class="ms-2">{{ getChannels(media) }}</strong></div>
                 <div><i class="bi bi-stopwatch"></i> {{ getDuration(media) }}</div>
               </div>

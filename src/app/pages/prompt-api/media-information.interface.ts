@@ -1,7 +1,7 @@
 export interface MediaInformationInterface {
   type: "audio" | "image";
 
-  content: Blob;
+  blob: Blob;
 
   title: string;
 

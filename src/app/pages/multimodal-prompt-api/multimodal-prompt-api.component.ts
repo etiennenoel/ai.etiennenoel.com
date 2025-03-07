@@ -226,11 +226,43 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   }
 
   getImageSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
   }
 
   getAudioSrc(media: MediaInformationInterface) {
-    return URL.createObjectURL(media.content);
+    return URL.createObjectURL(media.blob);
+  }
+
+  async getImageInformation(options: Partial<{fileSystemFileHandle: FileSystemFileHandle, filename: string, title: string}>): Promise<ImageInformationType>  {
+    let title: string = options.title ?? "";
+    let blob: Blob;
+
+    if(options.fileSystemFileHandle) {
+      blob = await options.fileSystemFileHandle.getFile()
+
+      if(title === "") {
+        title = options.fileSystemFileHandle.name;
+      }
+    }
+    else if(options.filename) {
+      const imageFile = await fetch(`./images/${options.filename}`);
+      blob = await imageFile.blob();
+
+      if(title === "") {
+        title = options.filename;
+      }
+    }
+    else {
+      throw new Error("No file provided.");
+    }
+
+    return {
+      type: "image",
+      includeInPrompt: true,
+      title,
+      fileSystemFileHandle: options.fileSystemFileHandle,
+      blob,
+    }
   }
 
   async getAudioInformation(options: Partial<{fileSystemFileHandle: FileSystemFileHandle, filename: string, title: string}>): Promise<AudioInformationType> {
@@ -292,7 +324,9 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       channels: audioBuffer.numberOfChannels === 1 ? "mono" : "stereo",
       duration: durationString,
       mimeType,
-
+      includeInPrompt: true,
+      fileSystemFileHandle: options.fileSystemFileHandle,
+      blob: new Blob([arrayBuffer], {type: type}),
     }
   }
 
@@ -306,28 +340,19 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       const file = await fileSystemFileHandle.getFile()
 
       if (file.type.startsWith("image")) {
-        const media: ImageInformationType = {
-          type: 'image',
-          content: file,
-          filename: file.name,
-          includeInPrompt: true,
-          fileSystemFileHandle,
-        };
+        const imageInformation = await this.getImageInformation({
+          fileSystemFileHandle: fileSystemFileHandle,
+        });
 
-        this.media = media;
-        this.medias.push(media);
+        this.media = imageInformation;
+        this.medias.push(imageInformation);
       } else if (file.type.startsWith("audio")) {
-        const media: AudioInformationType = {
-          type: 'audio',
-          content: file,
-          filename: file.name,
-          includeInPrompt: true,
-          fileSystemFileHandle,
+        const audioInformation = await this.getAudioInformation({
+          fileSystemFileHandle: fileSystemFileHandle,
+        })
 
-        };
-
-        this.media = media;
-        this.medias.push(media);
+        this.media = audioInformation;
+        this.medias.push(audioInformation);
       } else {
         this.error = new Error(`Unsupported file type '${file.type}' for '${file.name}'.`);
       }
@@ -363,50 +388,23 @@ const output = await languageModel.prompt([
   }
 
   async selectAudioSample(audioSample: AudioSampleInterface) {
-    // Append to medias but also this.media until we support more than one prompt.
-    const audioContext = new AudioContext();
-    const audioFile = await fetch(`./audio/${audioSample.filename}`);
-    const audioArrayBuffer = await audioFile.arrayBuffer();
-
-    let type = "audio/mpeg";
-
-    switch (audioSample.format) {
-      case "wav":
-        type = "audio/wav";
-        break;
-      case "mp3":
-        type = "audio/mpeg";
-        break;
-      default:
-        throw new Error(`Unsupported audio format: '${type}'.`);
-    }
-
-    const media: MediaInformationInterface = {
-      type: 'audio',
-      content: new Blob([audioArrayBuffer], {type: type}),
-      audioBuffer: await audioContext.decodeAudioData(audioArrayBuffer),
+    const audioInformation = await this.getAudioInformation({
       filename: audioSample.filename,
-      includeInPrompt: true,
-    };
+      title: audioSample.title,
+    })
 
-    this.media = media;
-
-    this.medias.push(media);
+    this.media = audioInformation;
+    this.medias.push(audioInformation);
   }
 
   async selectImageSample(imageSample: ImageSampleInterface) {
-    const imageFile = await fetch(`./images/${imageSample.filename}`);
-    const imageBlob = await imageFile.blob();
-
-    const media: MediaInformationInterface = {
-      type: 'image',
-      content: imageBlob,
+    const imageInformation = await this.getImageInformation({
       filename: imageSample.filename,
-      includeInPrompt: true,
-    };
+      title: imageSample.title,
+    });
 
-    this.media = media;
-    this.medias.push(media);
+    this.media = imageInformation;
+    this.medias.push(imageInformation);
   }
 
   async getMedia(): Promise<HTMLImageElement | HTMLAudioElement | ImageBitmap | AudioBuffer> {
@@ -416,7 +414,7 @@ const output = await languageModel.prompt([
 
     switch (this.media.type) {
       case 'image':
-        return createImageBitmap(this.media.content);
+        return createImageBitmap(this.media.blob);
 
       case 'audio':
         if(!this.media.audioBuffer) {
@@ -425,16 +423,29 @@ const output = await languageModel.prompt([
 
         return this.media.audioBuffer;
     }
-
-    throw new Error(`Unsupported media type: '${this.media.type}'.`);
   }
 
   getDuration(media: MediaInformationInterface) {
-    return "00:00:00";
+    if(media.type !== "audio") {
+      throw new Error(`Invalid media, cannot get duration for type: '${media.type}'.`);
+    }
+
+    return (media as AudioInformationType).duration;
   }
 
   getChannels(media: MediaInformationInterface) {
-    return "stereo";
+    if(media.type !== "audio") {
+      throw new Error(`Invalid media, cannot get channels for type: '${media.type}'.`);
+    }
+
+    switch((media as AudioInformationType).channels) {
+      case "mono":
+        return "Mono";
+      case "stereo":
+        return "Stereo";
+      default:
+        return (media as AudioInformationType).channels;
+    }
   }
 
   async execute() {
