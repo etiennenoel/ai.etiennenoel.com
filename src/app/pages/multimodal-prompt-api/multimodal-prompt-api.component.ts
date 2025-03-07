@@ -374,12 +374,18 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   get executeCode(): string {
     return `const languageModel = await window.ai.languageModel.create();
 
+const audioContext = new AudioContext();
+const file = await options.fileSystemFileHandle.getFile();
+
 const output = await languageModel.prompt([
   "${this.promptFormControl.value ?? ""}",
   {
-    type: "${this.media?.type}",
-    content: createImageBitmap(fileSystemFileHandle.getFile()),
-  }
+    type: "image",
+    content: createImageBitmap(file),
+  },{
+    type: "audio",
+    content: await audioContext.decodeAudioData(await file.arrayBuffer()),
+  },
 ]);`;
   }
 
@@ -439,6 +445,19 @@ const output = await languageModel.prompt([
     }
   }
 
+  prompts(): any[] {
+    const prompts: any[] = this.medias.filter(media => media.includeInPrompt).map((media) => {
+      return {
+        type: media.type,
+        content:  this.getMedia(media),
+      }
+    });
+
+    prompts.unshift(this.promptFormControl.value)
+
+    return prompts;
+  }
+
   async execute() {
     try {
       this.status = TaskStatus.Executing;
@@ -448,14 +467,7 @@ const output = await languageModel.prompt([
 
       const languageModel = await this.window?.ai.languageModel.create();
 
-      const prompts: any[] = this.medias.map((media) => {
-        return {
-          type: media.type,
-          content:  this.getMedia(media),
-        }
-      })
-
-      prompts.unshift(this.promptFormControl.value)
+      const prompts: any[] = this.prompts();
 
       this.output = await languageModel.prompt(prompts);
 

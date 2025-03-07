@@ -124,11 +124,11 @@
             }
 
 
-<!--            <div class="form-check form-switch">-->
-<!--              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"-->
-<!--                     [(ngModel)]="media.includeInPrompt">-->
-<!--              <label class="form-check-label" for="flexSwitchCheckDefault">Pass to content?</label>-->
-<!--            </div>-->
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                     [(ngModel)]="media.includeInPrompt">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Add to prompt</label>
+            </div>
 
             <div>
               <button class="btn btn-danger btn-sm" (click)="deleteMedia($index)">Delete</button>
@@ -139,17 +139,16 @@
 
       <div class="dropdown mt-2 mb-4">
         <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Choose an @if(promptTypesFormControl.value === "audio") {
+          Choose an
           <strong><i class="bi bi-music-note"></i>audio</strong>
-        } @else if (promptTypesFormControl.value === "image") {
+       or
           <strong> <i
             class="bi bi-images "></i> image</strong>
-        } sample
+         sample
 
         </button>
         <ul class="dropdown-menu">
-          @if(promptTypesFormControl.value === "audio") {
-
+          <li><h6 class="p-3"><i class="bi bi-music-note me-2"></i> Audios</h6></li>
             @for (audioSample of audioSamples; track $index) {
               <li><button class="dropdown-item d-flex gap-3 align-items-center p-3" (click)="selectAudioSample(audioSample)">
                 <div style="width: 50px;" class="text-center">
@@ -168,16 +167,17 @@
                 </div>
               </button></li>
             }
-          }
-          @if(promptTypesFormControl.value === "image") {
+
+            <li><h6 class="p-3"><i class="bi bi-images me-2"></i>Images</h6></li>
+
             <li>
               @for (imageSample of imageSamples; track $index) {
-              <button class="dropdown-item d-flex flex-column align-items-center" (click)="selectImageSample(imageSample)">
+              <button class="dropdown-item d-flex flex-column align-items-left" (click)="selectImageSample(imageSample)">
                 <img [src]="'./images/' + imageSample.filename" style="width: 100px;" class="img-fluid rounded"/>
               </button>
               }
             </li>
-          }
+
         </ul>
       </div>
 
