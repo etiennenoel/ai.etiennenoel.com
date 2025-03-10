@@ -420,14 +420,14 @@ const output = await languageModel.prompt([
         }
 
         // Override right now to test the API. TODO: remove later.
-        const audioFile = await fetch(`./audio/${this.audioSamples[1].filename}`);
-        const arrayBuffer = await audioFile.arrayBuffer();
+        // const audioFile = await fetch(`./audio/${this.audioSamples[1].filename}`);
+        // const arrayBuffer = await audioFile.arrayBuffer();
+        //
+        // const audioContext = new AudioContext();
+        //
+        // return audioContext.decodeAudioData(arrayBuffer);
 
-        const audioContext = new AudioContext();
-
-        return await audioContext.decodeAudioData(arrayBuffer);
-
-        // return audioInformation.audioBuffer;
+        return audioInformation.audioBuffer;
     }
   }
 
