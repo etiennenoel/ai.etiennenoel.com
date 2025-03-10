@@ -418,8 +418,11 @@ const output = await languageModel.prompt([
         if(!audioInformation.audioBuffer) {
           throw new Error("Audio buffer invalid.");
         }
+        const audioContext = new AudioContext();
 
-        return audioInformation.audioBuffer;
+        return await audioContext.decodeAudioData(await audioInformation.blob.arrayBuffer());
+
+        // return audioInformation.audioBuffer;
     }
   }
 
