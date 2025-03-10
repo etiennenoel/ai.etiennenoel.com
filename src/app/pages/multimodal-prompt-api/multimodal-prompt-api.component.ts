@@ -418,9 +418,14 @@ const output = await languageModel.prompt([
         if(!audioInformation.audioBuffer) {
           throw new Error("Audio buffer invalid.");
         }
+
+        // Override right now to test the API. TODO: remove later.
+        const audioFile = await fetch(`./audio/${audioInformation.title}`);
+        const arrayBuffer = await audioFile.arrayBuffer();
+
         const audioContext = new AudioContext();
 
-        return await audioContext.decodeAudioData(await audioInformation.blob.arrayBuffer());
+        return await audioContext.decodeAudioData(arrayBuffer);
 
         // return audioInformation.audioBuffer;
     }
