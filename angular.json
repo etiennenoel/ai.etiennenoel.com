@@ -65,6 +65,9 @@
           },
           "configurations": {
             "production": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
               "fileReplacements": [
                 {
                   "replace": "src/app/environments/environment.ts",
