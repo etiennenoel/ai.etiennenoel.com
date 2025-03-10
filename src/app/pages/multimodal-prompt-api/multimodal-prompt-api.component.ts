@@ -454,13 +454,13 @@ const output = await languageModel.prompt([
     }
   }
 
-  prompts(): any[] {
-    const prompts: any[] = this.medias.filter(media => media.includeInPrompt).map((media) => {
+  async prompts(): Promise<any[]> {
+    const prompts: any[] = await Promise.all(this.medias.filter(media => media.includeInPrompt).map(async (media) => {
       return {
         type: media.type,
-        content:  this.getMedia(media),
+        content: await this.getMedia(media),
       }
-    });
+    }));
 
     prompts.unshift(this.promptFormControl.value)
 
@@ -476,7 +476,7 @@ const output = await languageModel.prompt([
 
       const languageModel = await this.window?.ai.languageModel.create();
 
-      const prompts: any[] = this.prompts();
+      const prompts: any[] = await this.prompts();
 
       this.output = await languageModel.prompt(prompts);
 
