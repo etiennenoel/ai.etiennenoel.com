@@ -64,7 +64,7 @@
 
   <div class="row mt-4">
     <div class="col-12">
-      <h2 class="display-6 mt-5"><i class="bi bi-globe"></i> From url</h2>
+      <h2 class="display-6 mt-5" id="audio_prompt_from_url"><i class="bi bi-globe"></i> From url</h2>
       <hr>
 
       <app-audio-prompt-from-url></app-audio-prompt-from-url>
@@ -77,18 +77,7 @@
       <h2 class="display-6 mt-5"><i class="bi bi-file-earmark-music"></i> Audio files</h2>
       <hr>
 
-      <!--      <app-output-->
-      <!--        [status]="this.detectionStatus"-->
-      <!--        [error]="this.error"-->
-      <!--        [downloadProgress]="this.loaded"-->
-      <!--        [outputCollapsed]="outputCollapsed"-->
-      <!--        [output]="this.output"-->
-      <!--        (abortExecution)="abortTriggered()"-->
-      <!--        (abortExecutionFromCreate)="abortFromCreateTriggered()"-->
-      <!--      >-->
-      <!--      </app-output>-->
-
-
+      <app-audio-prompt-from-file></app-audio-prompt-from-file>
     </div>
   </div>
   <div class="row mt-4">
@@ -96,17 +85,12 @@
       <h2 class="display-6 mt-5"><i class="bi bi-mic"></i> From Microphone</h2>
       <hr>
 
-      <!--      <app-output-->
-      <!--        [status]="this.detectionStatus"-->
-      <!--        [error]="this.error"-->
-      <!--        [downloadProgress]="this.loaded"-->
-      <!--        [outputCollapsed]="outputCollapsed"-->
-      <!--        [output]="this.output"-->
-      <!--        (abortExecution)="abortTriggered()"-->
-      <!--        (abortExecutionFromCreate)="abortFromCreateTriggered()"-->
-      <!--      >-->
-      <!--      </app-output>-->
-
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <h2 class="display-6 mt-5"><i class="bi bi-mic"></i> Continuous stream</h2>
+      <hr>
 
     </div>
   </div>

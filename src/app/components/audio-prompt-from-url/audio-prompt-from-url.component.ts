@@ -150,6 +150,7 @@ prompt,
     }
 
     if(!this.audioUrl) {
+      this.status = TaskStatus.Error;
       this.error = new Error("The audio Url cannot be empty");
       return;
     }

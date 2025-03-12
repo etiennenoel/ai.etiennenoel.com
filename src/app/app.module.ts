@@ -40,6 +40,7 @@ import {Environment} from './environments/environment';
 import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 import {AudioPromptFromUrlComponent} from './components/audio-prompt-from-url/audio-prompt-from-url.component';
+import {AudioPromptFromFileComponent} from './components/audio-prompt-from-file/audio-prompt-from-file.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import {AudioPromptFromUrlComponent} from './components/audio-prompt-from-url/au
     MultimodalPromptApiComponent,
 
     AudioPromptFromUrlComponent,
+    AudioPromptFromFileComponent,
 // @end
 
     // Pipes

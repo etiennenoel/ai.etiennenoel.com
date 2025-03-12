@@ -1,0 +1,52 @@
+<app-output
+  [status]="this.status"
+  [error]="this.error"
+  [outputCollapsed]="outputCollapsed"
+  [output]="this.output"
+  #outputComponent
+>
+  <!--[downloadProgress]="this.loaded"
+  (abortExecution)="abortTriggered()"
+  (abortExecutionFromCreate)="abortFromCreateTriggered()"-->
+</app-output>
+
+<div class="row mt-5">
+  <div class="col-12">
+    <h4>Prompt</h4>
+    <div class="form-group">
+      <textarea id="prompt" class="form-control" rows="4" [formControl]="audioFilePromptFormControl"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-6">
+    <magieno-drag-and-drop (onFileSystemHandlesDropped)="onFileSystemHandlesDropped($event)" class="d-block"
+                           style="height: 150px;">
+      <div class="d-flex flex-column h-100 w-100">
+        <div class="align-content-center flex-fill">
+
+          Click or drag and drop an <strong><i class="bi bi-music-note"></i>audio</strong> file here
+        </div>
+      </div>
+    </magieno-drag-and-drop>
+  </div>
+  <div class="col-6">
+    <h4>Preview</h4>
+
+    @if (audioSrc) {
+      <audio [src]="audioSrc" controls></audio>
+    } @else {
+      <p class="text-secondary">Preview will be displayed here when a valid Audio file is dragged and dropped.</p>
+    }
+
+  </div>
+</div>
+
+
+<h4 class="mt-3">Code</h4>
+<code-editor [code]="code" [readonly]="true" [height]="'300px'"></code-editor>
+
+<div class="d-grid mt-5">
+  <button class="btn btn-lg btn-primary" (click)="execute()">Execute</button>
+</div>
