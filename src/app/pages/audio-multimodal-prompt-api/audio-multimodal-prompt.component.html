@@ -111,7 +111,20 @@
   </div>
   <div class="row mt-4">
     <div class="col-12">
-      <h2 class="display-6 mt-5"><i class="bi bi-mic"></i> From Microphone</h2>
+      <div class="d-flex mt-5">
+        <button class="btn" (click)="audioFromMicrophoneCollapsed = !audioFromMicrophoneCollapsed">
+          @if(audioFromMicrophoneCollapsed) {
+            <div>
+              <i class="bi bi-caret-right-fill"></i>
+            </div>
+          } @else {
+            <div>
+              <i class="bi bi-caret-down-fill"></i>
+            </div>
+          }
+        </button>
+      <h2 class="display-6 flex-grow-1"><i class="bi bi-mic"></i> From Microphone</h2>
+      </div>
       <hr>
 
     </div>

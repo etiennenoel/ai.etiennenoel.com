@@ -22,6 +22,7 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
     contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span>'
   }
 
+  // <editor-fold desc="Audio From URL Collapsed">
   private _audioFromUrlCollapsed = false;
 
   get audioFromUrlCollapsed(): boolean {
@@ -33,7 +34,9 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
 
     this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrlCollapsed: value}, queryParamsHandling: 'merge' });
   }
+  // </editor-fold>
 
+  // <editor-fold desc="Audio From Files Collapsed">
   private _audioFromFilesCollapsed = false;
 
   get audioFromFilesCollapsed(): boolean {
@@ -45,6 +48,21 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
 
     this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioFilesCollapsed: value}, queryParamsHandling: 'merge' });
   }
+  // </editor-fold>
+
+// <editor-fold desc="Audio From Files Collapsed">
+  private _audioFromMicrophoneCollapsed = false;
+
+  get audioFromMicrophoneCollapsed(): boolean {
+    return this._audioFromMicrophoneCollapsed;
+  }
+
+  set audioFromMicrophoneCollapsed(value: boolean) {
+    this._audioFromMicrophoneCollapsed = value;
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioMicrophoneCollapsed: value}, queryParamsHandling: 'merge' });
+  }
+  // </editor-fold>
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -67,8 +85,13 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
       if (params["audioUrlCollapsed"]) {
         this.audioFromUrlCollapsed = params["audioUrlCollapsed"] === 'true';
       }
+
       if (params["audioFilesCollapsed"]) {
         this.audioFromFilesCollapsed = params["audioFilesCollapsed"] === 'true';
+      }
+
+      if (params["audioMicrophoneCollapsed"]) {
+        this.audioFromMicrophoneCollapsed = params["audioMicrophoneCollapsed"] === 'true';
       }
     }))
   }
