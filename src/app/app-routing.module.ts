@@ -12,6 +12,7 @@ import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component'
 import {Environment} from './environments/environment';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
 // @end
 
 const layouts: Routes = [
@@ -51,6 +52,10 @@ if (Environment.multimodal) {
   layouts.push({
     path: "multimodal-prompt-api",
     component: MultimodalPromptApiComponent,
+  });
+  layouts.push({
+    path: "audio-multimodal-prompt-api",
+    component: AudioMultimodalPromptComponent,
   });
 }
 // @end

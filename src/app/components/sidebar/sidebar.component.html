@@ -53,6 +53,13 @@
             <span class="badge text-bg-warning">Experimental</span>
           </a>
         </li>
+        <li [class.active]="this.currentRoute === RouteEnum.AudioMultimodalPromptApi">
+          <a class="btn stretched-link" routerLink="/audio-multimodal-prompt-api">
+            <i class="bi bi-volume-up"></i>
+            <span>Audio Prompt</span>
+            <span class="badge text-bg-warning">Experimental</span>
+          </a>
+        </li>
       }
 <!-- @end -->
     </ul>

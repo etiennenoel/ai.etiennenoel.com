@@ -53,6 +53,9 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.LanguageDetectorApi;
     }
     // @start-remove-in-chrome-dev
+    else if(url.endsWith('audio-multimodal-prompt-api')) {
+      this.currentRoute = RouteEnum.AudioMultimodalPromptApi;
+    }
     else if(url.endsWith('multimodal-prompt-api')) {
       this.currentRoute = RouteEnum.MultimodalPromptApi;
     }

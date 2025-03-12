@@ -6,6 +6,7 @@ export enum RouteEnum {
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',
   // @start-remove-in-chrome-dev
+  AudioMultimodalPromptApi = 'audio-multimodal-prompt-api',
   MultimodalPromptApi = 'multimodal-prompt-api',
   // @end
   Home = 'index'

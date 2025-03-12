@@ -33,9 +33,13 @@ import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
+import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
 // @end
 import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 import {Environment} from './environments/environment';
+import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
+import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
+import {AudioPromptFromUrlComponent} from './components/audio-prompt-from-url/audio-prompt-from-url.component';
 
 @NgModule({
   declarations: [
@@ -69,11 +73,15 @@ import {Environment} from './environments/environment';
     WriterApiComponent,
 
 // @start-remove-in-chrome-dev
+    AudioMultimodalPromptComponent,
     MultimodalPromptApiComponent,
+
+    AudioPromptFromUrlComponent,
 // @end
 
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
+    EnumToMagienoDropdownItemsPipe,
 
     // Directives
     StepContainerVisualStatusDirective,
@@ -85,6 +93,7 @@ import {Environment} from './environments/environment';
     FormsModule,
     DragDropModule,
     MagienoDragAndDropComponent,
+    MagienoBootstrapDropdownComponent,
   ],
   providers: [
     provideClientHydration(withEventReplay()),

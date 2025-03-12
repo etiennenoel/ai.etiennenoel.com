@@ -1,0 +1,44 @@
+      <app-output
+        [status]="this.status"
+        [error]="this.error"
+        [outputCollapsed]="outputCollapsed"
+        [output]="this.output"
+      >
+        <!--[downloadProgress]="this.loaded"
+        (abortExecution)="abortTriggered()"
+        (abortExecutionFromCreate)="abortFromCreateTriggered()"-->
+      </app-output>
+
+<div class="row mt-5">
+  <div class="col-12">
+    <h4>Prompt</h4>
+    <div class="form-group">
+      <textarea id="prompt" class="form-control" rows="4" [formControl]="audioUrlPromptFormControl"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-6">
+    <label class="form-label"><h4>Url:</h4></label>
+    <input type="url" class="form-control" placeholder="https://example.com/audios/audio.wav" [formControl]="audioUrlFormControl">
+  </div>
+  <div class="col-6">
+    <h4>Preview</h4>
+
+    @if(audioSrc) {
+      <audio [src]="audioSrc" controls></audio>
+    } @else {
+      <p class="text-secondary">Preview will be displayed here when a valid URL is entered.</p>
+    }
+
+  </div>
+</div>
+
+
+<h5 class="mt-3">Code</h5>
+<code-editor [code]="audioUrlCode" [readonly]="true" [height]="'300px'"></code-editor>
+
+<div class="d-grid mt-5">
+  <button class="btn btn-lg btn-primary" (click)="execute()">Execute</button>
+</div>

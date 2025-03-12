@@ -58,10 +58,14 @@
         <div class="col-4">
           <div class="mb-3">
             <label for="rewriter-tone" class="form-label">Tone</label>
-            <app-search-select-dropdown id="rewriter-tone"
-                                        [options]="RewriterToneEnum | enumToSearchSelectDropdownOptions"
+            <magieno-bootstrap-dropdown id="rewriter-tone"
+                                        [items]="RewriterToneEnum | enumToMagienoDropdownItems"
                                         [control]="toneFormControl"
-                                        [name]="'rewriterTone'"></app-search-select-dropdown>
+                                        [name]="'rewriterTone'"></magieno-bootstrap-dropdown>
+<!--            <app-search-select-dropdown id="rewriter-tone"-->
+<!--                                        [options]="RewriterToneEnum | enumToSearchSelectDropdownOptions"-->
+<!--                                        [control]="toneFormControl"-->
+<!--                                        [name]="'rewriterTone'"></app-search-select-dropdown>-->
           </div>
         </div>
         <div class="col-4">
