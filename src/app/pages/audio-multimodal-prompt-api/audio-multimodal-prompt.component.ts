@@ -15,10 +15,35 @@ import {FormControl} from '@angular/forms';
   styleUrl: './audio-multimodal-prompt.component.scss'
 })
 export class AudioMultimodalPromptComponent extends BasePageComponent implements OnInit {
+
   public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span>'
+  }
+
+  private _audioFromUrlCollapsed = false;
+
+  get audioFromUrlCollapsed(): boolean {
+    return this._audioFromUrlCollapsed;
+  }
+
+  set audioFromUrlCollapsed(value: boolean) {
+    this._audioFromUrlCollapsed = value;
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrlCollapsed: value}, queryParamsHandling: 'merge' });
+  }
+
+  private _audioFromFilesCollapsed = false;
+
+  get audioFromFilesCollapsed(): boolean {
+    return this._audioFromFilesCollapsed;
+  }
+
+  set audioFromFilesCollapsed(value: boolean) {
+    this._audioFromFilesCollapsed = value;
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioFilesCollapsed: value}, queryParamsHandling: 'merge' });
   }
 
   constructor(
@@ -37,6 +62,15 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
     this.setTitle("Audio Prompt API (Experimental) | AI Playground");
 
     this.checkRequirements();
+
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params["audioUrlCollapsed"]) {
+        this.audioFromUrlCollapsed = params["audioUrlCollapsed"] === 'true';
+      }
+      if (params["audioFilesCollapsed"]) {
+        this.audioFromFilesCollapsed = params["audioFilesCollapsed"] === 'true';
+      }
+    }))
   }
 
   checkRequirements() {

@@ -64,20 +64,49 @@
 
   <div class="row mt-4">
     <div class="col-12">
-      <h2 class="display-6 mt-5" id="audio_prompt_from_url"><i class="bi bi-globe"></i> From url</h2>
+      <div class="d-flex mt-5">
+        <button class="btn" (click)="audioFromUrlCollapsed = !audioFromUrlCollapsed">
+          @if(audioFromUrlCollapsed) {
+            <div>
+            <i class="bi bi-caret-right-fill"></i>
+            </div>
+          } @else {
+            <div>
+            <i class="bi bi-caret-down-fill"></i>
+            </div>
+          }
+        </button>
+        <h2 class="display-6 flex-grow-1" id="audio_prompt_from_url"><i class="bi bi-globe"></i> From url</h2>
+      </div>
       <hr>
 
-      <app-audio-prompt-from-url></app-audio-prompt-from-url>
+      @if(!audioFromUrlCollapsed) {
+        <app-audio-prompt-from-url></app-audio-prompt-from-url>
+      }
     </div>
   </div>
 
 
   <div class="row mt-4">
     <div class="col-12">
-      <h2 class="display-6 mt-5"><i class="bi bi-file-earmark-music"></i> Audio files</h2>
+      <div class="d-flex mt-5">
+        <button class="btn" (click)="audioFromFilesCollapsed = !audioFromFilesCollapsed">
+          @if(audioFromFilesCollapsed) {
+            <div>
+              <i class="bi bi-caret-right-fill"></i>
+            </div>
+          } @else {
+            <div>
+              <i class="bi bi-caret-down-fill"></i>
+            </div>
+          }
+        </button>
+      <h2 class="display-6 flex-grow-1"><i class="bi bi-file-earmark-music"></i> Audio files</h2>
+      </div>
       <hr>
-
+      @if(!audioFromFilesCollapsed) {
       <app-audio-prompt-from-file></app-audio-prompt-from-file>
+      }
     </div>
   </div>
   <div class="row mt-4">
