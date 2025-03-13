@@ -60,6 +60,13 @@
             <span class="badge text-bg-warning">Experimental</span>
           </a>
         </li>
+        <li [class.active]="this.currentRoute === RouteEnum.TranscriptionAudioMultimodalPromptApi">
+          <a class="btn stretched-link" routerLink="/transcription-audio-multimodal-prompt-api">
+            <i class="bi bi-voicemail"></i>
+            <span>Transcription <small>(using Audio Prompt)</small></span>
+            <span class="badge text-bg-warning">Experimental</span>
+          </a>
+        </li>
       }
 <!-- @end -->
     </ul>

@@ -13,6 +13,9 @@ import {Environment} from './environments/environment';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
+import {
+  TranscriptionAudioMultimodalPromptComponent
+} from './pages/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
 // @end
 
 const layouts: Routes = [
@@ -56,6 +59,10 @@ if (Environment.multimodal) {
   layouts.push({
     path: "audio-multimodal-prompt-api",
     component: AudioMultimodalPromptComponent,
+  });
+  layouts.push({
+    path: "transcription-audio-multimodal-prompt-api",
+    component: TranscriptionAudioMultimodalPromptComponent,
   });
 }
 // @end

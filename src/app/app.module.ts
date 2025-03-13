@@ -45,6 +45,9 @@ import {
   AudioPromptFromMicrophoneComponent
 } from './components/audio-prompt-from-microphone/audio-prompt-from-microphone.component';
 import {AudioRecordingService} from './services/audio-recording.service';
+import {
+  TranscriptionAudioMultimodalPromptComponent
+} from './pages/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +87,8 @@ import {AudioRecordingService} from './services/audio-recording.service';
     AudioPromptFromUrlComponent,
     AudioPromptFromFileComponent,
     AudioPromptFromMicrophoneComponent,
+
+    TranscriptionAudioMultimodalPromptComponent,
 // @end
 
     // Pipes

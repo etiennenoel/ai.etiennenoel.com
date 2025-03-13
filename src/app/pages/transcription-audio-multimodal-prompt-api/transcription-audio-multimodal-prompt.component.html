@@ -1,0 +1,117 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  <app-page-title [title]="'Transcription (using Audio Prompt API)'" [icon]="'bi-voicemail'">
+    <p class="text-muted">This page contains an example of Transcription using the Audio Prompt API.</p>
+  </app-page-title>
+
+
+  <div class="row mb-3">
+    <div class="col-12">
+
+      <app-page-accordion
+        [requirementsStatus]="this.apiFlag.status"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="[this.apiFlag]"
+      >
+        <div debugInformation>
+          <h5>Activate all the flags</h5>
+
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Flag</th>
+              <th>Value to select</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><span class="code">chrome://flags/#optimization-guide-on-device-model</span></td>
+              <td><span class="code code-info">Enabled Bypass*</span></td>
+            </tr>
+            <tr>
+              <td><span class="code">chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input</span></td>
+              <td><span class="code code-info">Enabled</span></td>
+            </tr>
+            <tr>
+              <td><span class="code">chrome://flags/#optimization-guide-debug-logs</span></td>
+              <td><span class="code code-info">Enabled</span></td>
+            </tr>
+            </tbody>
+          </table>
+
+          <h5 class="mt-4">Verify that Gemini Nano has been downloaded</h5>
+          <ol style="line-height: 2;">
+            <li>Navigate to <span class="code">chrome://components</span></li>
+            <li>Search for <span class="code">Optimization Guide On Device Model</span> on the page.</li>
+            <li>Click on <span class="code">Check for update</span></li>
+            <li>Ensure that it says <span class="code code-info">Up-to-date</span></li>
+          </ol>
+        </div>
+
+        <div faq>
+          <h5>Audio is limited to 30 secondes</h5>
+          <p>Audio support right now is limited to 30 seconds. However, see the <a href="#long-audio">Long Audio</a>
+            section for how to circumvent this limitations.</p>
+
+          <h5>It seems like the page is stuck</h5>
+          <p>After you have clicked on Execute for the first time, Chrome has to download Gemini Nano. This can take a
+            while (5-10 minutes). While this is happening, the page can seem frozen or like nothing is happening. Give
+            it time then try to restart your browser.</p>
+        </div>
+      </app-page-accordion>
+    </div>
+  </div>
+
+  <h2 class="display-6 mt-5"><i class="bi bi-play"></i> Playground</h2>
+
+  <hr>
+
+  <app-output
+    [status]="this.status"
+    [error]="this.error"
+    [outputCollapsed]="outputCollapsed"
+    [output]="this.output"
+    #outputComponent
+  >
+    <!--[downloadProgress]="this.loaded"
+    (abortExecution)="abortTriggered()"
+    (abortExecutionFromCreate)="abortFromCreateTriggered()"-->
+  </app-output>
+
+  <div class="row mt-3">
+    <div class="col-12">
+      <canvas class="visualizer d-block rounded-pill mt-3" width="500px;" height="40px" #canvasElement></canvas>
+
+      <div class="row mt-3">
+        <div class="col-3">
+          <div class="mb-3">
+            <label>Chunk Interval (ms)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" [formControl]="chunkIntervalFormControl"/>
+              <span class="input-group-text" id="basic-addon2">ms</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3" [disabled]="isRecording" (click)="startTranscribing()">
+        @if (this.isRecording) {
+          <div class="spinner-grow spinner-grow-sm text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          Recording & Transcribing ...
+        } @else {
+          Start Transcribing
+        }
+      </button>
+
+      @if (this.isRecording) {
+        <button class="btn btn-light ms-2" (click)="stopTranscription()">Stop</button>
+      }
+
+
+      @if (this.recordingDuration) {
+        <div class="mt-2">Duration: {{ this.recordingDuration }}</div>
+      }
+    </div>
+  </div>
+</div>
