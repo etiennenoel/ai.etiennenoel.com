@@ -132,7 +132,48 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
   }
 
   get code() {
-    return ``;
+    return `const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+const chunks = [];
+const mediaRecorder = new MediaRecorder(stream);
+mediaRecorder.ondataavailable = (e: any) => {
+  chunks.push(e.data);
+}
+mediaRecorder.start();
+
+// WARNING: You cannot stop the recording right away in your code examples. You need to add a stop button to stop the
+// recording. This will give you time to record a sound. Once stopped, then you can send it to the language Model.
+// You should probably move the code below this comment inside a function that is called when the stop button is clicked.
+
+const blob = await new Promise(resolve => {
+  mediaRecorder!.onstop = () => {
+    stream.getAudioTracks().forEach((track: any) => { // Stops the browser from listening to the microphone.
+      track.stop();
+    });
+
+    const blob = new Blob(chunks, { type: mediaRecorder.mimeType });
+    chunks = [];
+
+    return resolve(blob)
+  }
+  mediaRecorder?.stop();
+}
+
+const prompt = \`${this.prompt}\`;
+
+const audioContext = new AudioContext();
+const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
+
+const languageModel = await this.window?.ai.languageModel.create();
+
+await languageModel.prompt([
+  prompt,
+  {
+    type: 'audio',
+    content: audioBuffer,
+  }
+]);
+`;
   }
 
   async execute() {
