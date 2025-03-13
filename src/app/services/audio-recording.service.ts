@@ -19,7 +19,9 @@ export class AudioRecordingService {
 
   stream: any;
 
-  async startRecording() {
+  chunkAvailableCallback?: (chunk: any) => void;
+
+  async startRecording(timeslice?: number) {
     const constraints = { audio: true };
     this.chunks = [];
     const self = this;
@@ -28,8 +30,10 @@ export class AudioRecordingService {
     this.mediaRecorder = new MediaRecorder(this.stream);
     this.mediaRecorder.ondataavailable = (e: any) => {
       self.chunks.push(e.data);
+
+      this.chunkAvailableCallback?.(e.data);
     }
-    this.mediaRecorder.start();
+    this.mediaRecorder.start(timeslice);
 
     this.visualize();
   }

@@ -124,6 +124,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   async startTranscribing() {
     this.isRecording = true;
     this.recordingStartTime = Date.now();
+    this.output = "";
 
     this.recordingInterval = setInterval(() => {
       this.updateRecordingDuration();
@@ -133,7 +134,39 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       return;
     }
 
-    await this.audioRecordingService.startRecording();
+    const self = this;
+    this.audioRecordingService.chunkAvailableCallback = (chunk: any) => {
+      self.chunkAvailable(chunk);
+    }
+    await this.audioRecordingService.startRecording(this.chunkInterval ?? undefined);
+  }
+
+  async chunkAvailable(chunk: any) {
+    this.outputCollapsed = false;
+    this.status = TaskStatus.Executing
+
+    try {
+      const blob = new Blob([chunk], {type: this.audioRecordingService.mediaRecorder?.mimeType});
+      const prompt = `Transcribe this`;
+
+      const audioContext = new AudioContext();
+      const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
+
+      const languageModel = await this.window?.ai.languageModel.create();
+
+      this.output += await languageModel.prompt([
+        prompt,
+        {
+          type: 'audio',
+          content: audioBuffer,
+        }
+      ]);
+      this.status = TaskStatus.Completed;
+
+    } catch (e: any) {
+      this.status = TaskStatus.Error;
+      this.error = e;
+    }
   }
 
   async stopTranscription() {

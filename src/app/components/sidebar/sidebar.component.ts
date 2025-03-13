@@ -53,7 +53,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.LanguageDetectorApi;
     }
     // @start-remove-in-chrome-dev
-    else if(url.endsWith('transcription-audio-multimodal-chunkInterval-api')) {
+    else if(url.endsWith('transcription-audio-multimodal-prompt-api')) {
       this.currentRoute = RouteEnum.TranscriptionAudioMultimodalPromptApi;
     }
     else if(url.endsWith('audio-multimodal-chunkInterval-api')) {
