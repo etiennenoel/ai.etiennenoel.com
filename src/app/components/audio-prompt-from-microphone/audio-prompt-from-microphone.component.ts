@@ -145,7 +145,7 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
     this.output = "";
     this.status = TaskStatus.Executing
 
-    this.outputComponent?.nativeElement.scrollIntoView();
+    this.outputComponent?.nativeElement?.scrollIntoView();
 
     if(!this.audioBlob) {
       this.status = TaskStatus.Error;
