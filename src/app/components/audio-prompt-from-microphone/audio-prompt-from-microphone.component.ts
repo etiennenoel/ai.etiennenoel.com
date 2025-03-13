@@ -1,18 +1,19 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
-import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {BaseComponent} from '../base/base.component';
 import {FormControl} from '@angular/forms';
+import {AudioRecordingService} from '../../services/audio-recording.service';
 
 @Component({
-  selector: 'app-audio-prompt-from-file',
-  templateUrl: './audio-prompt-from-file.component.html',
+  selector: 'app-audio-prompt-from-microphone',
+  templateUrl: './audio-prompt-from-microphone.component.html',
   standalone: false,
-  styleUrl: './audio-prompt-from-file.component.scss'
+  styleUrl: './audio-prompt-from-microphone.component.scss'
 })
-export class AudioPromptFromFileComponent extends BaseComponent implements OnInit, OnDestroy {
-  // <editor-fold desc="Audio URL Prompt">
+export class AudioPromptFromMicrophoneComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+// <editor-fold desc="Audio URL Prompt">
   private _prompt: string | null = "";
   public promptFormControl = new FormControl('');
 
@@ -35,7 +36,13 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
   }
   // </editor-fold>
 
-  private fileSystemFileHandle?: FileSystemFileHandle
+  public isRecording = false;
+
+  public recordingStartTime?: number;
+
+  public recordingDuration?: string;
+
+  public recordingInterval?: any;
 
   public audioSrc?: string;
 
@@ -45,15 +52,22 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
 
   public outputCollapsed = true;
 
+  public audioBlob?: Blob;
+
+  @ViewChild("outputComponent")
   public outputComponent?: ElementRef;
 
   public status: TaskStatus = TaskStatus.Idle;
+
+  @ViewChild("canvasElement")
+  public canvasElement?: ElementRef;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly audioRecordingService: AudioRecordingService,
   ) {
     super(document);
   }
@@ -67,7 +81,6 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
 
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
-
       if (params['audioFilePrompt']) {
         this.setPrompt(params['audioFilePrompt']);
       }
@@ -78,43 +91,49 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  onFileSystemHandlesDropped(fileSystemHandles: FileSystemHandle[]) {
-    fileSystemHandles.forEach(async (fileSystemHandle) => {
-      if (fileSystemHandle.kind === "directory") {
-        return;
-      }
+  ngAfterViewInit() {
+    if(isPlatformBrowser(this.platformId) && this.canvasElement) {
+      this.audioRecordingService.init(this.canvasElement)
+    }
+  }
 
-      const fileSystemFileHandle = fileSystemHandle as FileSystemFileHandle;
-      const file = await fileSystemFileHandle.getFile()
+  async startRecording() {
+    this.isRecording = true;
+    this.recordingStartTime = Date.now();
 
-      if (file.type.startsWith("audio")) {
-        this.fileSystemFileHandle = fileSystemHandle as FileSystemFileHandle;
-        this.audioSrc = URL.createObjectURL(file);
-      } else {
-        this.error = new Error(`Unsupported file type '${file.type}' for '${file.name}'.`);
-        this.outputCollapsed = false;
-        this.status = TaskStatus.Error;
-      }
-    })
+    this.recordingInterval = setInterval(() => {
+      this.updateRecordingDuration();
+    }, 500)
+
+    if(!this.canvasElement) {
+      return;
+    }
+
+    await this.audioRecordingService.startRecording();
+  }
+
+  async stopRecording() {
+    this.isRecording = false;
+
+    clearInterval(this.recordingInterval);
+
+    // Call it one last time to update the true duration.
+    this.updateRecordingDuration();
+
+    this.audioBlob = await this.audioRecordingService.stopRecording();
+    this.audioSrc = URL.createObjectURL(this.audioBlob);
+  }
+
+  updateRecordingDuration() {
+    if(this.recordingStartTime) {
+      const duration = Date.now() - this.recordingStartTime;
+
+      this.recordingDuration = new Date(duration).toISOString().substr(11, 8);
+    }
   }
 
   get code() {
-    return `const [fileHandle] = await window.showOpenFilePicker(pickerOpts); // See https://developer.mozilla.org/en-US/docs/Web/API/Window/showOpenFilePicker
-const file = await options.fileSystemFileHandle.getFile();
-
-const prompt = '${this.prompt}';
-
-const audioContext = new AudioContext();
-const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
-
-const languageModel = await this.window?.ai.languageModel.create();
-await languageModel.prompt([
-prompt,
-{
-  type: 'audio',
-  content: audioBuffer,
-}
-]);`;
+    return ``;
   }
 
   async execute() {
@@ -126,21 +145,19 @@ prompt,
     this.output = "";
     this.status = TaskStatus.Executing
 
-    if(!this.fileSystemFileHandle) {
+    this.outputComponent?.nativeElement.scrollIntoView();
+
+    if(!this.audioBlob) {
       this.status = TaskStatus.Error;
-      this.error = new Error("You must drop an audio file first.");
+      this.error = new Error("No audio blob to process");
       return;
     }
 
-    this.outputComponent?.nativeElement.scrollIntoView();
-
     try {
-      const file = await this.fileSystemFileHandle.getFile();
-
-      const prompt = '${this.prompt}';
+      const prompt = `${this.prompt}`;
 
       const audioContext = new AudioContext();
-      const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
+      const audioBuffer = await audioContext.decodeAudioData(await this.audioBlob.arrayBuffer());
 
       const languageModel = await this.window?.ai.languageModel.create();
 

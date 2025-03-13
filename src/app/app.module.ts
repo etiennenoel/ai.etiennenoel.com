@@ -41,6 +41,10 @@ import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-drop
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 import {AudioPromptFromUrlComponent} from './components/audio-prompt-from-url/audio-prompt-from-url.component';
 import {AudioPromptFromFileComponent} from './components/audio-prompt-from-file/audio-prompt-from-file.component';
+import {
+  AudioPromptFromMicrophoneComponent
+} from './components/audio-prompt-from-microphone/audio-prompt-from-microphone.component';
+import {AudioRecordingService} from './services/audio-recording.service';
 
 @NgModule({
   declarations: [
@@ -79,6 +83,7 @@ import {AudioPromptFromFileComponent} from './components/audio-prompt-from-file/
 
     AudioPromptFromUrlComponent,
     AudioPromptFromFileComponent,
+    AudioPromptFromMicrophoneComponent,
 // @end
 
     // Pipes
@@ -99,6 +104,9 @@ import {AudioPromptFromFileComponent} from './components/audio-prompt-from-file/
   ],
   providers: [
     provideClientHydration(withEventReplay()),
+
+    // Services
+    AudioRecordingService,
 
     // Stores
     ToastStore,

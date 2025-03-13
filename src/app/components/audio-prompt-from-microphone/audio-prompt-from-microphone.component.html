@@ -21,15 +21,29 @@
 
 <div class="row mt-4">
   <div class="col-6">
-    <magieno-drag-and-drop (onFileSystemHandlesDropped)="onFileSystemHandlesDropped($event)" class="d-block"
-                           style="height: 150px;">
-      <div class="d-flex flex-column h-100 w-100">
-        <div class="align-content-center flex-fill">
 
-          Click or drag and drop an <strong><i class="bi bi-music-note"></i>audio</strong> file here
+    <canvas class="visualizer d-block rounded-pill mb-3" height="40px" #canvasElement></canvas>
+
+    <button class="btn btn-primary" [disabled]="isRecording" (click)="startRecording()">
+      @if(this.isRecording) {
+        <div class="spinner-grow spinner-grow-sm text-light" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
-    </magieno-drag-and-drop>
+        Recording ...
+      } @else {
+        Record audio
+      }
+    </button>
+
+    @if(this.isRecording) {
+      <button class="btn btn-light ms-2" (click)="stopRecording()">Stop recording</button>
+    }
+
+    @if(this.recordingDuration) {
+      <div class="mt-2">Duration: {{ this.recordingDuration }}</div>
+    }
+
+
   </div>
   <div class="col-6">
     <h4>Preview</h4>
@@ -37,7 +51,7 @@
     @if (audioSrc) {
       <audio [src]="audioSrc" controls></audio>
     } @else {
-      <p class="text-secondary">Preview will be displayed here when a valid Audio file is dragged and dropped.</p>
+      <p class="text-secondary">Preview will be displayed here after the recording has ended.</p>
     }
 
   </div>
