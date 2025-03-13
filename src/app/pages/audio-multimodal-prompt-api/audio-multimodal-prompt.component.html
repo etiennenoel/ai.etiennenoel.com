@@ -64,24 +64,26 @@
 
   <div class="row mt-4">
     <div class="col-12">
-      <div class="d-flex mt-5">
-        <button class="btn" (click)="audioFromUrlCollapsed = !audioFromUrlCollapsed">
-          @if(audioFromUrlCollapsed) {
-            <div>
-            <i class="bi bi-caret-right-fill"></i>
-            </div>
-          } @else {
-            <div>
-            <i class="bi bi-caret-down-fill"></i>
-            </div>
-          }
-        </button>
-        <h2 class="display-6 flex-grow-1" id="audio_prompt_from_url"><i class="bi bi-globe"></i> From url</h2>
-      </div>
-      <hr>
+      @defer () {
+        <div class="d-flex mt-5">
+          <button class="btn" (click)="audioFromUrlCollapsed = !audioFromUrlCollapsed">
+            @if (audioFromUrlCollapsed) {
+              <div>
+                <i class="bi bi-caret-right-fill"></i>
+              </div>
+            } @else {
+              <div>
+                <i class="bi bi-caret-down-fill"></i>
+              </div>
+            }
+          </button>
+          <h2 class="display-6 flex-grow-1" id="audio_prompt_from_url"><i class="bi bi-globe"></i> From url</h2>
+        </div>
+        <hr>
 
-      @if(!audioFromUrlCollapsed) {
-        <app-audio-prompt-from-url></app-audio-prompt-from-url>
+        @if (!audioFromUrlCollapsed) {
+          <app-audio-prompt-from-url></app-audio-prompt-from-url>
+        }
       }
     </div>
   </div>
@@ -89,46 +91,50 @@
 
   <div class="row mt-4">
     <div class="col-12">
-      <div class="d-flex mt-5">
-        <button class="btn" (click)="audioFromFilesCollapsed = !audioFromFilesCollapsed">
-          @if(audioFromFilesCollapsed) {
-            <div>
-              <i class="bi bi-caret-right-fill"></i>
-            </div>
-          } @else {
-            <div>
-              <i class="bi bi-caret-down-fill"></i>
-            </div>
-          }
-        </button>
-      <h2 class="display-6 flex-grow-1"><i class="bi bi-file-earmark-music"></i> Audio files</h2>
-      </div>
-      <hr>
-      @if(!audioFromFilesCollapsed) {
-      <app-audio-prompt-from-file></app-audio-prompt-from-file>
+      @defer () {
+        <div class="d-flex mt-5">
+          <button class="btn" (click)="audioFromFilesCollapsed = !audioFromFilesCollapsed">
+            @if (audioFromFilesCollapsed) {
+              <div>
+                <i class="bi bi-caret-right-fill"></i>
+              </div>
+            } @else {
+              <div>
+                <i class="bi bi-caret-down-fill"></i>
+              </div>
+            }
+          </button>
+          <h2 class="display-6 flex-grow-1"><i class="bi bi-file-earmark-music"></i> Audio files</h2>
+        </div>
+        <hr>
+        @if (!audioFromFilesCollapsed) {
+          <app-audio-prompt-from-file></app-audio-prompt-from-file>
+        }
       }
     </div>
   </div>
   <div class="row mt-4">
     <div class="col-12">
-      <div class="d-flex mt-5">
-        <button class="btn" (click)="audioFromMicrophoneCollapsed = !audioFromMicrophoneCollapsed">
-          @if(audioFromMicrophoneCollapsed) {
-            <div>
-              <i class="bi bi-caret-right-fill"></i>
-            </div>
-          } @else {
-            <div>
-              <i class="bi bi-caret-down-fill"></i>
-            </div>
-          }
-        </button>
-      <h2 class="display-6 flex-grow-1"><i class="bi bi-mic"></i> From Microphone</h2>
-      </div>
-      <hr>
+      @defer () {
+        <div class="d-flex mt-5">
+          <button class="btn" (click)="audioFromMicrophoneCollapsed = !audioFromMicrophoneCollapsed">
+            @if (audioFromMicrophoneCollapsed) {
+              <div>
+                <i class="bi bi-caret-right-fill"></i>
+              </div>
+            } @else {
+              <div>
+                <i class="bi bi-caret-down-fill"></i>
+              </div>
+            }
+          </button>
+          <h2 class="display-6 flex-grow-1"><i class="bi bi-mic"></i> From Microphone</h2>
+        </div>
+        <hr>
 
-      @if(!audioFromMicrophoneCollapsed) {
-        <app-audio-prompt-from-microphone></app-audio-prompt-from-microphone>
+        @if (!audioFromMicrophoneCollapsed) {
+          <app-audio-prompt-from-microphone></app-audio-prompt-from-microphone>
+        }
       }
 
     </div>
