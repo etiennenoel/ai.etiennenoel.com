@@ -82,6 +82,10 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
     this.checkRequirements();
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if(isPlatformServer(this.platformId)) {
+        return;
+      }
+      
       if (params["audioUrlCollapsed"]) {
         this.audioFromUrlCollapsed = params["audioUrlCollapsed"] === 'true';
       }

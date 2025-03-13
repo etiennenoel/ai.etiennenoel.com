@@ -79,7 +79,6 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
       this.setPrompt(value, {emitFormControlEvent: false, setFormControlValue: false});
     }));
 
-
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['audioFilePrompt']) {
         this.setPrompt(params['audioFilePrompt']);
