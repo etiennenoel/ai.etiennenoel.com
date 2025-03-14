@@ -168,13 +168,15 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
       const languageModel = await this.window?.ai.languageModel.create();
 
-      this.output += await languageModel.prompt([
+      const result= await languageModel.prompt([
         prompt,
         {
           type: 'audio',
           content: audioBuffer,
         }
       ]);
+
+      this.output += result;
       this.status = TaskStatus.Completed;
 
     } catch (e: any) {
