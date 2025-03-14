@@ -29,7 +29,7 @@
               <td><span class="code code-info">Enabled Bypass*</span></td>
             </tr>
             <tr>
-              <td><span class="code">chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input</span></td>
+              <td><span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span></td>
               <td><span class="code code-info">Enabled</span></td>
             </tr>
             <tr>
@@ -85,11 +85,32 @@
       <div class="row mt-3">
         <div class="col-3">
           <div class="mb-3">
-            <label>Chunk Interval (ms)</label>
-            <div class="input-group">
-              <input type="number" class="form-control" [formControl]="chunkIntervalFormControl"/>
-              <span class="input-group-text" id="basic-addon2">ms</span>
-            </div>
+            <label>Mic Sample Rate</label>
+            <input type="number" class="form-control" [formControl]="micSampleRateFormControl"/>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label>Chunk Size</label>
+            <input type="number" class="form-control" [formControl]="chunkSizeFormControl"/>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label>Step Size</label>
+            <input type="number" class="form-control" [formControl]="stepSizeFormControl"/>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label>Silence RMS</label>
+            <input type="number" class="form-control" [formControl]="silenceRmsFormControl"/>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="mb-3">
+            <label>Window</label>
+            <input type="number" class="form-control" [formControl]="windowAudioFormControl"/>
           </div>
         </div>
       </div>

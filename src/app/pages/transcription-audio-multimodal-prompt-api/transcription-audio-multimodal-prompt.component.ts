@@ -10,6 +10,13 @@ import {AudioRecordingService} from '../../services/audio-recording.service';
 import {FormControl} from '@angular/forms';
 import {processStream} from '../../audio-processing-module/main';
 import {AudioVisualizerService} from '../../services/audio-visualizer.service';
+import {
+  CHUNK_SIZE,
+  MIC_SAMPLE_RATE,
+  SILENCE_RMS,
+  STEP_SIZE,
+  WINDOW
+} from '../../audio-processing-module/constants';
 
 
 @Component({
@@ -26,26 +33,118 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     contentHtml: 'Activate <span class="code">chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input</span>'
   }
 
-  // <editor-fold desc="ChunkInterval">
-  private _chunkInterval: number | null = 1000;
-  public chunkIntervalFormControl = new FormControl(1000);
+  // <editor-fold desc="Mic Sample Rate">
+  private _micSampleRate: number | null = MIC_SAMPLE_RATE;
+  public micSampleRateFormControl = new FormControl(MIC_SAMPLE_RATE);
 
-  get chunkInterval(): number | null {
-    return this._chunkInterval;
+  get micSampleRate(): number | null {
+    return this._micSampleRate;
   }
 
-  set chunkInterval(value: number | null) {
-    this.setChunkInterval(value);
+  set micSampleRate(value: number | null) {
+    this.setMicSampleRate(value);
   }
 
-  setChunkInterval(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
-    this._chunkInterval = value;
+  setMicSampleRate(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+    this._micSampleRate = value;
 
     if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
-      this.chunkIntervalFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+      this.micSampleRateFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
     }
 
-    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { chunkInterval: value}, queryParamsHandling: 'merge' });
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { micSampleRate: value}, queryParamsHandling: 'merge' });
+  }
+  // </editor-fold>
+
+  // <editor-fold desc="Chunk Size">
+  private _chunkSize: number | null = CHUNK_SIZE;
+  public chunkSizeFormControl = new FormControl(CHUNK_SIZE);
+
+  get chunkSize(): number | null {
+    return this._chunkSize;
+  }
+
+  set chunkSize(value: number | null) {
+    this.setChunkSize(value);
+  }
+
+  setChunkSize(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+    this._chunkSize = value;
+
+    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.chunkSizeFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { chunkSize: value}, queryParamsHandling: 'merge' });
+  }
+  // </editor-fold>
+
+  // <editor-fold desc="Step Size">
+  private _stepSize: number | null = STEP_SIZE;
+  public stepSizeFormControl = new FormControl(STEP_SIZE);
+
+  get stepSize(): number | null {
+    return this._stepSize;
+  }
+
+  set stepSize(value: number | null) {
+    this.setStepSize(value);
+  }
+
+  setStepSize(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+    this._stepSize = value;
+
+    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.stepSizeFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { stepSize: value}, queryParamsHandling: 'merge' });
+  }
+  // </editor-fold>
+
+  // <editor-fold desc="Silence RMS">
+  private _silenceRms: number | null = SILENCE_RMS;
+  public silenceRmsFormControl = new FormControl(SILENCE_RMS);
+
+  get silenceRms(): number | null {
+    return this._silenceRms;
+  }
+
+  set silenceRms(value: number | null) {
+    this.setSilenceRms(value);
+  }
+
+  setSilenceRms(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+    this._silenceRms = value;
+
+    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.silenceRmsFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { silenceRms: value}, queryParamsHandling: 'merge' });
+  }
+  // </editor-fold>
+
+  // <editor-fold desc="Window">
+  private _windowAudio: number | null = WINDOW;
+  public windowAudioFormControl = new FormControl(WINDOW);
+
+  get windowAudio(): number | null {
+    return this._windowAudio;
+  }
+
+  set windowAudio(value: number | null) {
+    this.setWindowAudio(value);
+  }
+
+  setWindowAudio(value: number | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+    this._windowAudio = value;
+
+    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.windowAudioFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { windowAudio: value}, queryParamsHandling: 'merge' });
   }
   // </editor-fold>
 
@@ -100,13 +199,37 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
     this.checkRequirements();
 
-    this.subscriptions.push(this.chunkIntervalFormControl.valueChanges.subscribe((value) => {
-      this.setChunkInterval(value, {emitFormControlEvent: false, setFormControlValue: false});
+    this.subscriptions.push(this.micSampleRateFormControl.valueChanges.subscribe((value) => {
+      this.setMicSampleRate(value, {emitFormControlEvent: false, setFormControlValue: false});
+    }));
+    this.subscriptions.push(this.chunkSizeFormControl.valueChanges.subscribe((value) => {
+      this.setChunkSize(value, {emitFormControlEvent: false, setFormControlValue: false});
+    }));
+    this.subscriptions.push(this.stepSizeFormControl.valueChanges.subscribe((value) => {
+      this.setStepSize(value, {emitFormControlEvent: false, setFormControlValue: false});
+    }));
+    this.subscriptions.push(this.silenceRmsFormControl.valueChanges.subscribe((value) => {
+      this.setSilenceRms(value, {emitFormControlEvent: false, setFormControlValue: false});
+    }));
+    this.subscriptions.push(this.windowAudioFormControl.valueChanges.subscribe((value) => {
+      this.setWindowAudio(value, {emitFormControlEvent: false, setFormControlValue: false});
     }));
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
-      if (params['chunkInterval']) {
-        this.setChunkInterval(params['chunkInterval']);
+      if (params['micSampleRate']) {
+        this.setMicSampleRate(params['micSampleRate']);
+      }
+      if (params['chunkSize']) {
+        this.setChunkSize(params['chunkSize']);
+      }
+      if (params['stepSize']) {
+        this.setStepSize(params['stepSize']);
+      }
+      if (params['silenceRms']) {
+        this.setSilenceRms(params['silenceRms']);
+      }
+      if (params['window']) {
+        this.setWindowAudio(params['window']);
       }
     }))
 
@@ -156,7 +279,13 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
     this.audioVisualizerService.visualize(this.stream);
 
-    for await (const chunk of processStream(this.stream, this.chunkInterval ?? 1000)) {
+    for await (const chunk of processStream(this.stream, {
+      stepSize: this.stepSize ?? STEP_SIZE,
+      chunkSize: this.chunkSize ?? CHUNK_SIZE,
+      micSampleRate: this.micSampleRate ?? MIC_SAMPLE_RATE,
+      silenceRMS: this.silenceRms ?? SILENCE_RMS,
+      window: this.windowAudio ?? WINDOW,
+    })) {
       await this.chunkAvailable(chunk)
     }
   }

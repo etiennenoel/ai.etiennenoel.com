@@ -2,6 +2,7 @@ import './dom-chromium-ai.ts';
 import { AudioRingBuffer } from './ring_buffer';
 import { firstNoise, lastSilence } from './silence';
 import { AudioData } from './audio.interface';
+import {CHUNK_SIZE, MIC_SAMPLE_RATE, STEP_SIZE, WINDOW} from './constants';
 
 declare global {
   interface MediaStreamTrackProcessor {
@@ -13,12 +14,7 @@ declare global {
   }) => MediaStreamTrackProcessor;
 }
 
-const MIC_SAMPLE_RATE = 48_000;
 
-const CHUNK_SIZE = MIC_SAMPLE_RATE * 10;
-const STEP_SIZE = MIC_SAMPLE_RATE * 1;
-
-const SILENCE = new Float32Array(MIC_SAMPLE_RATE / 10);
 
 const GEMINI_V2_PROMPT =
   '[multimodal-audio] Transcribe the following speech segment:';
@@ -27,8 +23,24 @@ const GEMINI_V2_PROMPT =
  * Processes the audio stream and returns the transcript.
  */
 export async function* processStream(
-  inputStream: ReadableStream<AudioData> | MediaStream, chunkInterval: number
+  inputStream: ReadableStream<AudioData> | MediaStream,
+  options?: {
+    stepSize?: number;
+    chunkSize?: number;
+    micSampleRate?: number;
+    silenceRMS?: number;
+    window?: number;
+  },
 ) {
+
+  const micSampleRate = options?.micSampleRate ?? MIC_SAMPLE_RATE;
+  const chunkSize = options?.chunkSize ?? CHUNK_SIZE;
+  const stepSize = options?.stepSize ?? STEP_SIZE;
+  const silenceRMS = options?.silenceRMS ?? 0.00001;
+  const silence = new Float32Array(micSampleRate / 10);
+
+  const window = options?.window ?? WINDOW;
+
   let stream: ReadableStream<AudioData>;
   if (inputStream instanceof ReadableStream) {
     stream = inputStream;
@@ -41,31 +53,22 @@ export async function* processStream(
 
   let fullText = '';
 
-  const buffer = new AudioRingBuffer(CHUNK_SIZE * 2);
-
-  const interval = STEP_SIZE * chunkInterval / 1000;
+  const buffer = new AudioRingBuffer(chunkSize * 2);
 
   for await (const value of stream) {
     buffer.write(value);
 
-    if (buffer.written < interval) continue;
+    if (buffer.written < stepSize) continue;
 
     // const s = await window.ai.languageModel.create();
 
-    // TODO(vkyryliuk): tune SILENCE_RMS for different environments.
-    // Magic number. Should be tuned / calculated dynamically. Works for quiet
-    // spaces, not clean about noise ones.
-    const SILENCE_RMS = 0.00001;
-
-    // 48_000 * 0.2 seconds.
-    const WINDOW = MIC_SAMPLE_RATE / 5;
 
     // console.log('\n\nReading new audio chunk');
-    let chunk = buffer.last(Math.min(buffer.written, CHUNK_SIZE));
+    let chunk = buffer.last(Math.min(buffer.written, chunkSize));
     buffer.clear();
-    buffer.writeFloat32Array(SILENCE);
+    buffer.writeFloat32Array(silence);
 
-    const speechStart = firstNoise(chunk, WINDOW, SILENCE_RMS);
+    const speechStart = firstNoise(chunk, window, silenceRMS);
     // console.log('Speech start', speechStart);
     if (speechStart === chunk.length) {
       // console.log('No audio detected');
@@ -73,17 +76,17 @@ export async function* processStream(
     }
     chunk = chunk.slice(speechStart);
 
-    const end = lastSilence(chunk, WINDOW, SILENCE_RMS);
+    const end = lastSilence(chunk, window, silenceRMS);
 
     // Less than 1 second of audio.
-    if (end < MIC_SAMPLE_RATE) {
+    if (end < micSampleRate) {
       buffer.writeFloat32Array(chunk);
       continue;
     }
 
     const trueChunk = chunk.slice(0, end);
     buffer.clear();
-    if (chunk.length - end > WINDOW) {
+    if (chunk.length - end > window) {
       // console.log('Writing back ', chunk.length - end);
       buffer.writeFloat32Array(chunk.slice(end));
     } else {

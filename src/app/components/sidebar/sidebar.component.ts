@@ -56,7 +56,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
     else if(url.endsWith('transcription-audio-multimodal-prompt-api')) {
       this.currentRoute = RouteEnum.TranscriptionAudioMultimodalPromptApi;
     }
-    else if(url.endsWith('audio-multimodal-chunkInterval-api')) {
+    else if(url.endsWith('audio-multimodal-prompt-api')) {
       this.currentRoute = RouteEnum.AudioMultimodalPromptApi;
     }
     else if(url.endsWith('multimodal-prompt-api')) {
