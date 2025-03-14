@@ -23,7 +23,7 @@ export class AudioRecordingService {
 
   startRecording(stream: MediaStream, timeslice?: number) {
     this.stream = stream;
-    
+
     this.chunks = [];
     const self = this;
 

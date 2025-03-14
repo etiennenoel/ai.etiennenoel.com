@@ -152,7 +152,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       this.audioRecordingService.stopRecordingWithoutBlob();
 
       this.audioRecordingService.startRecording(self.stream!);
-    }, 1000);
+    }, this.chunkInterval ?? 1000);
   }
 
   async chunkAvailable(chunk: any) {
@@ -166,9 +166,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
 
-      console.log(audioBuffer);
-
-      /*const languageModel = await this.window?.ai.languageModel.create();
+      const languageModel = await this.window?.ai.languageModel.create();
 
       this.output += await languageModel.prompt([
         prompt,
@@ -176,7 +174,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
           type: 'audio',
           content: audioBuffer,
         }
-      ]);*/
+      ]);
       this.status = TaskStatus.Completed;
 
     } catch (e: any) {
