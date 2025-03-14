@@ -156,7 +156,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
     this.audioVisualizerService.visualize(this.stream);
 
-    for await (const chunk of processStream(this.stream)) {
+    for await (const chunk of processStream(this.stream, this.chunkInterval ?? 1000)) {
       await this.chunkAvailable(chunk)
     }
   }

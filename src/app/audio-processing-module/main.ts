@@ -27,7 +27,7 @@ const GEMINI_V2_PROMPT =
  * Processes the audio stream and returns the transcript.
  */
 export async function* processStream(
-  inputStream: ReadableStream<AudioData> | MediaStream
+  inputStream: ReadableStream<AudioData> | MediaStream, chunkInterval: number
 ) {
   let stream: ReadableStream<AudioData>;
   if (inputStream instanceof ReadableStream) {
@@ -43,10 +43,12 @@ export async function* processStream(
 
   const buffer = new AudioRingBuffer(CHUNK_SIZE * 2);
 
+  const interval = STEP_SIZE * chunkInterval / 1000;
+
   for await (const value of stream) {
     buffer.write(value);
 
-    if (buffer.written < STEP_SIZE) continue;
+    if (buffer.written < interval) continue;
 
     // const s = await window.ai.languageModel.create();
 
