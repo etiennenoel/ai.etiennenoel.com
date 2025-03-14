@@ -76,7 +76,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
   autoRestartInterval?: any;
 
-  public languageModel?;
+  public languageModel?: any;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -167,7 +167,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       if(!this.languageModel) {
         throw new Error("Language model not loaded");
       }
-      
+
       const blob = new Blob([chunk], {type: this.audioRecordingService.mediaRecorder?.mimeType});
       const prompt = `Transcribe this`;
 
