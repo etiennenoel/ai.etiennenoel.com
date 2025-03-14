@@ -21,11 +21,11 @@ export class AudioRecordingService {
 
   chunkAvailableCallback?: (chunk: any) => void;
 
-  async startRecording(timeslice?: number) {
-    const constraints = { audio: true };
+  startRecording(stream: MediaStream, timeslice?: number) {
+    this.stream = stream;
+    
     this.chunks = [];
     const self = this;
-    this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     this.mediaRecorder = new MediaRecorder(this.stream);
     this.mediaRecorder.ondataavailable = (e: any) => {
@@ -120,6 +120,14 @@ export class AudioRecordingService {
     canvasCtx.stroke();
   }
 
+  stopRecordingWithoutBlob() {
+    if(!this.mediaRecorder) {
+      throw new Error("Media Recorder is not available.");
+    }
+
+    this.mediaRecorder.stop();
+  }
+
   async stopRecording(): Promise<Blob> {
     if(!this.mediaRecorder) {
       throw new Error("Media Recorder is not available.");
@@ -138,7 +146,7 @@ export class AudioRecordingService {
         return resolve(blob);
       }
 
-      this.mediaRecorder?.stop();
+      self.mediaRecorder?.stop();
     })
   }
 }

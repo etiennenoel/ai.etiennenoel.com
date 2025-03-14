@@ -72,6 +72,10 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
   public audioSrc?: string;
 
+  public stream?: MediaStream;
+
+  autoRestartInterval?: any;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
@@ -138,7 +142,17 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     this.audioRecordingService.chunkAvailableCallback = (chunk: any) => {
       self.chunkAvailable(chunk);
     }
-    await this.audioRecordingService.startRecording(this.chunkInterval ?? undefined);
+
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    this.audioRecordingService.startRecording(this.stream);
+
+    // Restart data stream
+    this.autoRestartInterval = setInterval(() => {
+      this.audioRecordingService.stopRecordingWithoutBlob();
+
+      this.audioRecordingService.startRecording(self.stream!);
+    }, 1000);
   }
 
   async chunkAvailable(chunk: any) {
@@ -152,7 +166,9 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
 
-      const languageModel = await this.window?.ai.languageModel.create();
+      console.log(audioBuffer);
+
+      /*const languageModel = await this.window?.ai.languageModel.create();
 
       this.output += await languageModel.prompt([
         prompt,
@@ -160,7 +176,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
           type: 'audio',
           content: audioBuffer,
         }
-      ]);
+      ]);*/
       this.status = TaskStatus.Completed;
 
     } catch (e: any) {
@@ -173,6 +189,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     this.isRecording = false;
 
     clearInterval(this.recordingInterval);
+    clearInterval(this.autoRestartInterval);
 
     // Call it one last time to update the true duration.
     this.updateRecordingDuration();

@@ -62,6 +62,8 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
   @ViewChild("canvasElement")
   public canvasElement?: ElementRef;
 
+  stream?: MediaStream;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
@@ -108,7 +110,9 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
       return;
     }
 
-    await this.audioRecordingService.startRecording();
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    await this.audioRecordingService.startRecording(this.stream);
   }
 
   async stopRecording() {
