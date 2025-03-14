@@ -76,6 +76,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
   autoRestartInterval?: any;
 
+  public languageModel?;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
@@ -88,7 +90,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     super(document, title);
   }
 
-  override ngOnInit() {
+  override async ngOnInit() {
     super.ngOnInit();
 
     this.setTitle("Transcription (using Audio Prompt API (Experimental)) | AI Playground");
@@ -104,6 +106,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
         this.setChunkInterval(params['chunkInterval']);
       }
     }))
+
+    this.languageModel = await this.window?.ai.languageModel.create();
   }
 
   ngAfterViewInit() {
@@ -160,15 +164,17 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     this.status = TaskStatus.Executing
 
     try {
+      if(!this.languageModel) {
+        throw new Error("Language model not loaded");
+      }
+      
       const blob = new Blob([chunk], {type: this.audioRecordingService.mediaRecorder?.mimeType});
       const prompt = `Transcribe this`;
 
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
 
-      const languageModel = await this.window?.ai.languageModel.create();
-
-      const result= await languageModel.prompt([
+      const result= await this.languageModel.prompt([
         prompt,
         {
           type: 'audio',
