@@ -169,6 +169,9 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       if(!this.languageModel) {
         throw new Error("Language model not loaded");
       }
+
+      const prompt = `Transcribe this`;
+
       const result= await this.languageModel.prompt([
         prompt,
         {
