@@ -108,42 +108,42 @@ export async function* processStream(
   }
 }
 
-const output = document.querySelector('#output');
+// const output = document.querySelector('#output');
 
 /**
  * Demo that uses a sample audio file.
  */
-export async function sampleDemo() {
-  const audioCtx = new AudioContext();
-  const request = await fetch(
-    'https://cdn.glitch.global/e5522a51-ab87-443b-80b5-2ce583856d56/en_jeremyt_2.wav?v=1740437231265'
-  );
-  const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer());
-  try {
-    const s = await window.ai.languageModel.create();
-    const r = await s.prompt([
-      GEMINI_V2_PROMPT,
-      { type: 'audio', content: buffer as unknown as string },
-    ]);
-    console.log(r);
-    if (output) output.textContent = r;
-  } catch (e) {
-    console.error(e);
-    if (output) output.textContent = String(e);
-  }
-}
-
-/**
- * Demo that uses the microphone.
- */
-export async function microphoneDemo() {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-  for await (const chunk of processStream(stream)) {
-    console.log(chunk);
-    if (output) output.textContent = chunk;
-  }
-}
-
-document.querySelector('#mic')?.addEventListener('click', microphoneDemo);
-document.querySelector('#sample')?.addEventListener('click', sampleDemo);
+// export async function sampleDemo() {
+//   const audioCtx = new AudioContext();
+//   const request = await fetch(
+//     'https://cdn.glitch.global/e5522a51-ab87-443b-80b5-2ce583856d56/en_jeremyt_2.wav?v=1740437231265'
+//   );
+//   const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer());
+//   try {
+//     const s = await window.ai.languageModel.create();
+//     const r = await s.prompt([
+//       GEMINI_V2_PROMPT,
+//       { type: 'audio', content: buffer as unknown as string },
+//     ]);
+//     console.log(r);
+//     if (output) output.textContent = r;
+//   } catch (e) {
+//     console.error(e);
+//     if (output) output.textContent = String(e);
+//   }
+// }
+//
+// /**
+//  * Demo that uses the microphone.
+//  */
+// export async function microphoneDemo() {
+//   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+//
+//   for await (const chunk of processStream(stream)) {
+//     console.log(chunk);
+//     if (output) output.textContent = chunk;
+//   }
+// }
+//
+// document.querySelector('#mic')?.addEventListener('click', microphoneDemo);
+// document.querySelector('#sample')?.addEventListener('click', sampleDemo);
