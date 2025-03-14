@@ -8,6 +8,8 @@ import {Title} from '@angular/platform-browser';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {AudioRecordingService} from '../../services/audio-recording.service';
 import {FormControl} from '@angular/forms';
+import {processStream} from '../../audio-processing-module/main';
+import {AudioVisualizerService} from '../../services/audio-visualizer.service';
 
 
 @Component({
@@ -86,6 +88,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     title: Title,
 
     private readonly audioRecordingService: AudioRecordingService,
+    private readonly audioVisualizerService: AudioVisualizerService,
   ) {
     super(document, title);
   }
@@ -112,7 +115,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
   ngAfterViewInit() {
     if(isPlatformBrowser(this.platformId) && this.canvasElement) {
-      this.audioRecordingService.init(this.canvasElement)
+      this.audioVisualizerService.init(this.canvasElement)
     }
   }
 
@@ -149,14 +152,13 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    this.audioRecordingService.startRecording(this.stream);
+    //this.audioRecordingService.startRecording(this.stream);
 
-    // Restart data stream
-    this.autoRestartInterval = setInterval(() => {
-      this.audioRecordingService.stopRecordingWithoutBlob();
+    this.audioVisualizerService.visualize(this.stream);
 
-      this.audioRecordingService.startRecording(self.stream!);
-    }, this.chunkInterval ?? 1000);
+    for await (const chunk of processStream(this.stream)) {
+      await this.chunkAvailable(chunk)
+    }
   }
 
   async chunkAvailable(chunk: any) {
@@ -167,18 +169,11 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       if(!this.languageModel) {
         throw new Error("Language model not loaded");
       }
-
-      const blob = new Blob([chunk], {type: this.audioRecordingService.mediaRecorder?.mimeType});
-      const prompt = `Transcribe this`;
-
-      const audioContext = new AudioContext();
-      const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
-
       const result= await this.languageModel.prompt([
         prompt,
         {
           type: 'audio',
-          content: audioBuffer,
+          content: chunk,
         }
       ]);
 

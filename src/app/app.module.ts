@@ -34,11 +34,6 @@ import {PageAccordionComponent} from './components/page-accordion/page-accordion
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
 import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
-// @end
-import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
-import {Environment} from './environments/environment';
-import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
-import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 import {AudioPromptFromUrlComponent} from './components/audio-prompt-from-url/audio-prompt-from-url.component';
 import {AudioPromptFromFileComponent} from './components/audio-prompt-from-file/audio-prompt-from-file.component';
 import {
@@ -48,6 +43,12 @@ import {AudioRecordingService} from './services/audio-recording.service';
 import {
   TranscriptionAudioMultimodalPromptComponent
 } from './pages/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
+import {AudioVisualizerService} from './services/audio-visualizer.service';
+// @end
+import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
+import {Environment} from './environments/environment';
+import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
+import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 
 @NgModule({
   declarations: [
@@ -110,9 +111,11 @@ import {
   providers: [
     provideClientHydration(withEventReplay()),
 
+    // @start-remove-in-chrome-dev
     // Services
     AudioRecordingService,
-
+    AudioVisualizerService,
+// @end
     // Stores
     ToastStore,
   ],

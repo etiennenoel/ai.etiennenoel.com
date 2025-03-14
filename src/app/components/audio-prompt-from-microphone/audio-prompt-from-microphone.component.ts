@@ -5,6 +5,7 @@ import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {BaseComponent} from '../base/base.component';
 import {FormControl} from '@angular/forms';
 import {AudioRecordingService} from '../../services/audio-recording.service';
+import {AudioVisualizerService} from '../../services/audio-visualizer.service';
 
 @Component({
   selector: 'app-audio-prompt-from-microphone',
@@ -70,6 +71,7 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly audioRecordingService: AudioRecordingService,
+    private readonly audioVisualizerService: AudioVisualizerService
   ) {
     super(document);
   }
@@ -94,7 +96,7 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
 
   ngAfterViewInit() {
     if(isPlatformBrowser(this.platformId) && this.canvasElement) {
-      this.audioRecordingService.init(this.canvasElement)
+      this.audioVisualizerService.init(this.canvasElement)
     }
   }
 
@@ -112,6 +114,7 @@ export class AudioPromptFromMicrophoneComponent extends BaseComponent implements
 
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
+    await this.audioVisualizerService.visualize(this.stream);
     await this.audioRecordingService.startRecording(this.stream);
   }
 
