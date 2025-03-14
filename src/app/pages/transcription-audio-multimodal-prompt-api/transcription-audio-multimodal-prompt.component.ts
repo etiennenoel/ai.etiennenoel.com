@@ -175,8 +175,6 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
   public stream?: MediaStream;
 
-  autoRestartInterval?: any;
-
   public languageModel?: any;
 
   constructor(
@@ -268,14 +266,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       return;
     }
 
-    const self = this;
-    this.audioRecordingService.chunkAvailableCallback = (chunk: any) => {
-      self.chunkAvailable(chunk);
-    }
-
     this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-    //this.audioRecordingService.startRecording(this.stream);
 
     this.audioVisualizerService.visualize(this.stream);
 
@@ -324,13 +315,13 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     this.isRecording = false;
 
     clearInterval(this.recordingInterval);
-    clearInterval(this.autoRestartInterval);
 
     // Call it one last time to update the true duration.
     this.updateRecordingDuration();
 
-    this.audioBlob = await this.audioRecordingService.stopRecording();
-    this.audioSrc = URL.createObjectURL(this.audioBlob);
+    this.stream?.getAudioTracks().forEach((track: any) => {
+      track.stop();
+    });
   }
 
   updateRecordingDuration() {
