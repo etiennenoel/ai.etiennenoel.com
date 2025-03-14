@@ -16,7 +16,7 @@ declare global {
 const MIC_SAMPLE_RATE = 48_000;
 
 const CHUNK_SIZE = MIC_SAMPLE_RATE * 10;
-const STEP_SIZE = MIC_SAMPLE_RATE * 3;
+const STEP_SIZE = MIC_SAMPLE_RATE * 1;
 
 const SILENCE = new Float32Array(MIC_SAMPLE_RATE / 10);
 
