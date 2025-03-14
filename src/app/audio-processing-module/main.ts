@@ -95,7 +95,7 @@ export async function* processStream(
     });
     content.copyToChannel(trueChunk, 0, 0);
 
-    // yield content;
+    yield content;
     //
     // const nextText = await s.prompt([
     //   GEMINI_V2_PROMPT,
