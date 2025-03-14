@@ -176,6 +176,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
         }
       ]);
 
+      console.log(result);
+
       this.output += result;
       this.status = TaskStatus.Completed;
 
