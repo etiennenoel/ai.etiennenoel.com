@@ -174,7 +174,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   public audioSrc?: string;
 
   public stream?: MediaStream;
-
+  
   public languageModel?: any;
 
   constructor(
@@ -231,7 +231,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       }
     }))
 
-    this.languageModel = await this.window?.ai.languageModel.create();
+    // @ts-expect-error
+    this.languageModel = await LanguageModel.create();
   }
 
   ngAfterViewInit() {
@@ -241,12 +242,9 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId) && this.window && !("languageModel" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.languageModel' is not defined. Activate the flag.";
+      this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
     } else if (isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";

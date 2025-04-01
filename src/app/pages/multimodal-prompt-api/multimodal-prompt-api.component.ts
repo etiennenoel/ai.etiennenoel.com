@@ -202,12 +202,9 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId) && this.window && !("languageModel" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.languageModel' is not defined. Activate the flag.";
+      this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
@@ -359,13 +356,14 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
   get checkAvailabilityCode(): string {
-    return `window.ai.languageModel.availability({
+    return `LanguageModel.availability({
 })`
   }
 
   async checkAvailability() {
     try {
-      this.availabilityStatus = await window.ai.languageModel.availability({})
+      // @ts-expect-error
+      this.availabilityStatus = await LanguageModel.availability({})
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.error = e;
@@ -373,7 +371,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   }
 
   get executeCode(): string {
-    return `const languageModel = await window.ai.languageModel.create();
+    return `const languageModel = await LanguageModel.create();
 
 const audioContext = new AudioContext();
 const file = await options.fileSystemFileHandle.getFile();
@@ -465,7 +463,8 @@ const output = await languageModel.prompt([
       this.output = "";
       this.loaded = 0;
 
-      const languageModel = await this.window?.ai.languageModel.create();
+      // @ts-expect-error
+      const languageModel = await LanguageModel.create();
 
       const prompts: any[] = await this.prompts();
 
