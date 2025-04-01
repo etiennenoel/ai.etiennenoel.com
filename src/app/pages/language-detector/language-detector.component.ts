@@ -165,7 +165,7 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("LanguageDetector" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageDetector" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'LanguageDetector' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {

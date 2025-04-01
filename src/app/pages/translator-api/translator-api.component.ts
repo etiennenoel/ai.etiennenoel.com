@@ -223,8 +223,7 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
   }
 
   checkRequirements() {
-    // Check if the translation API flag is enabled
-    if (isPlatformBrowser(this.platformId) && !("Translator" in window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("Translator" in window))) {
       this.requirements.translationApiFlag.status = RequirementStatus.Fail;
       this.requirements.translationApiFlag.message = "'Translator' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {

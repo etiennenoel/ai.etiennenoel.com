@@ -218,8 +218,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
   }
 
   checkRequirements() {
-    // @ts-ignore
-    if (isPlatformBrowser(this.platformId) && !("Summarizer" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("Summarizer" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'Summarizer' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
