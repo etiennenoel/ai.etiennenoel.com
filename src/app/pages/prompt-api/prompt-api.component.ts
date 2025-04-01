@@ -200,12 +200,9 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId) && this.window && !("languageModel" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.languageModel' is not defined. Activate the flag.";
+      this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
@@ -215,7 +212,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
   get checkAvailabilityCode(): string {
-    return `window.ai.languageModel.availability({
+    return `const status = await LanguageModel.availability({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
@@ -224,7 +221,8 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
 
   async checkAvailability() {
     try {
-      this.availabilityStatus = await window.ai.languageModel.availability({
+      // @ts-expect-error
+      this.availabilityStatus = await LanguageModel.availability({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
@@ -236,12 +234,13 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   }
 
   get paramsCode(): string {
-    return `const params = window.ai.languageModel.params()`;
+    return `const params = LanguageModel.params()`;
   }
 
   async getParams() {
     try {
-      this.params = await window.ai.languageModel.params();
+      // @ts-expect-error
+      this.params = await LanguageModel.params();
     } catch (e: any) {
       this.error = e;
     }
@@ -250,7 +249,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   get executeCode(): string {
     let code = `const abortController = new AbortController();
 
-const session = await window.ai.languageModel.create({
+const session = await LanguageModel.create({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
@@ -292,7 +291,8 @@ const session = await window.ai.languageModel.create({
       const abortController = new AbortController();
       this.error = undefined;
 
-      const session = await window.ai.languageModel.create({
+      // @ts-expect-error
+      const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
