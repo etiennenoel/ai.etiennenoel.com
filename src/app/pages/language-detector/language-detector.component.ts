@@ -165,12 +165,9 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && this.window && !("LanguageDetector" in this.window)) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId) && this.window && !("languageDetector" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.languageDetector' is not defined. Activate the flag.";
+      this.apiFlag.message = "'LanguageDetector' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
@@ -182,26 +179,22 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   }
 
   get availabilityCode(): string {
-//     return `window.ai.languageDetector.availability({
-//   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
-// })`;
-
-    return `const capabilities = await window.ai.languageDetector.capabilities({
+    return `const availabilityStatus = await LanguageDetector.availability({
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
-});
-
-const availabilityStatus = capabilities.available;`;
+});`;
   }
 
   // todo: remove this.
   async checkAvailability() {
     try {
       this.availabilityTaskStatus = TaskStatus.Executing;
-      const capabilities = await this.window?.ai.languageDetector.capabilities({
+
+      // @ts-expect-error
+      const capabilities = await LanguageDetector.availability({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
 
-      this.availabilityStatus = capabilities.available;
+      this.availabilityStatus = capabilities;
 
       this.availabilityTaskStatus = TaskStatus.Completed;
     } catch (e: any) {
@@ -227,7 +220,7 @@ const availabilityStatus = capabilities.available;`;
   }
 
   get detectCode(): string {
-    return `const detector = await window.ai.languageDetector.create({
+    return `const detector = await LanguageDetector.create({
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
   monitor(m: any)  {
     m.addEventListener("downloadprogress", (e: any) => {
@@ -250,7 +243,8 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.detectionStatus = TaskStatus.Executing;
       this.error = undefined;
 
-      const detector = await window.ai.languageDetector.create({
+      // @ts-expect-error
+      const detector = await LanguageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
