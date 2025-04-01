@@ -216,7 +216,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
   }
 
   checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && this.window && !("Writer" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("Writer" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'Writer' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {

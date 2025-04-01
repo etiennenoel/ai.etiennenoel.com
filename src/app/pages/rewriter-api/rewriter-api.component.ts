@@ -112,7 +112,7 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
   }
 
   get checkAvailabilityCode() {
-    return `window.ai.rewriter.availability({
+    return `Rewriter.availability({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -126,7 +126,7 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
     if(this.useStreamingFormControl.value) {
       return `const abortController = new AbortController();
 
-const rewriter = await window.ai.rewriter.create({
+const rewriter = await Rewriter.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -151,7 +151,7 @@ for await (const chunk of stream) {
     } else {
       return `const abortController = new AbortController();
 
-const rewriter = await window.ai.rewriter.create({
+const rewriter = await Rewriter.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -215,15 +215,9 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
   }
 
   checkRequirements() {
-    // @ts-ignore
-    if (isPlatformBrowser(this.platformId) && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && (!this.window || !("Rewriter" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    }
-    // @ts-ignore
-    else if (isPlatformBrowser(this.platformId) && !("rewriter" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.rewriter' is not defined. Activate the flag.";
+      this.apiFlag.message = "'Rewriter' is not defined. Activate the flag.";
     }
     else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
@@ -233,8 +227,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
 
   async checkAvailability() {
     try {
-      // @ts-ignore
-      this.availabilityStatus = await this.window.ai.rewriter.availability({
+      // @ts-expect-error
+      this.availabilityStatus = await Rewriter.availability({
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
@@ -265,8 +259,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      // @ts-ignore
-      const rewriter = await this.window.ai.rewriter.create({
+      // @ts-expect-error
+      const rewriter = await Rewriter.create({
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
