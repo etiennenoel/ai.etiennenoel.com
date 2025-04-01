@@ -108,7 +108,7 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
   protected outputStatusMessage: string = "";
 
   get checkAvailabilityCode() {
-    return `window.ai.summarizer.availability({
+    return `Summarizer.availability({
   type: '${this.typeFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -122,7 +122,7 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
     if(this.useStreamingFormControl.value) {
       return `const abortController = new AbortController();
 
-const summarizer = await window.ai.summarizer.create({
+const summarizer = await Summarizer.create({
   type: '${this.typeFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -147,7 +147,7 @@ for await (const chunk of stream) {
     } else {
       return `const abortController = new AbortController();
 
-const summarizer = await window.ai.summarizer.create({
+const summarizer = await Summarizer.create({
   type: '${this.typeFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -219,12 +219,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
 
   checkRequirements() {
     // @ts-ignore
-    if (isPlatformBrowser(this.platformId) && !("ai" in this.window)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    }
-    // @ts-ignore
-    else if (isPlatformBrowser(this.platformId) && !("summarizer" in this.window.ai)) {
+    if (isPlatformBrowser(this.platformId) && !("Summarizer" in this.window)) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'window.ai.summarizer' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
@@ -236,7 +231,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
   async checkAvailability() {
     try {
       // @ts-ignore
-      this.availabilityStatus = await this.window.ai.summarizer.availability({
+      this.availabilityStatus = await Summarizer.availability({
         type: this.typeFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
@@ -268,7 +263,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       this.abortController = new AbortController();
 
       // @ts-ignore
-      const summarizer = await this.window.ai.summarizer.create({
+      const summarizer = await Summarizer.create({
         type: this.typeFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
