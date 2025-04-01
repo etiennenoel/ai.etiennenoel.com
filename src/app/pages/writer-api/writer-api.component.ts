@@ -114,7 +114,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
   }
 
   get checkAvailabilityCode() {
-    return `window.ai.writer.availability({
+    return `Writer.availability({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -138,7 +138,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     if(this.useStreamingFormControl.value) {
       return `const abortController = new AbortController();
 
-const writer = await window.ai.writer.create({
+const writer = await Writer.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -163,7 +163,7 @@ for await (const chunk of stream) {
     } else {
       return `const abortController = new AbortController();
 
-const writer = await window.ai.writer.create({
+const writer = await Writer.create({
   tone: '${this.toneFormControl.value}',
   format: '${this.formatFormControl.value}',
   length: '${this.lengthFormControl.value}',
@@ -216,15 +216,9 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
   }
 
   checkRequirements() {
-    // @ts-ignore
-    if (isPlatformBrowser(this.platformId) && !("ai" in this.window)) {
+    if (isPlatformBrowser(this.platformId) && this.window && !("Writer" in this.window)) {
       this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    }
-    // @ts-ignore
-    else if (isPlatformBrowser(this.platformId) && !("writer" in this.window.ai)) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'window.ai.writer' is not defined. Activate the flag.";
+      this.apiFlag.message = "'Writer' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
@@ -234,7 +228,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
   async checkAvailability() {
     try {
       // @ts-ignore
-      this.availabilityStatus = await this.window.ai.writer.availability({
+      this.availabilityStatus = await Writer.availability({
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
@@ -266,7 +260,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       this.abortController = new AbortController();
 
       // @ts-ignore
-      const writer = await this.window.ai.writer.create({
+      const writer = await Writer.create({
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
         length: this.lengthFormControl.value,
