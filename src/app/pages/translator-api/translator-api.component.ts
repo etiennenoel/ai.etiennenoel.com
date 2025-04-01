@@ -17,6 +17,12 @@ import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
 
+declare global {
+  interface Translator {
+    create: (...args: any) => any;
+  }
+}
+
 @Component({
   selector: 'app-translator-api',
   templateUrl: './translator-api.component.html',
@@ -218,14 +224,9 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
 
   checkRequirements() {
     // Check if the translation API flag is enabled
-    if (isPlatformBrowser(this.platformId) && !("ai" in window)) {
+    if (isPlatformBrowser(this.platformId) && !("Translator" in window)) {
       this.requirements.translationApiFlag.status = RequirementStatus.Fail;
-      this.requirements.translationApiFlag.message = "'window.ai' is not defined. Activate the flag.";
-    }
-    // @ts-ignore
-    else if (isPlatformBrowser(this.platformId) && !("translator" in window.ai)) {
-      this.requirements.translationApiFlag.status = RequirementStatus.Fail;
-      this.requirements.translationApiFlag.message = "'window.ai.translator' is not defined. Activate the flag.";
+      this.requirements.translationApiFlag.message = "'Translator' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.requirements.translationApiFlag.status = RequirementStatus.Pass;
       this.requirements.translationApiFlag.message = "Passed";
@@ -238,19 +239,17 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
   }
 
   get checkAvailabilityCode(){
-    return `const translatorCapabilities = await window.ai.translator.capabilities();
-const availability = translatorCapabilities.languagePairAvailable("${this.sourceLanguage.value}", "${this.targetLanguage.value}");
+    return `const availability = await Translator.availability({sourceLanguage: "${this.sourceLanguage.value}", targetLanguage: "${this.targetLanguage.value}"});
 console.log(Result of availability: '\${availability}'.);`;
   }
 
   async checkAvailability() {
-    const translatorCapabilities = await window.ai.translator.capabilities();
-
-    this.availabilityStatus = await translatorCapabilities.languagePairAvailable(this.sourceLanguage.value, this.targetLanguage.value);
+    // @ts-expect-error
+    this.availabilityStatus = await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value});
   }
 
   get translateCode() {
-    return `const translator = await ai.translator.create({
+    return `const translator = await Translator.create({
     sourceLanguage: "${this.sourceLanguage.value}",
     targetLanguage: "${this.targetLanguage.value}",
     monitor(m) {
@@ -272,7 +271,8 @@ await translator.translate("${this.content.value}")
       this.output = "";
       this.loaded = 0;
 
-      const translator = await window.ai.translator.create({
+      // @ts-expect-error
+      const translator = await Translator.create({
         sourceLanguage: this.sourceLanguage.value,
         targetLanguage: this.targetLanguage.value,
         monitor(m: any) {
