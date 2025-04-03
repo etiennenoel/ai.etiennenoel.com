@@ -170,7 +170,11 @@ prompt,
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
 
-      const languageModel = await this.window?.ai.languageModel.create();
+      const languageModel = await this.window?.ai.languageModel.create({
+        expectedInputs: [
+          { type: "audio" },
+        ]
+      });
       this.output = await languageModel.prompt([
         this.audioUrlPrompt,
         {
