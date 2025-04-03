@@ -464,7 +464,12 @@ const output = await languageModel.prompt([
       this.loaded = 0;
 
       // @ts-expect-error
-      const languageModel = await LanguageModel.create();
+      const languageModel = await LanguageModel.create({
+        expectedInputs: [
+          { type: "audio" },
+          { type: "image" }
+        ]
+      });
 
       const prompts: any[] = await this.prompts();
 

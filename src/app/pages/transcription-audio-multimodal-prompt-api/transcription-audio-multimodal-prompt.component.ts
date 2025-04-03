@@ -174,7 +174,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   public audioSrc?: string;
 
   public stream?: MediaStream;
-  
+
   public languageModel?: any;
 
   constructor(
@@ -232,7 +232,11 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     }))
 
     // @ts-expect-error
-    this.languageModel = await LanguageModel.create();
+    this.languageModel = await LanguageModel.create({
+      expectedInputs: [
+        { type: "audio" },
+      ]
+    });
   }
 
   ngAfterViewInit() {
