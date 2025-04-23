@@ -145,7 +145,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   jsonSchema: string = "";
   // </editor-fold>
 
-  private _includeJSONSchema: boolean = true;
+  private _includeJSONSchema: boolean = false;
 
   get includeJSONSchema(): boolean {
     return this._includeJSONSchema;
@@ -497,6 +497,7 @@ const output = await languageModel.prompt([
       this.outputCollapsed = false;
       this.output = "";
       this.loaded = 0;
+      this.error = undefined;
 
       // @ts-expect-error
       const languageModel = await LanguageModel.create({
@@ -509,9 +510,10 @@ const output = await languageModel.prompt([
       const prompts: any[] = await this.prompts();
 
       if(this.includeJSONSchema) {
-        this.output = await languageModel.prompt(prompts);
+
+        this.output = await languageModel.prompt(prompts, {responseJSONSchema: JSON.parse(this.jsonSchema)});
       } else {
-        this.output = await languageModel.prompt(prompts, {responseJSONSchema: this.jsonSchema})
+        this.output = await languageModel.prompt(prompts)
       }
 
       this.status = TaskStatus.Completed;
