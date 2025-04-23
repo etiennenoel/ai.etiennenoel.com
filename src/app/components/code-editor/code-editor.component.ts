@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, ElementRef, Inject, Input, PLATFORM_ID, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  Output,
+  PLATFORM_ID,
+  ViewChild
+} from '@angular/core';
 import {RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 
@@ -30,8 +40,13 @@ export class CodeEditorComponent implements AfterViewInit {
       return;
     }
 
+    const cursorPosition = this.editor.aceEditor.getCursorPosition();
     this.editor.setValue(value, -1);
+    this.editor.aceEditor.moveCursorToPosition(cursorPosition);
   }
+
+  @Output()
+  codeChange: any = new EventEmitter<string>();
 
   @Input()
   readonly = false;
@@ -58,6 +73,11 @@ export class CodeEditorComponent implements AfterViewInit {
     //editor.setTheme("ace/theme/github");
     this.editor.setShowPrintMargin(false);
     this.editor.setHighlightActiveLine(false);
+
+    this.editor.session.on('change', (delta: any) => {
+      const value = this.editor.getValue();
+      this.codeChange.emit(value);
+    })
 
     //ace.config.set("", "14px");
     //const aceEditor = ace.edit(this.editor.nativeElement);

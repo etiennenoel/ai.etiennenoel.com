@@ -96,6 +96,21 @@
 
   <div class="row mt-5">
     <div class="col-12">
+      <h3 class="d-flex align-items-center gap-3">
+        <div>JSON Schema</div>
+        <div class="form-check form-switch fs-6">
+        <input class="form-check-input" type="checkbox" role="switch" id="includeJSONSchema"
+               [(ngModel)]="includeJSONSchema">
+
+      </div></h3>
+
+      <code-editor [code]="jsonSchema" (codeChange)="jsonSchemaChange($event)" [readonly]="false" [height]="'350px'"></code-editor>
+
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12">
       <h3>Media</h3>
 
       <div cdkDropList (cdkDropListDropped)="drop($event)">

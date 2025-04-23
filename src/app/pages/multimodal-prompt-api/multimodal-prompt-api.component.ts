@@ -1,4 +1,14 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+  SimpleChanges
+} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
@@ -131,6 +141,21 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
 
   public outputCollapsed = true;
 
+  // <editor-fold desc="Json Schema">
+  jsonSchema: string = "";
+  // </editor-fold>
+
+  private _includeJSONSchema: boolean = true;
+
+  get includeJSONSchema(): boolean {
+    return this._includeJSONSchema;
+  }
+
+  set includeJSONSchema(value: boolean) {
+    this._includeJSONSchema = value;
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { includeJSONSchema: value}, queryParamsHandling: 'merge' });
+  }
+
   audioSamples: AudioSampleInterface[] = [
     {
       filename: "audio_clip_1_woman_english.mp3",
@@ -188,6 +213,12 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       if (params['promptTypes']) {
         this.promptTypesFormControl.setValue(params['promptTypes']);
       }
+      if (params['jsonSchema']) {
+        this.jsonSchema = params['jsonSchema'];
+      }
+      if (params['includeJSONSchema']) {
+        this._includeJSONSchema = params['includeJSONSchema'] === "true";
+      }
     }));
 
     this.subscriptions.push(this.promptFormControl.valueChanges.subscribe((value) => {
@@ -199,6 +230,10 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
     }));
 
     this.checkRequirements()
+  }
+
+  jsonSchemaChange(jsonSchema: string) {
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { jsonSchema}, queryParamsHandling: 'merge' });
   }
 
   checkRequirements() {
@@ -473,7 +508,11 @@ const output = await languageModel.prompt([
 
       const prompts: any[] = await this.prompts();
 
-      this.output = await languageModel.prompt(prompts);
+      if(this.includeJSONSchema) {
+        this.output = await languageModel.prompt(prompts);
+      } else {
+        this.output = await languageModel.prompt(prompts, {responseJSONSchema: this.jsonSchema})
+      }
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {
