@@ -510,8 +510,8 @@ const output = await languageModel.prompt([
       const prompts: any[] = await this.prompts();
 
       if(this.includeJSONSchema) {
-
-        this.output = await languageModel.prompt(prompts, {responseJSONSchema: JSON.parse(this.jsonSchema)});
+        const jsonSchemaCleaned = this.jsonSchema.replace(/\\n/g, "\n").replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        this.output = await languageModel.prompt(prompts, {responseJSONSchema: JSON.parse(jsonSchemaCleaned)});
       } else {
         this.output = await languageModel.prompt(prompts)
       }
