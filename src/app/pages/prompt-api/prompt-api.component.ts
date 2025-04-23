@@ -196,7 +196,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
-    contentHtml: 'Activate <span class="code">chrome://flags/#content-api-for-gemini-nano</span>'
+    contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano</span>'
   }
 
   checkRequirements() {
