@@ -1,0 +1,27 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+
+  <app-page-title [title]="'Download Tester'" [icon]="'bi-percent'">
+  </app-page-title>
+
+  <h2 class="display-6 mt-5"><i class="bi bi-text-paragraph"></i> Summarizer</h2>
+  <hr>
+
+  <div class="progress" role="progressbar">
+    <div class="progress-bar" [style.width]="downloadProgressSummarizer + '%'">{{ downloadProgressSummarizer }}%</div>
+  </div>
+
+  <p class="mt-2">Progress: {{ downloadProgressSummarizer }}%</p>
+
+  <p class="mt-2"><span class="badge"
+        [class.text-bg-secondary]="statusSummarizer === TaskStatus.Idle"
+        [class.text-bg-primary]="statusSummarizer === TaskStatus.Executing"
+        [class.text-bg-success]="statusSummarizer === TaskStatus.Completed"
+        [class.text-bg-danger]="statusSummarizer === TaskStatus.Error"
+  >{{ statusSummarizer }}</span></p>
+
+  <button class="btn btn-primary mt-2" (click)="createSummarizer()">Create (and if necessary download the model for) Summarizer</button>
+</div>

@@ -49,6 +49,7 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 import {Environment} from './environments/environment';
 import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
+import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-i
     ToastComponent,
 
     // Pages
+    DownloadTesterComponent,
     IndexComponent,
     LanguageDetectorComponent,
     PromptApiComponent,

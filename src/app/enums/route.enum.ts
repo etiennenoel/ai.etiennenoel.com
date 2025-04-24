@@ -1,4 +1,5 @@
 export enum RouteEnum {
+  DownloadTester ='download-tester',
   TranslatorApi ='translator-api',
   LanguageDetectorApi = 'language-detector-api',
   WriterApi = 'writer-api',

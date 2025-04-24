@@ -16,12 +16,18 @@ import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-ap
 import {
   TranscriptionAudioMultimodalPromptComponent
 } from './pages/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
+import {RouteEnum} from './enums/route.enum';
+import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 // @end
 
 const layouts: Routes = [
   {
     path: "",
     component: IndexComponent,
+  },
+  {
+    path: RouteEnum.DownloadTester,
+    component: DownloadTesterComponent,
   },
   {
     path: "translator-api",
