@@ -23,5 +23,17 @@
         [class.text-bg-danger]="statusSummarizer === TaskStatus.Error"
   >{{ statusSummarizer }}</span></p>
 
-  <button class="btn btn-primary mt-2" (click)="createSummarizer()">Create (and if necessary download the model for) Summarizer</button>
+  <p class="mt-2"><span class="badge"
+        [class.text-bg-secondary]="availabilityStatusSummarizer === AvailabilityStatusEnum.Unknown"
+        [class.text-bg-primary]="availabilityStatusSummarizer === AvailabilityStatusEnum.Downloading"
+        [class.text-bg-warning]="availabilityStatusSummarizer === AvailabilityStatusEnum.Downloadable"
+        [class.text-bg-success]="availabilityStatusSummarizer === AvailabilityStatusEnum.Available"
+        [class.text-bg-danger]="availabilityStatusSummarizer === AvailabilityStatusEnum.Unavailable"
+  >{{ availabilityStatusSummarizer }}</span></p>
+
+  <div class="mt-2">
+  <button class="btn btn-primary" (click)="availabilitySummarizer()">Available</button>
+
+  <button class="btn btn-primary" (click)="createSummarizer()">Create (and if necessary download the model for) Summarizer</button>
+  </div>
 </div>

@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
+import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 
 @Component({
   selector: 'app-download-tester',
@@ -11,8 +12,26 @@ export class DownloadTesterComponent {
   downloadProgressSummarizer: number = 0;
 
   statusSummarizer: TaskStatus = TaskStatus.Idle;
+  availabilityStatusSummarizer: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
   error?: string;
+
+  async availabilitySummarizer() {
+    this.error = undefined;
+    const self = this;
+    this.availabilityStatusSummarizer = AvailabilityStatusEnum.Unknown;
+
+    try {
+      // @ts-expect-error
+      this.availabilityStatusSummarizer = await Summarizer.availability({
+        type: "headline",
+        format: "plain-text",
+        length: "medium",
+      })
+    } catch (e: any) {
+      this.error = e;
+    }
+  }
 
   async createSummarizer() {
     this.error = undefined;
@@ -42,4 +61,5 @@ export class DownloadTesterComponent {
 
 
   protected readonly TaskStatus = TaskStatus;
+  protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
 }
