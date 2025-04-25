@@ -40,9 +40,9 @@ export class CodeEditorComponent implements AfterViewInit {
       return;
     }
 
-    const cursorPosition = this.editor.aceEditor.getCursorPosition();
+    const cursorPosition = this.editor.getCursorPosition();
     this.editor.setValue(value, -1);
-    this.editor.aceEditor.moveCursorToPosition(cursorPosition);
+    this.editor.moveCursorToPosition(cursorPosition);
   }
 
   @Output()
