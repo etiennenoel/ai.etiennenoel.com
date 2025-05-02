@@ -29,7 +29,11 @@ import {BasePageComponent} from '../../components/base/base-page.component';
 export class PromptApiComponent extends BasePageComponent implements OnInit {
   medias: MediaInformationInterface[] = [];
 
-  error?: string;
+  public error?: Error;
+
+  public outputCollapsed = true;
+
+  public outputChunks: string[] = [];
 
   output?: string;
 
@@ -114,37 +118,9 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
 
   // </editor-fold>
 
-  // <editor-fold desc="System Prompt">
-  private _systemPrompt: string | null = "";
-  public systemPromptFormControl: FormControl<string | null> = new FormControl<string | null>("");
-
-  get systemPrompt(): string | null {
-    return this._systemPrompt;
-  }
-
-  @Input()
-  set systemPrompt(value: string | null) {
-    this.setSystemPrompt(value);
-  }
-
-  setSystemPrompt(value: string | null, options?: {
-    emitFormControlEvent?: boolean,
-    emitChangeEvent?: boolean
-  }) {
-    this._systemPrompt = value;
-    this.systemPromptFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
-    if (options?.emitChangeEvent ?? true) {
-      this.systemPromptChange.emit(value);
-    }
-  }
-
-  @Output()
-  systemPromptChange = new EventEmitter<string | null>();
-  // </editor-fold>
-
   // <editor-fold desc="Prompt Type">
-  private _promptType: PromptTypeEnum | null = PromptTypeEnum.SequenceAILanguageModelPrompt;
-  public promptTypeFormControl: FormControl<PromptTypeEnum | null> = new FormControl<PromptTypeEnum | null>(PromptTypeEnum.SequenceAILanguageModelPrompt);
+  private _promptType: PromptTypeEnum | null = PromptTypeEnum.String;
+  public promptTypeFormControl: FormControl<PromptTypeEnum | null> = new FormControl<PromptTypeEnum | null>(PromptTypeEnum.String);
 
   get promptType(): PromptTypeEnum | null {
     return this._promptType;
@@ -168,6 +144,51 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
 
   @Output()
   promptTypeChange = new EventEmitter<PromptTypeEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Use Streaming">
+  private _useStreaming: boolean | null = true;
+  public useStreamingFormControl = new FormControl<boolean>(true);
+  @Output()
+  useStreamingChange = new EventEmitter<boolean | null>();
+
+  get useStreaming(): boolean | null {
+    return this._useStreaming;
+  }
+
+  @Input()
+  set useStreaming(value: boolean | null) {
+    this.setUseStreaming(value);
+  }
+
+  setUseStreaming(value: boolean | null, options?: { emitChangeEvent: boolean, emitFormControlEvent: boolean }) {
+    this._useStreaming = value;
+    this.useStreamingFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if (options?.emitChangeEvent ?? true) {
+      this.useStreamingChange.emit(value);
+    }
+    this.router.navigate(['.'], {
+      relativeTo: this.route,
+      queryParams: {useStreaming: value},
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  // </editor-fold>
+
+  // <editor-fold desc="Download Progress">
+  private _loaded: number = 0;
+  get loaded(): number {
+    return this._loaded;
+  }
+
+  set loaded(value: number) {
+    this._loaded = value;
+    this.loadedChange.emit(value);
+  }
+
+  @Output()
+  loadedChange = new EventEmitter<number>();
   // </editor-fold>
 
   initialPrompts: PromptInterface<PromptInitialRoleEnum>[] = [];
@@ -203,7 +224,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
-    } else if(isPlatformBrowser(this.platformId)) {
+    } else if (isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
     }
@@ -253,7 +274,6 @@ const session = await LanguageModel.create({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
-  systemPrompt: ${JSON.stringify(this.systemPromptFormControl.value, null, 2)},
   initialPrompts: ${JSON.stringify(this.initialPrompts, null, 2)},
   monitor(m: any)  {
     m.addEventListener("downloadprogress", (e: any) => {
@@ -265,19 +285,21 @@ const session = await LanguageModel.create({
 
 `;
 
+    const promptString = this.useStreamingFormControl.value ? "promptStreaming" : "prompt";
+
     switch (this.promptTypeFormControl.value) {
       case PromptTypeEnum.SequenceAILanguageModelPrompt:
-        code += `session.prompt(${JSON.stringify(this.prompts, null, 2)}, {
+        code += `session.${promptString}(${JSON.stringify(this.prompts, null, 2)}, {
   signal: abortController.signal,
 });`;
         break;
       case PromptTypeEnum.String:
-        code += `session.prompt("${this.stringPromptFormControl.value}", {
+        code += `session.${promptString}("${this.stringPromptFormControl.value}", {
   signal: abortController.signal,
 });`;
         break;
       case PromptTypeEnum.AILanguageModelPrompt:
-        code += `session.prompt(${JSON.stringify(this.prompt, null, 2)}, {
+        code += `session.${promptString}(${JSON.stringify(this.prompt, null, 2)}, {
   signal: abortController.signal,
 });`;
         break;
@@ -287,42 +309,74 @@ const session = await LanguageModel.create({
 
   async execute() {
     try {
+      const self = this;
       this.status = TaskStatus.Executing;
       const abortController = new AbortController();
       this.error = undefined;
+      this.loaded = 0;
+      this.outputCollapsed = false;
+      this.output = "";
+      this.outputChunks = [];
 
       // @ts-expect-error
       const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
-        systemPrompt: this.systemPromptFormControl.value,
         initialPrompts: this.initialPrompts,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
+            self.loaded = e.loaded;
           });
         },
         signal: abortController.signal,
       });
 
-      switch (this.promptTypeFormControl.value) {
-        case PromptTypeEnum.SequenceAILanguageModelPrompt:
-          this.output = await session.prompt(this.prompts, {
-            signal: abortController.signal,
-          });
+      if (this.useStreamingFormControl.value) {
+        let prompt;
 
-          break;
-        case PromptTypeEnum.String:
-          this.output = await session.prompt(this.stringPromptFormControl.value, {
-            signal: abortController.signal,
-          });
-          break;
-        case PromptTypeEnum.AILanguageModelPrompt:
-          this.output = await session.prompt(this.prompt, {
-            signal: abortController.signal,
-          });
-          break;
+        switch (this.promptTypeFormControl.value) {
+          case PromptTypeEnum.SequenceAILanguageModelPrompt:
+            prompt = this.prompts;
+
+            break;
+          case PromptTypeEnum.String:
+            prompt = this.stringPromptFormControl.value
+            break;
+          case PromptTypeEnum.AILanguageModelPrompt:
+            prompt = this.prompt;
+            break;
+        }
+
+        const stream: ReadableStream = session.promptStreaming(prompt, {
+          signal: abortController.signal,
+        });
+
+        for await (const chunk of stream) {
+          // Do something with each 'chunk'
+          this.output += chunk;
+          this.outputChunks.push(chunk);
+        }
+      } else {
+        switch (this.promptTypeFormControl.value) {
+          case PromptTypeEnum.SequenceAILanguageModelPrompt:
+            this.output = await session.prompt(this.prompts, {
+              signal: abortController.signal,
+            });
+
+            break;
+          case PromptTypeEnum.String:
+            this.output = await session.prompt(this.stringPromptFormControl.value, {
+              signal: abortController.signal,
+            });
+            break;
+          case PromptTypeEnum.AILanguageModelPrompt:
+            this.output = await session.prompt(this.prompt, {
+              signal: abortController.signal,
+            });
+            break;
+        }
       }
 
       this.status = TaskStatus.Completed;
@@ -352,14 +406,6 @@ const session = await LanguageModel.create({
       this.router.navigate(['.'], {
         relativeTo: this.route,
         queryParams: {temperature: this.temperature},
-        queryParamsHandling: 'merge'
-      });
-    }));
-    this.subscriptions.push(this.systemPromptFormControl.valueChanges.subscribe((value) => {
-      this.setSystemPrompt(value, {emitChangeEvent: true, emitFormControlEvent: false});
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {systemPrompt: this.systemPrompt},
         queryParamsHandling: 'merge'
       });
     }));
@@ -394,10 +440,6 @@ const session = await LanguageModel.create({
 
       if (params['temperature']) {
         this.setTemperature(params['temperature'], {emitChangeEvent: false, emitFormControlEvent: false});
-      }
-
-      if (params['systemPrompt']) {
-        this.setSystemPrompt(params['systemPrompt'], {emitChangeEvent: false, emitFormControlEvent: false});
       }
 
       if (params['promptType']) {
@@ -541,7 +583,7 @@ const session = await LanguageModel.create({
           fileSystemFileHandle,
         });
       } else {
-        this.error = `Unsupported file type '${file.type}' for '${file.name}'.`;
+        this.error = new Error(`Unsupported file type '${file.type}' for '${file.name}'.`);
       }
     })
   }
