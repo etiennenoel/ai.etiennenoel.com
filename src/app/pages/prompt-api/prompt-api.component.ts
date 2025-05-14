@@ -40,8 +40,8 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   status: TaskStatus = TaskStatus.Idle;
 
   // <editor-fold desc="TopK">
-  private _topK: number | null = 0;
-  public topKFormControl: FormControl<number | null> = new FormControl<number | null>(0);
+  private _topK: number | null = 3;
+  public topKFormControl: FormControl<number | null> = new FormControl<number | null>(3);
 
   get topK(): number | null {
     return this._topK;
@@ -65,8 +65,8 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   // </editor-fold>
 
   // <editor-fold desc="Temperature">
-  private _temperature: number | null = 0;
-  public temperatureFormControl: FormControl<number | null> = new FormControl<number | null>(0);
+  private _temperature: number | null = 1;
+  public temperatureFormControl: FormControl<number | null> = new FormControl<number | null>(1);
 
   get temperature(): number | null {
     return this._temperature;
