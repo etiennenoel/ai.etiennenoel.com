@@ -24,6 +24,44 @@
     </div>
   </div>
 
+  <h2 class="display-6 mt-3">Want to get started?</h2>
+
+  <p>Kickstart the download of the model here:</p>
+
+  <div>
+    @if (downloadStatus === TaskStatus.Executing) {
+      <div class="alert alert-primary">
+        <strong>Downloading...</strong>
+
+        <div class="flex-grow-1 me-4 mt-2">
+          <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
+          </div>
+        </div>
+      </div>
+    } @else if(downloadStatus === TaskStatus.Completed) {
+      <div class="alert alert-success">
+        Model successfully downloaded! <strong>You are all set!</strong> Go and explore all the pages this site has to offer.
+      </div>
+    }@else if(downloadStatus === TaskStatus.Error) {
+      <div class="alert alert-danger">
+        Error: <strong>{{ this.error }}</strong>
+      </div>
+    }
+
+    @if (downloadStatus === TaskStatus.Executing) {
+      <button class="btn btn-outline-light btn-large" (click)="cancelDownload()">
+        Cancel download
+      </button>
+    }@else if(downloadStatus === TaskStatus.Idle) {
+      <button class="btn btn-primary btn-large" (click)="download()">
+        Download Gemini Nano
+      </button>
+    }
+
+  </div>
+
   <h2 class="display-6 mt-3">Questions?</h2>
 
   <p class="mt-3">Contact me, <a href="https://etiennenoel.com">Etienne Noël</a></p>

@@ -12,14 +12,6 @@
           <span>Home</span>
         </a>
       </li>
-      @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
-      <li [class.active]="this.currentRoute === RouteEnum.DownloadTester">
-        <a class="btn stretched-link" routerLink="/download-tester">
-          <i class="bi bi-percent"></i>
-          <span>Download Tester</span>
-        </a>
-      </li>
-      }
       <li [class.active]="this.currentRoute === RouteEnum.TranslatorApi">
         <a class="btn stretched-link" routerLink="/translator-api">
           <i class="bi bi-translate"></i>
@@ -82,6 +74,15 @@
           <span>Proofreader API</span></a>
         <span class="badge text-bg-warning">Experimental</span>
       </li>
+
+      @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
+        <li [class.active]="this.currentRoute === RouteEnum.DownloadTester">
+          <a class="btn stretched-link" routerLink="/download-tester">
+            <i class="bi bi-percent"></i>
+            <span>Download Tester</span>
+          </a>
+        </li>
+      }
     </ul>
   </nav>
 
