@@ -50,6 +50,7 @@ import {Environment} from './environments/environment';
 import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
+import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import {DownloadTesterComponent} from './pages/download-tester/download-tester.c
     IndexComponent,
     LanguageDetectorComponent,
     PromptApiComponent,
+    ProofreaderApiComponent,
     RewriterApiComponent,
     SummarizerApiComponent,
     TranslatorApiComponent,

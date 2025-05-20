@@ -19,6 +19,7 @@ import {
 import {EnvironmentNameEnum} from './enums/environment-name.enum';
 import {RouteEnum} from './enums/route.enum';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
+import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
 // @end
 
 const layouts: Routes = [
@@ -41,6 +42,10 @@ const layouts: Routes = [
   {
     path: "rewriter-api",
     component: RewriterApiComponent,
+  },
+  {
+    path: "proofreader-api",
+    component: ProofreaderApiComponent,
   },
   {
     path: "prompt-api",

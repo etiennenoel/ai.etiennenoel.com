@@ -70,6 +70,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.PromptApi;
     } else if(url.endsWith('rewriter-api')) {
       this.currentRoute = RouteEnum.RewriterApi;
+    } else if(url.endsWith('proofreader-api')) {
+      this.currentRoute = RouteEnum.ProofreaderApi;
     }else if(url.endsWith('writer-api')) {
       this.currentRoute = RouteEnum.WriterApi;
     } else if(url.endsWith('summarizer-api')) {
