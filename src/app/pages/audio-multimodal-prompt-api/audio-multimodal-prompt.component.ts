@@ -1,11 +1,16 @@
-import {Component, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, Input, OnInit } from '@angular/core'; // PLATFORM_ID removed from here
 import {BasePageComponent} from '../../components/base/base-page.component';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Title} from '@angular/platform-browser';
+import {RequirementInterface} from '../../interfaces/requirement.interface'; // Keep for local apiFlag
+import {RequirementStatus} from '../../enums/requirement-status.enum'; // Keep for local apiFlag
+import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common'; // Keep for constructor and methods
+import {ActivatedRoute, Router} from '@angular/router'; // Keep for constructor
+import {Title} from '@angular/platform-browser'; // Keep for constructor
 import {FormControl} from '@angular/forms';
+// Import PLATFORM_ID for constructor
+import { PLATFORM_ID } from '@angular/core';
+// Import TaskStatus if needed for checkAvailability, though BasePageComponent provides it.
+// For now, assume AvailabilityStatusEnum will be used or a simple status.
+import { AvailabilityStatusEnum } from '../../enums/availability-status.enum';
 
 
 @Component({
@@ -16,11 +21,12 @@ import {FormControl} from '@angular/forms';
 })
 export class AudioMultimodalPromptComponent extends BasePageComponent implements OnInit {
 
-  public apiFlag: RequirementInterface = {
+  // Override apiFlag from BasePageComponent
+  public override apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span>'
-  }
+  };
 
   // <editor-fold desc="Audio From URL Collapsed">
   private _audioFromUrlCollapsed = false;
@@ -65,21 +71,23 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
   // </editor-fold>
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
+    @Inject(PLATFORM_ID) platformId: object, // Pass to super, remove private
+    @Inject(DOCUMENT) document: Document, // Pass to super
+    protected override router: Router, // Add protected override, pass to super
+    protected override route: ActivatedRoute, // Add protected override, pass to super
+    protected override titleService: Title, // Add protected override, rename title, pass to super
   ) {
-    super(document, title);
+    super(platformId, document, router, route, titleService);
   }
 
   override ngOnInit() {
     super.ngOnInit();
+    // outputCollapsed is inherited, defaults to false. If true is desired:
+    // this.outputCollapsed = true; 
 
-    this.setTitle("Audio Prompt API (Experimental) | AI Playground");
+    this.titleService.setTitle("Audio Prompt API (Experimental) | AI Playground"); // Use inherited titleService
 
-    this.checkRequirements();
+    this.checkRequirements(); // Call implemented abstract method
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params["audioUrlCollapsed"]) {
@@ -96,13 +104,39 @@ export class AudioMultimodalPromptComponent extends BasePageComponent implements
     }))
   }
 
-  checkRequirements() {
+  // Implementation of abstract method from BasePageComponent
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
-      this.apiFlag.status = RequirementStatus.Fail;
+      this.apiFlag.status = RequirementStatus.Fail; // Use overridden apiFlag
       this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
     } else if (isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
+    }
+  }
+
+  // Implementation of abstract method from BasePageComponent
+  override async checkAvailability(): Promise<void> {
+    // TODO: Implement actual availability check for Audio Multimodal Prompt API
+    // For now, setting to Unknown or NotApplicable as an example.
+    // If 'LanguageModel.availability' or a similar check exists, use it here.
+    // this.availabilityStatus = AvailabilityStatusEnum.Unknown; // Example
+    if (isPlatformBrowser(this.platformId) && this.window && ("LanguageModel" in this.window)) {
+        try {
+            // Example: const capabilities = await (this.window as any).LanguageModel.availability();
+            // Based on capabilities, set this.status or a local availabilityStatus property.
+            // For this component, there isn't a specific local 'availabilityStatus' property to set
+            // like in other components, so we might just set the main 'status' or rely on checkRequirements.
+            // If there's no distinct availability check API apart from the flag,
+            // this method might not do much beyond what checkRequirements does.
+            // For now, let's assume it's available if requirements are met.
+             // this.status = TaskStatus.Available; // Or some other status
+        } catch (e: any) {
+            this.error = e; // Use inherited error
+            // this.status = TaskStatus.Error;
+        }
+    } else {
+        // this.status = TaskStatus.Unavailable; // Or some other status
     }
   }
 }

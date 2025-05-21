@@ -1,21 +1,26 @@
-import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from '@angular/core'; // PLATFORM_ID removed from here
 import {FormControl} from "@angular/forms";
-import {TaskStatus} from "../../enums/task-status.enum";
-import {RequirementStatus} from "../../enums/requirement-status.enum";
+// TaskStatus and RequirementStatus will be inherited or imported if needed for non-standard use
 import {languages} from "../../constants/languages.constants";
 import {TranslatorApiVersionEnum} from "../../enums/translator-api-version.enum";
 
-import {RequirementInterface} from "./interfaces/requirement.interface";
+// PageRequirementInterface might be replaced by the global RequirementInterface if structure is compatible
+import {RequirementInterface as PageRequirementInterface} from "./interfaces/requirement.interface";
 import {Step1} from "./interfaces/step-1.interface";
 import {Step0} from "./interfaces/step-0.interface";
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router'; // Keep for constructor
 import {Step2} from './interfaces/step-2.interface';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
-import {Title} from '@angular/platform-browser';
+import {Title} from '@angular/platform-browser'; // Keep for constructor
 import {BasePageComponent} from '../../components/base/base-page.component';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {LocaleEnum} from '../../enums/locale.enum';
+import {DOCUMENT, isPlatformBrowser} from '@angular/common'; // Keep for constructor and methods
+import {AvailabilityStatusEnum} from '../../enums/availability-status.enum'; // Keep for local property
+import {LocaleEnum} from '../../enums/locale.enum'; // Keep for local property
+// Import PLATFORM_ID, TaskStatus, RequirementInterface, RequirementStatus for constructor and local properties
+import { PLATFORM_ID } from '@angular/core';
+import { TaskStatus } from '../../enums/task-status.enum';
+import { RequirementInterface } from '../../interfaces/requirement.interface';
+import { RequirementStatus } from '../../enums/requirement-status.enum';
 
 declare global {
   interface Translator {
@@ -30,6 +35,7 @@ declare global {
   styleUrl: './translator-api.component.scss'
 })
 export class TranslatorApiComponent extends BasePageComponent implements OnInit, OnDestroy {
+  // Specific properties for TranslatorApiComponent
   languages = languages;
   languageOptions: SearchSelectDropdownOptionsInterface[] = this.languages.map((language) => {
     return {label: language.title, value: language.locale}
@@ -39,104 +45,44 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
   targetLanguage = new FormControl('fr');
   content = new FormControl('');
 
-  public outputCollapsed = true;
+  // outputCollapsed is inherited, will be set to true in ngOnInit.
+  // error is inherited.
+  // status is inherited.
+  // loaded is inherited.
+  // output is inherited.
+  // abortController and abortControllerFromCreate are inherited.
 
-  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
-  public error?: Error;
-
-  public availabilityError?: Error;
+  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown; // Keep local
+  public availabilityError?: Error; // Keep local
 
   // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
+  // _output, output getter/setter, outputChange, outputChunksChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
+  // _loaded, loaded getter/setter, loadedChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
+  // _status, status getter/setter, statusChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
+  // _abortControllerFromCreate, getter/setter, event emitter removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
+  // _abortController, getter/setter, event emitter removed (inherited)
   // </editor-fold>
 
-  requirements: RequirementInterface = {
-    translationApiFlag: {
-        status: RequirementStatus.Pending,
-      message: "Checking",
-      contentHtml: `Activate <span class="code">chrome://flags/#translation-api</span>`,
-    }
-  }
+  // Replace 'requirements' object with a single overridden 'apiFlag'
+  public override apiFlag: RequirementInterface = {
+    status: RequirementStatus.Pending,
+    message: "Checking",
+    contentHtml: `Activate <span class="code">chrome://flags/#translation-api</span>`,
+  };
 
-  allRequirementsStatus: RequirementStatus = RequirementStatus.Pending;
+  allRequirementsStatus: RequirementStatus = RequirementStatus.Pending; // This might be redundant if apiFlag.status is used directly
 
   steps!: {
     step0: Step0,
@@ -144,23 +90,26 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
     step2: Step2,
   };
 
-  protected readonly StepStatus = TaskStatus;
+  protected readonly StepStatus = TaskStatus; // This is fine, aliasing TaskStatus
 
   constructor(
-      private readonly router: Router,
-      private route: ActivatedRoute,
+      // Parameters updated to match BasePageComponent constructor
+      @Inject(PLATFORM_ID) platformId: object, // Add platformId
       @Inject(DOCUMENT) document: Document,
-      @Inject(PLATFORM_ID) private platformId: Object,
-      title: Title,
+      protected override router: Router, // Add protected override
+      protected override route: ActivatedRoute, // Add protected override
+      protected override titleService: Title, // Add protected override, rename title
       ) {
-    super(document, title)
+    // Call super with all required parameters for BasePageComponent
+    super(platformId, document, router, route, titleService);
   }
 
 
   override ngOnInit() {
     super.ngOnInit();
+    this.outputCollapsed = true; // Set initial state for inherited property
 
-    this.setTitle('Translator API | AI Playground');
+    this.titleService.setTitle('Translator API | AI Playground'); // Use inherited titleService
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if(params['sourceLanguage']) {
@@ -189,8 +138,9 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
     this.reset();
   }
 
+  // getAllRequirements might be simplified or removed if only one main requirement (apiFlag)
   getAllRequirements() {
-    return [this.requirements.translationApiFlag];
+    return [this.apiFlag]; // Now returns the overridden apiFlag
   }
 
   reset() {
@@ -219,22 +169,23 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
       }
     }
 
-    this.checkRequirements()
+    this.checkRequirements(); // This will call the method below
   }
 
-  checkRequirements() {
+  // This becomes the implementation of the abstract checkRequirements
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("Translator" in window))) {
-      this.requirements.translationApiFlag.status = RequirementStatus.Fail;
-      this.requirements.translationApiFlag.message = "'Translator' is not defined. Activate the flag.";
+      this.apiFlag.status = RequirementStatus.Fail; // Update the overridden apiFlag
+      this.apiFlag.message = "'Translator' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
-      this.requirements.translationApiFlag.status = RequirementStatus.Pass;
-      this.requirements.translationApiFlag.message = "Passed";
+      this.apiFlag.status = RequirementStatus.Pass;
+      this.apiFlag.message = "Passed";
     } else {
-      this.requirements.translationApiFlag.status = RequirementStatus.Pending;
-      this.requirements.translationApiFlag.message = "Checking";
+      this.apiFlag.status = RequirementStatus.Pending;
+      this.apiFlag.message = "Checking";
     }
-
-    this.allRequirementsStatus = this.requirements.translationApiFlag.status;
+    // Update allRequirementsStatus based on the new apiFlag status
+    this.allRequirementsStatus = this.apiFlag.status;
   }
 
   get checkAvailabilityCode(){
@@ -242,9 +193,16 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
 console.log(Result of availability: '\${availability}'.);`;
   }
 
-  async checkAvailability() {
-    // @ts-expect-error
-    this.availabilityStatus = await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value});
+  // This becomes the implementation of the abstract checkAvailability
+  override async checkAvailability(): Promise<void> {
+    try {
+      // @ts-expect-error Translator is a global
+      this.availabilityStatus = await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value});
+    } catch (e: any) {
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable;
+      this.availabilityError = e; // Set local availabilityError
+      this.error = e; // Also set inherited error
+    }
   }
 
   get translateCode() {
@@ -263,44 +221,38 @@ await translator.translate("${this.content.value}")
 
   async translate() {
     try {
-      const self = this;
-      this.status = TaskStatus.Executing;
-      this.outputCollapsed = false;
-      this.error = undefined;
-      this.output = "";
-      this.loaded = 0;
+      // const self = this; // self may not be needed if 'this' context is fine
+      this.status = TaskStatus.Executing; // Use inherited status
+      this.outputCollapsed = false; // Use inherited outputCollapsed
+      this.error = undefined; // Use inherited error
+      this.output = ""; // Use inherited output
+      this.loaded = 0; // Use inherited loaded
 
-      // @ts-expect-error
+      // @ts-expect-error Translator is a global
       const translator = await Translator.create({
         sourceLanguage: this.sourceLanguage.value,
         targetLanguage: this.targetLanguage.value,
-        monitor(m: any) {
+        monitor: (m: any) => { // Arrow function to preserve 'this'
           m.addEventListener("downloadprogress", (e: any) => {
-            self.loaded = e.loaded;
+            this.loaded = e.loaded; // Use inherited loaded
           });
         },
+        signal: this.abortControllerFromCreate.signal, // Use inherited controller signal
       });
 
-      this.output = await translator.translate(this.content.value);
+      // Use inherited abortController for the translate call itself if applicable
+      this.output = await translator.translate(this.content.value, { signal: this.abortController.signal });
 
-      this.status = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Use inherited status
     } catch (e: any) {
-      this.status = TaskStatus.Error;
-      this.error = e;
+      this.status = TaskStatus.Error; // Use inherited status
+      this.error = e; // Use inherited error
     }
   }
 
-  abortTriggered() {
-    console.log(`abortTriggered`)
-    this.abortController?.abort();
-  }
+  // abortTriggered and abortFromCreateTriggered are inherited.
 
-  abortFromCreateTriggered() {
-    console.log(`abortFromCreateTriggered`)
-    this.abortControllerFromCreate?.abort();
-  }
-
-  protected readonly RequirementStatus = RequirementStatus;
+  protected readonly RequirementStatus = RequirementStatus; // Keep for template if used
   protected readonly TranslatorApiVersionEnum = TranslatorApiVersionEnum;
   protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
   protected readonly LocaleEnum = LocaleEnum;

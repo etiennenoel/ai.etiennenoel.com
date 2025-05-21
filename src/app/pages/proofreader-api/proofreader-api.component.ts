@@ -1,21 +1,25 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {TaskStatus} from '../../enums/task-status.enum';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core'; // PLATFORM_ID removed if only for base
+import {RequirementStatus} from '../../enums/requirement-status.enum'; // Keep for local apiFlag
+import {DOCUMENT, isPlatformBrowser} from '@angular/common'; // Keep for super()
 import {FormControl} from '@angular/forms';
 import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../utils/text.utils';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
-import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
-import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
-import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {Title} from '@angular/platform-browser';
+// Rewriter enums not used in this specific file's code, but could be in template - leaving for now.
+// import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
+// import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
+// import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
+import {ActivatedRoute, Router} from '@angular/router'; // Keep for constructor
+import {Title} from '@angular/platform-browser'; // Keep for constructor
 import {BasePageComponent} from '../../components/base/base-page.component';
-import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
+// RequirementStatusInterface removed (apiFlag will be RequirementInterface)
+// TaskStatus removed (will use inherited)
+// Import PLATFORM_ID, TaskStatus, RequirementInterface explicitly
+import { PLATFORM_ID } from '@angular/core';
+import { TaskStatus } from '../../enums/task-status.enum';
+import { RequirementInterface } from '../../interfaces/requirement.interface';
 
 
 @Component({
@@ -26,29 +30,22 @@ import {RequirementStatusInterface} from '../../interfaces/requirement-status.in
 })
 export class ProofreaderApiComponent  extends BasePageComponent  implements OnInit {
 
-  protected outputStatusMessage: string = "";
+  protected outputStatusMessage: string = ""; // Specific to this component
 
-  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
+  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown; // Specific to this component's availability check
 
-  public outputCollapsed = true;
+  // outputCollapsed is inherited, will be set to true in ngOnInit
+  // error is inherited
+  public availabilityError?: Error; // Specific to this component's availability check
 
-  public error?: Error;
-
-  public availabilityError?: Error;
-
-  public apiFlag: RequirementStatusInterface = {
+  // Override apiFlag from BasePageComponent
+  public override apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
+    contentHtml: `Activate <span class="code">chrome://flags/#proofreader-api-for-gemini-nano</span>`
+  };
 
-  }
-
-  apiFlagContentHtml = `Activate <span class="code">chrome://flags/#proofreader-api-for-gemini-nano</span>`;
-  getRequirement(): RequirementInterface {
-    return {
-      ...this.apiFlag,
-      contentHtml: this.apiFlagContentHtml,
-    }
-  }
+  // getRequirement() is no longer needed as apiFlag is now RequirementInterface and includes contentHtml.
 
   get checkAvailabilityCode() {
     return ``
@@ -59,101 +56,42 @@ export class ProofreaderApiComponent  extends BasePageComponent  implements OnIn
   }
 
   // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
+  // _output, output getter/setter, outputChange, outputChunksChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
+  // _status, status getter/setter, statusChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
+  // _loaded, loaded getter/setter, loadedChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
+  // _abortControllerFromCreate, abortControllerFromCreate getter/setter, abortControllerFromCreateChange removed (inherited)
   // </editor-fold>
 
   // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
+  // _abortController, abortController getter/setter, abortControllerChange removed (inherited)
   // </editor-fold>
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
+    @Inject(PLATFORM_ID) platformId: object, // Pass to super
+    @Inject(DOCUMENT) document: Document, // Pass to super
+    protected override router: Router, // Pass to super, make protected override
+    protected override route: ActivatedRoute, // Pass to super, make protected override
+    protected override titleService: Title, // Pass to super, make protected override, rename
   ) {
-    super(document, title);
+    super(platformId, document, router, route, titleService);
   }
 
 
   override ngOnInit() {
     super.ngOnInit();
+    this.outputCollapsed = true; // Preserve original behavior
+    this.titleService.setTitle('Proofreader API | AI Playground'); // Set page title
 
-    this.checkRequirements()
+    this.checkRequirements(); // Call implemented abstract method
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
     }));
@@ -163,7 +101,8 @@ export class ProofreaderApiComponent  extends BasePageComponent  implements OnIn
 
   }
 
-  checkRequirements() {
+  // Implementation of abstract method
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("Proofreader" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'Proofreader' is not defined. Activate the flag.";
@@ -174,37 +113,37 @@ export class ProofreaderApiComponent  extends BasePageComponent  implements OnIn
     }
   }
 
-  abortTriggered() {
-    console.log(`abortTriggered`)
-    this.abortController?.abort();
-  }
+  // abortTriggered is inherited
+  // abortFromCreateTriggered is inherited
 
-  abortFromCreateTriggered() {
-    console.log(`abortFromCreateTriggered`)
-    this.abortControllerFromCreate?.abort();
-  }
-
-  async checkAvailability() {
+  // Implementation of abstract method
+  override async checkAvailability(): Promise<void> {
     try {
+      // TODO: Add actual availability check logic for Proofreader if available
+      // For now, mimics original behavior of doing nothing or setting to unavailable on error
+      // Example: this.availabilityStatus = await Proofreader.availability();
+      this.availabilityStatus = AvailabilityStatusEnum.Unknown; // Or .Available if known
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
-      this.availabilityError = e;
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable;
+      this.availabilityError = e; // Keep specific availabilityError
+      // this.error = e; // Optionally set general error too
     }
   }
 
   async proofread() {
-    this.status = TaskStatus.Executing;
-    this.outputCollapsed = false;
+    this.status = TaskStatus.Executing; // Use inherited status
+    this.outputCollapsed = false; // Use inherited outputCollapsed
     this.outputStatusMessage = "Preparing and downloading model...";
-    this.output = "";
-    this.error = undefined;
+    this.output = ""; // Use inherited output
+    this.error = undefined; // Use inherited error
     this.outputStatusMessage = "Running query...";
-    this.loaded = 0;
+    this.loaded = 0; // Use inherited loaded
 
     try {
-      const self = this;
-      this.abortControllerFromCreate  = new AbortController();
+      // const self = this; // Not needed if not accessing 'this' in a way that loses context
+      // Re-initialize inherited controllers, don't declare new local ones
       this.abortController = new AbortController();
+      this.abortControllerFromCreate  = new AbortController();
 
       // // @ts-expect-error
       // const rewriter = await Rewriter.create({
@@ -231,11 +170,11 @@ export class ProofreaderApiComponent  extends BasePageComponent  implements OnIn
       // this.emitExecutionPerformanceChange();
 
 
-      this.status = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Use inherited status
     } catch (e: any) {
-      this.status = TaskStatus.Error;
+      this.status = TaskStatus.Error; // Use inherited status
       this.outputStatusMessage = `Error: ${e}`;
-      this.error = e;
+      this.error = e; // Use inherited error
     } finally {
       //this.stopExecutionTime();
     }
