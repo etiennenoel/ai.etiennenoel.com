@@ -1,16 +1,19 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core'; // PLATFORM_ID removed
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
+// BaseComponent removed
+// RequirementStatusInterface removed
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {FormControl} from '@angular/forms';
-import {TaskStatus} from '../../enums/task-status.enum';
+// TaskStatus removed
 import {ActivatedRoute, Router} from '@angular/router';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
+// RequirementInterface removed
 import {Title} from '@angular/platform-browser';
 import {BasePageComponent} from '../../components/base/base-page.component';
+import { PLATFORM_ID } from '@angular/core'; // ensure PLATFORM_ID is imported for constructor
+import { TaskStatus } from '../../enums/task-status.enum'; // ensure TaskStatus is imported
+import { RequirementInterface } from '../../interfaces/requirement.interface'; // ensure RequirementInterface is imported
 
 
 @Component({
@@ -21,7 +24,8 @@ import {BasePageComponent} from '../../components/base/base-page.component';
 })
 export class LanguageDetectorComponent extends BasePageComponent implements OnInit {
 
-  public apiFlag: RequirementInterface = {
+  // Specific apiFlag for LanguageDetector
+  public override apiFlag: RequirementInterface = { // 'override' keyword added
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: `Activate <span class="code">chrome://flags/#language-detection-api</span>`,
@@ -29,15 +33,8 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
 
   availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
-  error?: Error;
-
-  outputCollapsed = true;
-
-  output: string = "";
-
-  detectionStatus = TaskStatus.Idle;
-
-  availabilityTaskStatus = TaskStatus.Idle;
+  // error, outputCollapsed, output are inherited.
+  // detectionStatus, availabilityTaskStatus are replaced by inherited 'status'.
 
   // <editor-fold desc="Expected Input Languages">
   private _expectedInputLanguages: LocaleEnum[] | null = [];
@@ -69,50 +66,7 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   // </editor-fold>
 
   // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
+  // _loaded, loaded, loadedChange, _abortControllerFromCreate, abortControllerFromCreate, abortControllerFromCreateChange, _abortController, abortController, abortControllerChange removed
   // </editor-fold>
 
   inputFormControl = new FormControl<string>("");
@@ -123,21 +77,22 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   }[] = []
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) platformId: object, // Removed 'private'
     @Inject(DOCUMENT) document: Document,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    title: Title,
+    protected override route: ActivatedRoute, // Added 'protected', 'override'
+    protected override router: Router, // Added 'protected', 'override'
+    protected override titleService: Title, // Changed 'title' to 'titleService', added 'protected', 'override'
   ) {
-    super(document, title);
+    super(platformId, document, router, route, titleService); // Passed all params to super
   }
 
   override ngOnInit() {
     super.ngOnInit();
+    this.outputCollapsed = true; // Ensure output is initially collapsed
 
-    this.setTitle('Language Detector API | AI Playground');
+    this.titleService.setTitle('Language Detector API | AI Playground'); // Used titleService
 
-    this.checkRequirements()
+    this.checkRequirements() // This now calls the implemented abstract method
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['input']) {
@@ -164,7 +119,7 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
     }));
   }
 
-  checkRequirements() {
+  override checkRequirements(): void { // Added 'override', return type 'void'
     if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageDetector" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'LanguageDetector' is not defined. Activate the flag.";
@@ -184,40 +139,26 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
 });`;
   }
 
-  // todo: remove this.
-  async checkAvailability() {
+  override async checkAvailability(): Promise<void> { // Added 'override', return type 'Promise<void>'
     try {
-      this.availabilityTaskStatus = TaskStatus.Executing;
+      this.status = TaskStatus.Executing; // Used inherited 'status' (was availabilityTaskStatus)
 
-      // @ts-expect-error
+      // @ts-expect-error LanguageDetector is a global
       const capabilities = await LanguageDetector.availability({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
 
       this.availabilityStatus = capabilities;
 
-      this.availabilityTaskStatus = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Used inherited 'status'
     } catch (e: any) {
-      this.error = e;
+      this.error = e; // Used inherited 'error'
       this.availabilityStatus = AvailabilityStatusEnum.No;
-      this.availabilityTaskStatus = TaskStatus.Error;
+      this.status = TaskStatus.Error; // Used inherited 'status'
     }
   }
 
-  async checkAvailabilityExplainer() {
-    try {
-      this.availabilityTaskStatus = TaskStatus.Executing;
-      this.availabilityStatus = await this.window?.ai.languageDetector.availability({
-        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
-      })
-
-      this.availabilityTaskStatus = TaskStatus.Completed;
-    } catch (e: any) {
-      this.error = e;
-      this.availabilityStatus = AvailabilityStatusEnum.No;
-      this.availabilityTaskStatus = TaskStatus.Error;
-    }
-  }
+  // checkAvailabilityExplainer removed
 
   get detectCode(): string {
     return `const detector = await LanguageDetector.create({
@@ -227,54 +168,45 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
       console.log(\`Downloaded \${e.loaded * 100}%\`);
     });
   },
-  signal: abortController.signal,
+  signal: this.abortController.signal, // Used inherited 'abortController'
 });
 
 const results = await detector.detect("${this.inputFormControl.value}", {
-  signal: abortController.signal,
+  signal: this.abortController.signal, // Used inherited 'abortController'
 });
 `;
   }
 
   async detect() {
     try {
-      const self = this;
-      this.outputCollapsed = false;
-      this.detectionStatus = TaskStatus.Executing;
-      this.error = undefined;
+      // const self = this; // Removed
+      this.outputCollapsed = false; // Inherited property
+      this.status = TaskStatus.Executing; // Used inherited 'status' (was detectionStatus)
+      this.error = undefined; // Inherited property
 
-      // @ts-expect-error
+      // @ts-expect-error LanguageDetector is a global
       const detector = await LanguageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
-        monitor(m: any) {
+        monitor: (m: any) => { // Arrow function for 'this'
           m.addEventListener("downloadprogress", (e: any) => {
-            self.loaded = e.loaded;
+            this.loaded = e.loaded; // Used inherited 'loaded'
           });
         },
-        //signal: abortController.signal,
+        signal: this.abortControllerFromCreate.signal, // Used inherited 'abortControllerFromCreate'
       });
 
-      this.results = await detector.detect(this.inputFormControl.value, {
-        //signal: abortController.signal,
+      this.results = await detector.detect(this.inputFormControl.value!, { // Added non-null assertion
+        signal: this.abortController.signal, // Used inherited 'abortController'
       });
 
-      this.detectionStatus = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Used inherited 'status'
     } catch (e: any) {
-      this.error = e;
-      this.detectionStatus = TaskStatus.Error;
+      this.error = e; // Inherited property
+      this.status = TaskStatus.Error; // Used inherited 'status'
     }
   }
 
-  abortTriggered() {
-    console.log(`abortTriggered`)
-    this.abortController?.abort();
-  }
-
-  abortFromCreateTriggered() {
-    console.log(`abortFromCreateTriggered`)
-    this.abortControllerFromCreate?.abort();
-  }
-
+  // abortTriggered and abortFromCreateTriggered are inherited.
 
   protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
   protected readonly LocaleEnum = LocaleEnum;

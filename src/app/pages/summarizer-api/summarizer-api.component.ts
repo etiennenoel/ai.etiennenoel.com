@@ -12,8 +12,12 @@ import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
 import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {Title} from '@angular/platform-browser';
+import {RequirementInterface} from '../../interfaces/requirement.interface'; // Keep for apiFlag override
+import {Title} from '@angular/platform-browser'; // Keep for constructor
+// Import BasePageComponent
+import {BasePageComponent} from '../../components/base/base-page.component';
+// BaseWritingAssistanceApiComponent will be removed from extends.
+// TaskStatus will be inherited. RequirementStatus for local apiFlag.
 
 
 @Component({
@@ -22,7 +26,117 @@ import {Title} from '@angular/platform-browser';
   standalone: false,
   styleUrl: './summarizer-api.component.scss'
 })
-export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
+export class SummarizerApiComponent extends BasePageComponent implements OnInit {
+  // Properties from BaseWritingAssistanceApiComponent to retain:
+  // Input, Context, Language FormControls and related properties
+  // <editor-fold desc="Input">
+  private _input: string = "Make this text better.";
+  public inputFormControl: FormControl<string | null> = new FormControl<string | null>(this._input);
+  get input(): string { return this._input; }
+  @Input() set input(value: string) { this.setInput(value); }
+  setInput(value: string, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._input = value;
+    this.inputFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.inputChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { input: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() inputChange = new EventEmitter<string>();
+  // </editor-fold>
+
+  // <editor-fold desc="Context">
+  private _context: string | null = null;
+  public contextFormControl: FormControl<string | null> = new FormControl<string | null>(null);
+  get context(): string | null { return this._context; }
+  @Input() set context(value: string | null) { this.setContext(value); }
+  setContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._context = value;
+    this.contextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.contextChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { context: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() contextChange = new EventEmitter<string | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Expected Input Languages">
+  private _expectedInputLanguages: LocaleEnum[] | null = [];
+  public expectedInputLanguagesFormControl: FormControl<LocaleEnum[] | null> = new FormControl<LocaleEnum[] | null>([]);
+  get expectedInputLanguages(): LocaleEnum[] | null { return this._expectedInputLanguages; }
+  @Input() set expectedInputLanguages(value: LocaleEnum[] | null) { this.setExpectedInputLanguages(value); }
+  setExpectedInputLanguages(value: LocaleEnum[] | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._expectedInputLanguages = value;
+    this.expectedInputLanguagesFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.expectedInputLanguagesChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { expectedInputLanguages: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() expectedInputLanguagesChange = new EventEmitter<LocaleEnum[] | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Expected Context Languages">
+  private _expectedContextLanguages: LocaleEnum[] | null = [];
+  public expectedContextLanguagesFormControl: FormControl<LocaleEnum[] | null> = new FormControl<LocaleEnum[] | null>([]);
+  get expectedContextLanguages(): LocaleEnum[] | null { return this._expectedContextLanguages; }
+  @Input() set expectedContextLanguages(value: LocaleEnum[] | null) { this.setExpectedContextLanguages(value); }
+  setExpectedContextLanguages(value: LocaleEnum[] | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._expectedContextLanguages = value;
+    this.expectedContextLanguagesFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.expectedContextLanguagesChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { expectedContextLanguages: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() expectedContextLanguagesChange = new EventEmitter<LocaleEnum[] | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Output Language">
+  private _outputLanguage: LocaleEnum | null = null;
+  public outputLanguageFormControl: FormControl<LocaleEnum | null> = new FormControl<LocaleEnum | null>(null);
+  get outputLanguage(): LocaleEnum | null { return this._outputLanguage; }
+  @Input() set outputLanguage(value: LocaleEnum | null) { this.setOutputLanguage(value); }
+  setOutputLanguage(value: LocaleEnum | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._outputLanguage = value;
+    this.outputLanguageFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.outputLanguageChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { outputLanguage: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() outputLanguageChange = new EventEmitter<LocaleEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Shared Context">
+  private _sharedContext: string | null = null;
+  public sharedContextFormControl: FormControl<string | null> = new FormControl<string | null>(null); // Assuming there's a form control
+  get sharedContext(): string | null { return this._sharedContext; }
+  @Input() set sharedContext(value: string | null) { this.setSharedContext(value); }
+  setSharedContext(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._sharedContext = value;
+    this.sharedContextFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.sharedContextChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { sharedContext: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() sharedContextChange = new EventEmitter<string | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Use Streaming">
+  private _useStreaming: boolean = true;
+  public useStreamingFormControl: FormControl<boolean | null> = new FormControl<boolean | null>(true);
+  get useStreaming(): boolean { return this._useStreaming; }
+  @Input() set useStreaming(value: boolean) { this.setUseStreaming(value); }
+  setUseStreaming(value: boolean, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._useStreaming = value;
+    this.useStreamingFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) { this.useStreamingChange.emit(value); }
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { useStreaming: value}, queryParamsHandling: 'merge' });
+  }
+  @Output() useStreamingChange = new EventEmitter<boolean>();
+  // </editor-fold>
+
+  public outputChunks: string[] = [];
+  @Output() outputChunksChange = new EventEmitter<string[]>();
+
+  public executionPerformance = {
+    firstResponseTime: 0, totalTime: 0, firstResponseNumberOfWords: 0, totalNumberOfWords: 0,
+  }
+  @Output() executionPerformanceChange = new EventEmitter<typeof this.executionPerformance>();
+  private _startTime = 0;
+  private _firstResponseTime = 0;
+  // End of BaseWritingAssistanceApiComponent properties
 
   // <editor-fold desc="Type">
   private _type: SummarizerTypeEnum | null = SummarizerTypeEnum.Headline;
@@ -105,7 +219,19 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
   lengthChange = new EventEmitter<SummarizerLengthEnum | null>();
   // </editor-fold>
 
-  protected outputStatusMessage: string = "";
+  protected outputStatusMessage: string = ""; // Keep
+
+  // Override apiFlag from BasePageComponent
+  public override apiFlag: RequirementInterface = {
+    status: RequirementStatus.Pending,
+    message: 'Pending',
+    contentHtml: `Activate <span class="code">chrome://flags/#summarization-api-for-gemini-nano</span>`
+  };
+  // getRequirement() removed.
+
+  // Keep availabilityStatus and availabilityError for specific check logic
+  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
+  public availabilityError?: Error;
 
   get checkAvailabilityCode() {
     return `Summarizer.availability({
@@ -168,20 +294,22 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
   }
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) platformId: object, // Inject PLATFORM_ID
     @Inject(DOCUMENT) document: Document,
-    router: Router,
-    route: ActivatedRoute,
-    title: Title,
+    protected override router: Router, // Add protected override
+    protected override route: ActivatedRoute, // Add protected override
+    protected override titleService: Title, // Add protected override, rename title
   ) {
-    super(document, router, route, title);
+    super(platformId, document, router, route, titleService); // Pass all to BasePageComponent constructor
   }
 
 
   override ngOnInit() {
     super.ngOnInit();
+    this.outputCollapsed = true; // Set desired initial state
+    this.titleService.setTitle('Summarizer API | AI Playground'); // Set page title
 
-    this.checkRequirements()
+    this.checkRequirements(); // Call implemented abstract method
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['summarizerType']) {
@@ -210,16 +338,12 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     }));
   }
 
-  getRequirement(): RequirementInterface {
-    return {
-      ...this.apiFlag,
-      contentHtml: `Activate <span class="code">chrome://flags/#summarization-api-for-gemini-nano</span>`,
-    }
-  }
+  // getRequirement() removed as apiFlag is now directly defined.
 
-  checkRequirements() {
+  // Implementation of abstract method
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("Summarizer" in this.window))) {
-      this.apiFlag.status = RequirementStatus.Fail;
+      this.apiFlag.status = RequirementStatus.Fail; // Use overridden apiFlag
       this.apiFlag.message = "'Summarizer' is not defined. Activate the flag.";
     } else if(isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
@@ -227,9 +351,10 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     }
   }
 
-  async checkAvailability() {
+  // Implementation of abstract method
+  override async checkAvailability(): Promise<void> {
     try {
-      // @ts-ignore
+      // @ts-ignore Summarizer is a global
       this.availabilityStatus = await Summarizer.availability({
         type: this.typeFormControl.value,
         format: this.formatFormControl.value,
@@ -237,29 +362,57 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
         outputLanguage: this.outputLanguageFormControl.value
-      })
+      });
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
-      this.errorChange.emit(e);
-      this.availabilityError = e;
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable;
+      // this.errorChange.emit(e); // errorChange is not in BasePageComponent
+      this.availabilityError = e; // Keep local availabilityError
+      this.error = e; // Set inherited error
+    }
+  }
+
+  // Methods for execution performance (kept from BaseWritingAssistanceApiComponent)
+  protected emitExecutionPerformanceChange() {
+    this.executionPerformanceChange.emit(this.executionPerformance);
+  }
+  protected startExecutionTime() {
+    this._startTime = performance.now();
+    this._firstResponseTime = 0;
+    this.executionPerformance.firstResponseTime = 0;
+    this.executionPerformance.totalTime = 0;
+    this.emitExecutionPerformanceChange();
+  }
+  protected lapFirstResponseTime() {
+    if (this._firstResponseTime === 0) {
+      this._firstResponseTime = performance.now();
+      this.executionPerformance.firstResponseTime = this._firstResponseTime - this._startTime;
+      this.emitExecutionPerformanceChange();
+    }
+  }
+  protected stopExecutionTime() {
+    if (this._startTime !== 0) {
+      this.executionPerformance.totalTime = performance.now() - this._startTime;
+      this._startTime = 0;
+      this.emitExecutionPerformanceChange();
     }
   }
 
   async summarize() {
-    this.status = TaskStatus.Executing;
-    this.outputCollapsed = false;
+    this.status = TaskStatus.Executing; // Use inherited status
+    this.outputCollapsed = false; // Use inherited outputCollapsed
     this.outputStatusMessage = "Preparing and downloading model...";
-    this.outputChunks = [];
-    this.error = undefined;
-    this.outputChunksChange.emit(this.outputChunks);
-    this.output = "";
+    this.outputChunks = []; // Local property
+    this.error = undefined; // Inherited property
+    this.outputChunksChange.emit(this.outputChunks); // Local EventEmitter
+    this.output = ""; // Inherited property
     this.outputStatusMessage = "Running query...";
-    this.loaded = 0;
+    this.loaded = 0; // Inherited property
 
     try {
-      const self = this;
-      this.abortControllerFromCreate  = new AbortController();
+      // const self = this; // May not be needed
+      // Re-initialize inherited controllers
       this.abortController = new AbortController();
+      this.abortControllerFromCreate  = new AbortController();
 
       // @ts-ignore
       const summarizer = await Summarizer.create({
@@ -318,12 +471,12 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
         this.output = output;
       }
 
-      this.status = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Inherited status
     } catch (e: any) {
-      this.status = TaskStatus.Error;
+      this.status = TaskStatus.Error; // Inherited status
       this.outputStatusMessage = `Error: ${e}`;
-      this.errorChange.emit(e);
-      this.error = e;
+      // this.errorChange.emit(e); // errorChange not in BasePageComponent
+      this.error = e; // Inherited error
     } finally {
       this.stopExecutionTime();
     }

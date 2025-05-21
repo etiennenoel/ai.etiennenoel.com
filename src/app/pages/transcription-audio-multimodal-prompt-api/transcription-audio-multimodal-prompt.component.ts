@@ -1,12 +1,16 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core'; // PLATFORM_ID removed from here
 import {BasePageComponent} from '../../components/base/base-page.component';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Title} from '@angular/platform-browser';
-import {TaskStatus} from '../../enums/task-status.enum';
+import {RequirementInterface} from '../../interfaces/requirement.interface'; // Keep for local apiFlag
+import {RequirementStatus} from '../../enums/requirement-status.enum'; // Keep for local apiFlag
+import {DOCUMENT, isPlatformBrowser} from '@angular/common'; // Keep for constructor and methods
+import {ActivatedRoute, Router} from '@angular/router'; // Keep for constructor
+import {Title} from '@angular/platform-browser'; // Keep for constructor
+import {TaskStatus} from '../../enums/task-status.enum'; // Keep for local status usage if needed beyond inherited
 import {AudioRecordingService} from '../../services/audio-recording.service';
+// Import PLATFORM_ID for constructor
+import { PLATFORM_ID } from '@angular/core';
+// Import AvailabilityStatusEnum if needed for checkAvailability
+import { AvailabilityStatusEnum } from '../../enums/availability-status.enum';
 import {FormControl} from '@angular/forms';
 import {processStream} from '../../audio-processing-module/main';
 import {AudioVisualizerService} from '../../services/audio-visualizer.service';
@@ -27,11 +31,12 @@ import {
 })
 export class TranscriptionAudioMultimodalPromptComponent extends BasePageComponent implements OnInit, AfterViewInit {
 
-  public apiFlag: RequirementInterface = {
+  // Override apiFlag from BasePageComponent
+  public override apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: 'Activate <span class="code">chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input</span>'
-  }
+  };
 
   // <editor-fold desc="Mic Sample Rate">
   private _micSampleRate: number | null = MIC_SAMPLE_RATE;
@@ -148,17 +153,15 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   }
   // </editor-fold>
 
-  status: TaskStatus = TaskStatus.Idle;
-
-  public error?: Error;
+  // status is inherited from BasePageComponent
+  // error is inherited from BasePageComponent
+  // output is inherited from BasePageComponent
+  // outputCollapsed is inherited from BasePageComponent (defaults to false, matches current)
 
   @ViewChild("outputComponent")
-  public outputComponent?: ElementRef;
+  public outputComponent?: ElementRef; // Keep
 
-  public output: string = "";
-  public outputCollapsed = false;
-
-  public isRecording = false;
+  public isRecording = false; // Keep
 
   public recordingStartTime?: number;
 
@@ -178,24 +181,24 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   public languageModel?: any;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
+    @Inject(PLATFORM_ID) platformId: object, // Pass to super, remove private
+    @Inject(DOCUMENT) document: Document, // Pass to super
+    protected override router: Router, // Add protected override, pass to super
+    protected override route: ActivatedRoute, // Add protected override, pass to super
+    protected override titleService: Title, // Add protected override, rename title, pass to super
 
-    private readonly audioRecordingService: AudioRecordingService,
-    private readonly audioVisualizerService: AudioVisualizerService,
+    private readonly audioRecordingService: AudioRecordingService, // Keep specific service
+    private readonly audioVisualizerService: AudioVisualizerService, // Keep specific service
   ) {
-    super(document, title);
+    super(platformId, document, router, route, titleService);
   }
 
   override async ngOnInit() {
     super.ngOnInit();
 
-    this.setTitle("Transcription (using Audio Prompt API (Experimental)) | AI Playground");
+    this.titleService.setTitle("Transcription (using Audio Prompt API (Experimental)) | AI Playground"); // Use inherited titleService
 
-    this.checkRequirements();
+    this.checkRequirements(); // Call implemented abstract method
 
     this.subscriptions.push(this.micSampleRateFormControl.valueChanges.subscribe((value) => {
       this.setMicSampleRate(value, {emitFormControlEvent: false, setFormControlValue: false});
@@ -245,13 +248,31 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     }
   }
 
-  checkRequirements() {
+  // Implementation of abstract method from BasePageComponent
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
-      this.apiFlag.status = RequirementStatus.Fail;
+      this.apiFlag.status = RequirementStatus.Fail; // Use overridden apiFlag
       this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
     } else if (isPlatformBrowser(this.platformId)) {
       this.apiFlag.status = RequirementStatus.Pass;
       this.apiFlag.message = "Passed";
+    }
+  }
+
+  // Implementation of abstract method from BasePageComponent
+  override async checkAvailability(): Promise<void> {
+    // TODO: Implement actual availability check for Transcription Audio Multimodal Prompt API
+    // Similar to AudioMultimodalPromptComponent, if no specific check beyond the flag.
+    if (isPlatformBrowser(this.platformId) && this.window && ("LanguageModel" in this.window)) {
+        try {
+            // const capabilities = await (this.window as any).LanguageModel.availability();
+            // this.status = TaskStatus.Available; // Or some other status
+        } catch (e: any) {
+            this.error = e; // Use inherited error
+            // this.status = TaskStatus.Error;
+        }
+    } else {
+        // this.status = TaskStatus.Unavailable; // Or some other status
     }
   }
 

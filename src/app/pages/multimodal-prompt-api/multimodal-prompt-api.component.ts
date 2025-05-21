@@ -6,17 +6,21 @@ import {
   OnChanges,
   OnInit,
   Output,
-  PLATFORM_ID,
+  // PLATFORM_ID, // Will be injected in BasePageComponent
   SimpleChanges
 } from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
-import {TaskStatus} from '../../enums/task-status.enum';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+// TaskStatus will be inherited or imported if still needed locally for non-standard use
+// RequirementInterface will be inherited or imported if still needed locally
+import {DOCUMENT, isPlatformBrowser} from '@angular/common'; // DOCUMENT needed for super()
 import {Title} from '@angular/platform-browser';
-import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+// BaseComponent import removed
+import {RequirementStatus} from '../../enums/requirement-status.enum'; // Keep for apiFlag local definition
 import {MediaInformationInterface} from '../prompt-api/media-information.interface';
+// Import PLATFORM_ID, TaskStatus, RequirementInterface explicitly for constructor and local properties
+import { PLATFORM_ID } from '@angular/core';
+import { TaskStatus } from '../../enums/task-status.enum';
+import { RequirementInterface } from '../../interfaces/requirement.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {FormControl} from '@angular/forms';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
@@ -36,9 +40,10 @@ import {AudioInformationType} from '../prompt-api/audio-information.type';
 export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
   medias: MediaInformationType[] = [];
 
-  error?: Error;
+  // error is inherited from BasePageComponent
+  // output, outputCollapsed, loaded, status, abortController, abortControllerFromCreate are inherited
 
-  public availabilityError?: Error;
+  public availabilityError?: Error; // Keep this if it's for a different error source than general 'error'
 
   // <editor-fold desc="Prompt Types">
   private _promptTypes: "image" | "audio" | null = "image";
@@ -66,19 +71,7 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   // </editor-fold>
 
   // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
+  // _status, status getter/setter, and statusChange EventEmitter are removed (using inherited 'status').
   // </editor-fold>
 
   // <editor-fold desc="Prompt">
@@ -107,39 +100,14 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   // </editor-fold>
 
   // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
+  // _output, output getter/setter, outputChange, and outputChunksChange EventEmitters are removed (using inherited 'output').
   // </editor-fold>
 
   // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
+  // _loaded, loaded getter/setter, and loadedChange EventEmitter are removed (using inherited 'loaded').
   // </editor-fold>
 
-  public outputCollapsed = true;
+  // outputCollapsed is inherited. Will set to true in ngOnInit.
 
   // <editor-fold desc="Json Schema">
   jsonSchema: string = "";
@@ -186,25 +154,27 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   ];
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
+    @Inject(PLATFORM_ID) platformId: object, // platformId passed to super
+    @Inject(DOCUMENT) document: Document, // document passed to super
+    protected override router: Router, // router made protected, override, and passed to super
+    protected override route: ActivatedRoute, // route made protected, override, and passed to super
+    protected override titleService: Title, // titleService (renamed) made protected, override, and passed to super
   ) {
-    super(document, title);
+    super(platformId, document, router, route, titleService);
   }
 
-  public apiFlag: RequirementInterface = {
+  // Overriding apiFlag from BasePageComponent for specific contentHtml.
+  public override apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</span>'
-  }
+  };
 
   override ngOnInit() {
     super.ngOnInit();
+    this.outputCollapsed = true; // Preserve original behavior for output section
 
-    this.setTitle("Multimodal Prompt API (Experimental) | AI Playground")
+    this.titleService.setTitle("Multimodal Prompt API (Experimental) | AI Playground"); // Use inherited titleService
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['prompt']) {
@@ -229,14 +199,15 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
       this.setPromptTypes(value, {emitChangeEvent: true, emitFormControlEvent: false});
     }));
 
-    this.checkRequirements()
+    this.checkRequirements(); // Calls the implemented abstract method
   }
 
   jsonSchemaChange(jsonSchema: string) {
     this.router.navigate(['.'], { relativeTo: this.route, queryParams: { jsonSchema}, queryParamsHandling: 'merge' });
   }
 
-  checkRequirements() {
+  // Implementation of abstract method from BasePageComponent
+  override checkRequirements(): void {
     if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
       this.apiFlag.status = RequirementStatus.Fail;
       this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
@@ -395,13 +366,23 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
 })`
   }
 
-  async checkAvailability() {
+  // Implementation of abstract method from BasePageComponent
+  override async checkAvailability(): Promise<void> {
     try {
-      // @ts-expect-error
-      this.availabilityStatus = await LanguageModel.availability({})
+      // @ts-expect-error LanguageModel is a global, browser-specific API
+      const availability = await LanguageModel.availability({});
+      // Assuming LanguageModel.availability() returns a string similar to AvailabilityStatusEnum
+      // Adjust this based on the actual return type of LanguageModel.availability()
+      this.availabilityStatus = availability as AvailabilityStatusEnum;
+      // If LanguageModel.availability() doesn't throw for unavailable, set error/status appropriately
+      if (this.availabilityStatus === AvailabilityStatusEnum.Unavailable) {
+         // this.status = TaskStatus.Error; // Or some other status
+         // this.error = new Error("LanguageModel is unavailable.");
+      }
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
-      this.error = e;
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable; // Or specific error status
+      this.error = e; // Use inherited error
+      // this.status = TaskStatus.Error; // Set main status to error
     }
   }
 
@@ -493,13 +474,13 @@ const output = await languageModel.prompt([
 
   async execute() {
     try {
-      this.status = TaskStatus.Executing;
-      this.outputCollapsed = false;
-      this.output = "";
-      this.loaded = 0;
-      this.error = undefined;
+      this.status = TaskStatus.Executing; // Use inherited status
+      this.outputCollapsed = false; // Use inherited outputCollapsed
+      this.output = ""; // Use inherited output
+      this.loaded = 0; // Use inherited loaded
+      this.error = undefined; // Use inherited error
 
-      // @ts-expect-error
+      // @ts-expect-error LanguageModel is a global, browser-specific API
       const languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
@@ -516,10 +497,10 @@ const output = await languageModel.prompt([
         this.output = await languageModel.prompt(prompts)
       }
 
-      this.status = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Use inherited status
     } catch (e: any) {
-      this.status = TaskStatus.Error;
-      this.error = e;
+      this.status = TaskStatus.Error; // Use inherited status
+      this.error = e; // Use inherited error
     }
   }
 
