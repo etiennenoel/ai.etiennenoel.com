@@ -1,21 +1,21 @@
 import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {TaskStatus} from "../../enums/task-status.enum";
-import {RequirementStatus} from "../../enums/requirement-status.enum";
+// RequirementStatus, RequirementInterface, isPlatformBrowser removed
 import {languages} from "../../constants/languages.constants";
 import {TranslatorApiVersionEnum} from "../../enums/translator-api-version.enum";
 
-import {RequirementInterface} from "./interfaces/requirement.interface";
+// Step interfaces might need to be adjusted if they rely on removed properties
 import {Step1} from "./interfaces/step-1.interface";
 import {Step0} from "./interfaces/step-0.interface";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Step2} from './interfaces/step-2.interface';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
-import {BasePageComponent} from '../../components/base/base-page.component';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {DOCUMENT} from '@angular/common';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
+import {BaseApiPageComponent} from '../../components/base/base-api-page.component'; // Changed import
 
 declare global {
   interface Translator {
@@ -29,136 +29,52 @@ declare global {
   standalone: false,
   styleUrl: './translator-api.component.scss'
 })
-export class TranslatorApiComponent extends BasePageComponent implements OnInit, OnDestroy {
-  languages = languages;
-  languageOptions: SearchSelectDropdownOptionsInterface[] = this.languages.map((language) => {
+export class TranslatorApiComponent extends BaseApiPageComponent implements OnInit, OnDestroy { // Changed heritage
+  // Implement abstract members from BaseApiPageComponent
+  public apiName = 'Translator';
+  public apiFlagName = 'chrome://flags/#translation-api';
+
+  languages = languages; // Retained
+  languageOptions: SearchSelectDropdownOptionsInterface[] = this.languages.map((language) => { // Retained
     return {label: language.title, value: language.locale}
   })
 
-  sourceLanguage= new FormControl("en");
-  targetLanguage = new FormControl('fr');
-  content = new FormControl('');
+  sourceLanguage= new FormControl("en"); // Retained
+  targetLanguage = new FormControl('fr'); // Retained
+  content = new FormControl(''); // Retained
 
-  public outputCollapsed = true;
+  // outputCollapsed removed (inherited)
+  // availabilityStatus removed (inherited)
+  // error removed (inherited)
+  // availabilityError removed (inherited)
+  // Output section removed (_output, output getter/setter, outputChange, outputChunksChange)
+  // Download Progress section removed (_loaded, loaded getter/setter, loadedChange)
+  // Task Status section removed (_status, status getter/setter, statusChange)
+  // AbortController sections removed
 
-  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
+  // requirements: RequirementInterface removed
+  // allRequirementsStatus: RequirementStatus removed
 
-  public error?: Error;
-
-  public availabilityError?: Error;
-
-  // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
-  // </editor-fold>
-
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
-  // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  requirements: RequirementInterface = {
-    translationApiFlag: {
-        status: RequirementStatus.Pending,
-      message: "Checking",
-      contentHtml: `Activate <span class="code">chrome://flags/#translation-api</span>`,
-    }
-  }
-
-  allRequirementsStatus: RequirementStatus = RequirementStatus.Pending;
-
-  steps!: {
+  steps!: { // Retained
     step0: Step0,
     step1: Step1,
     step2: Step2,
   };
 
-  protected readonly StepStatus = TaskStatus;
+  protected readonly StepStatus = TaskStatus; // Retained
 
   constructor(
-      private readonly router: Router,
-      private route: ActivatedRoute,
-      @Inject(DOCUMENT) document: Document,
-      @Inject(PLATFORM_ID) private platformId: Object,
-      title: Title,
+      @Inject(DOCUMENT) document: Document, // Order changed, platformId added
+      @Inject(PLATFORM_ID) platformId: Object, // Added platformId for super
+      router: Router, // No longer private readonly
+      route: ActivatedRoute, // No longer private
+      titleService: Title, // Renamed from title
       ) {
-    super(document, title)
+    super(document, platformId, titleService, router, route); // Updated super call
   }
 
-
   override ngOnInit() {
-    super.ngOnInit();
+    super.ngOnInit(); // Call to super.ngOnInit()
 
     this.setTitle('Translator API | AI Playground');
 
@@ -186,14 +102,12 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
       this.router.navigate(['.'], { relativeTo: this.route, queryParams: { content: value}, queryParamsHandling: 'merge' });
     }));
 
-    this.reset();
+    this.reset(); // Call to modified reset
   }
 
-  getAllRequirements() {
-    return [this.requirements.translationApiFlag];
-  }
+  // getAllRequirements() removed
 
-  reset() {
+  reset() { // Modified reset
     this.steps = {
       step0: {
         status: TaskStatus.Idle,
@@ -218,89 +132,80 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
         content: "",
       }
     }
-
-    this.checkRequirements()
+    // this.checkRequirements() // Removed call from here
   }
 
-  checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && (!this.window || !("Translator" in window))) {
-      this.requirements.translationApiFlag.status = RequirementStatus.Fail;
-      this.requirements.translationApiFlag.message = "'Translator' is not defined. Activate the flag.";
-    } else if(isPlatformBrowser(this.platformId)) {
-      this.requirements.translationApiFlag.status = RequirementStatus.Pass;
-      this.requirements.translationApiFlag.message = "Passed";
-    } else {
-      this.requirements.translationApiFlag.status = RequirementStatus.Pending;
-      this.requirements.translationApiFlag.message = "Checking";
-    }
+  // checkRequirements() method removed
 
-    this.allRequirementsStatus = this.requirements.translationApiFlag.status;
-  }
-
+  // checkAvailabilityCode getter remains (implements abstract member)
   get checkAvailabilityCode(){
     return `const availability = await Translator.availability({sourceLanguage: "${this.sourceLanguage.value}", targetLanguage: "${this.targetLanguage.value}"});
 console.log(Result of availability: '\${availability}'.);`;
   }
 
-  async checkAvailability() {
-    // @ts-expect-error
-    this.availabilityStatus = await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value});
+  // checkAvailability method adapted (implements abstract member)
+  async checkAvailability(): Promise<void> {
+    this.availabilityError = undefined; // Use inherited
+    try {
+      // @ts-expect-error Translator might not be on window directly
+      this.availabilityStatus = await window.Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value}); // Use inherited
+    } catch (e: any) {
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable; // Use inherited
+      this.availabilityError = e; // Use inherited
+    }
   }
 
-  get translateCode() {
+  // Renamed from translateCode to executeCode (implements abstract member)
+  get executeCode() {
     return `const translator = await Translator.create({
     sourceLanguage: "${this.sourceLanguage.value}",
     targetLanguage: "${this.targetLanguage.value}",
     monitor(m) {
         m.addEventListener("downloadprogress", e => {
             console.log(\`Downloaded \${e.loaded} of \${e.total} bytes.\`);
+            // this.loaded = e.loaded; // Use inherited this.loaded
         });
     },
+    // signal: this.abortController?.signal, // Use inherited abortController
 });
 await translator.translate("${this.content.value}")
 `;
   }
 
-  async translate() {
-    try {
-      const self = this;
-      this.status = TaskStatus.Executing;
-      this.outputCollapsed = false;
-      this.error = undefined;
-      this.output = "";
-      this.loaded = 0;
+  // Renamed from translate to execute (implements abstract member)
+  async execute(): Promise<void> {
+    const self = this; // Keep 'self' if used in callbacks
+    this.status = TaskStatus.Executing; // Use inherited status
+    this.outputCollapsed = false; // Use inherited outputCollapsed
+    this.error = undefined; // Use inherited error
+    this.output = ""; // Use inherited output
+    this.loaded = 0; // Use inherited loaded
 
-      // @ts-expect-error
-      const translator = await Translator.create({
+    try {
+      // @ts-expect-error Translator might not be on window directly
+      const translator = await window.Translator.create({
         sourceLanguage: this.sourceLanguage.value,
         targetLanguage: this.targetLanguage.value,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
-            self.loaded = e.loaded;
+            self.loaded = e.loaded; // Use inherited loaded
           });
         },
+        signal: this.abortController?.signal, // Use inherited abortController
       });
 
-      this.output = await translator.translate(this.content.value);
-
-      this.status = TaskStatus.Completed;
+      this.output = await translator.translate(this.content.value); // Use inherited output
+      this.status = TaskStatus.Completed; // Use inherited status
     } catch (e: any) {
-      this.status = TaskStatus.Error;
-      this.error = e;
+      this.status = TaskStatus.Error; // Use inherited status
+      this.error = e; // Use inherited error
     }
   }
 
-  abortTriggered() {
-    console.log(`abortTriggered`)
-    this.abortController?.abort();
-  }
+  // abortTriggered removed (inherited)
+  // abortFromCreateTriggered removed (inherited)
 
-  abortFromCreateTriggered() {
-    console.log(`abortFromCreateTriggered`)
-    this.abortControllerFromCreate?.abort();
-  }
-
-  protected readonly RequirementStatus = RequirementStatus;
+  protected readonly RequirementStatus = RequirementStatus; // This might be removable if RequirementStatus is not used in template
   protected readonly TranslatorApiVersionEnum = TranslatorApiVersionEnum;
   protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
   protected readonly LocaleEnum = LocaleEnum;

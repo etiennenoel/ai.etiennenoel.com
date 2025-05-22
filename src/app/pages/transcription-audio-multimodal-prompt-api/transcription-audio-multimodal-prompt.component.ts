@@ -1,8 +1,6 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
-import {BasePageComponent} from '../../components/base/base-page.component';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+// BasePageComponent, RequirementInterface, RequirementStatus, isPlatformBrowser removed
+import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {TaskStatus} from '../../enums/task-status.enum';
@@ -17,7 +15,8 @@ import {
   STEP_SIZE,
   WINDOW
 } from '../../audio-processing-module/constants';
-
+import {BaseApiPageComponent} from '../../components/base/base-api-page.component'; // Changed import
+import {AvailabilityStatusEnum} from '../../enums/availability-status.enum'; // Added import
 
 @Component({
   selector: 'app-transcription-audio-multimodal-chunkInterval',
@@ -25,13 +24,31 @@ import {
   standalone: false,
   styleUrl: './transcription-audio-multimodal-prompt.component.scss'
 })
-export class TranscriptionAudioMultimodalPromptComponent extends BasePageComponent implements OnInit, AfterViewInit {
+export class TranscriptionAudioMultimodalPromptComponent extends BaseApiPageComponent implements OnInit, AfterViewInit { // Changed heritage
 
-  public apiFlag: RequirementInterface = {
-    status: RequirementStatus.Pending,
-    message: 'Pending',
-    contentHtml: 'Activate <span class="code">chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input</span>'
+  // Implement abstract members from BaseApiPageComponent
+  public apiName = 'LanguageModel';
+  public apiFlagName = 'chrome://flags/#chunkInterval-api-for-gemini-nano-multimodal-input';
+
+  get checkAvailabilityCode(): string {
+    return `// Not typically available for this component's setup
+LanguageModel.availability({});`;
   }
+
+  get executeCode(): string {
+    return `// See startTranscribing and chunkAvailable for execution logic`;
+  }
+
+  async checkAvailability(): Promise<void> {
+    this.availabilityStatus = AvailabilityStatusEnum.Available; // Assuming direct model creation implies availability
+  }
+
+  async execute(): Promise<void> {
+    // Main logic is in startTranscribing, this can be a no-op or trigger startTranscribing if appropriate
+    await this.startTranscribing();
+  }
+
+  // apiFlag removed
 
   // <editor-fold desc="Mic Sample Rate">
   private _micSampleRate: number | null = MIC_SAMPLE_RATE;
@@ -148,17 +165,16 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   }
   // </editor-fold>
 
-  status: TaskStatus = TaskStatus.Idle;
-
-  public error?: Error;
+  // status removed (inherited)
+  // error removed (inherited)
 
   @ViewChild("outputComponent")
-  public outputComponent?: ElementRef;
+  public outputComponent?: ElementRef; // Retained
 
-  public output: string = "";
-  public outputCollapsed = false;
+  // output removed (inherited)
+  // outputCollapsed removed (inherited)
 
-  public isRecording = false;
+  public isRecording = false; // Retained
 
   public recordingStartTime?: number;
 
@@ -178,24 +194,23 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   public languageModel?: any;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
-
-    private readonly audioRecordingService: AudioRecordingService,
-    private readonly audioVisualizerService: AudioVisualizerService,
+    @Inject(DOCUMENT) document: Document, // platformId removed from here
+    @Inject(PLATFORM_ID) platformId: Object, // Added platformId for super
+    router: Router, // No longer private readonly
+    route: ActivatedRoute, // No longer private readonly
+    titleService: Title, // Renamed from title
+    public readonly audioRecordingService: AudioRecordingService, // Retained
+    public readonly audioVisualizerService: AudioVisualizerService, // Retained
   ) {
-    super(document, title);
+    super(document, platformId, titleService, router, route); // Updated super call
   }
 
   override async ngOnInit() {
-    super.ngOnInit();
+    super.ngOnInit(); // Call to super.ngOnInit()
 
     this.setTitle("Transcription (using Audio Prompt API (Experimental)) | AI Playground");
 
-    this.checkRequirements();
+    // this.checkRequirements(); // Removed, handled by BaseApiPageComponent's ngOnInit
 
     this.subscriptions.push(this.micSampleRateFormControl.valueChanges.subscribe((value) => {
       this.setMicSampleRate(value, {emitFormControlEvent: false, setFormControlValue: false});
@@ -240,20 +255,13 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   }
 
   ngAfterViewInit() {
-    if(isPlatformBrowser(this.platformId) && this.canvasElement) {
+    // isPlatformBrowser is inherited from BaseComponent via BaseApiPageComponent
+    if(this.isPlatformBrowser && this.canvasElement) {
       this.audioVisualizerService.init(this.canvasElement)
     }
   }
 
-  checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId)) {
-      this.apiFlag.status = RequirementStatus.Pass;
-      this.apiFlag.message = "Passed";
-    }
-  }
+  // checkRequirements() method removed
 
   async startTranscribing() {
     this.isRecording = true;
@@ -284,8 +292,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   }
 
   async chunkAvailable(chunk: any) {
-    this.outputCollapsed = false;
-    this.status = TaskStatus.Executing
+    this.outputCollapsed = false; // Uses inherited outputCollapsed
+    this.status = TaskStatus.Executing; // Uses inherited status
 
     try {
       if(!this.languageModel) {
@@ -304,12 +312,12 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
 
       console.log(result);
 
-      this.output += result;
-      this.status = TaskStatus.Completed;
+      this.output += result; // Uses inherited output
+      this.status = TaskStatus.Completed; // Uses inherited status
 
     } catch (e: any) {
-      this.status = TaskStatus.Error;
-      this.error = e;
+      this.status = TaskStatus.Error; // Uses inherited status
+      this.error = e; // Uses inherited error
     }
   }
 

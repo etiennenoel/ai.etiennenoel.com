@@ -1,10 +1,8 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {MediaInformationInterface} from './media-information.interface';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+// BaseComponent, RequirementStatusInterface, RequirementStatus removed
+import {DOCUMENT} from '@angular/common'; // isPlatformBrowser removed
 import {FormControl} from '@angular/forms';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -16,8 +14,8 @@ import {PromptRoleEnum} from '../../enums/prompt-role.enum';
 import {PromptInterface} from '../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Title} from '@angular/platform-browser';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {BasePageComponent} from '../../components/base/base-page.component';
+// RequirementInterface removed
+import {BaseApiPageComponent} from '../../components/base/base-api-page.component'; // Changed import
 
 
 @Component({
@@ -26,18 +24,18 @@ import {BasePageComponent} from '../../components/base/base-page.component';
   standalone: false,
   styleUrl: './prompt-api.component.scss'
 })
-export class PromptApiComponent extends BasePageComponent implements OnInit {
+export class PromptApiComponent extends BaseApiPageComponent implements OnInit { // Changed heritage
+  // apiName and apiFlagName for BaseApiPageComponent
+  public apiName = 'LanguageModel';
+  public apiFlagName = 'chrome://flags/#prompt-api-for-gemini-nano';
+
   medias: MediaInformationInterface[] = [];
 
-  public error?: Error;
-
-  public outputCollapsed = true;
-
-  public outputChunks: string[] = [];
-
-  output?: string;
-
-  status: TaskStatus = TaskStatus.Idle;
+  // error removed (inherited)
+  // outputCollapsed removed (inherited)
+  // outputChunks removed (inherited)
+  // output removed (inherited)
+  // status removed (inherited)
 
   // <editor-fold desc="TopK">
   private _topK: number | null = 3;
@@ -176,20 +174,7 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
 
   // </editor-fold>
 
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
+  // Download Progress section (_loaded, loaded getter/setter, loadedChange) removed (inherited)
 
   initialPrompts: PromptInterface<PromptInitialRoleEnum>[] = [];
 
@@ -205,52 +190,45 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
   params: AILanguageModelParamsInterface | null = null;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    title: Title,
+    @Inject(DOCUMENT) document: Document, // platformId removed from here
+    @Inject(PLATFORM_ID) platformId: Object, // Added platformId for super
+    router: Router, // No longer private readonly
+    route: ActivatedRoute, // No longer private readonly
+    titleService: Title, // Renamed from title
   ) {
-    super(document, title);
+    super(document, platformId, titleService, router, route); // Updated super call
   }
 
-  public apiFlag: RequirementInterface = {
-    status: RequirementStatus.Pending,
-    message: 'Pending',
-    contentHtml: 'Activate <span class="code">chrome://flags/#prompt-api-for-gemini-nano</span>'
-  }
+  // apiFlag removed (inherited)
+  // checkRequirements removed (handled by BaseApiPageComponent)
+  // availabilityStatus removed (inherited)
 
-  checkRequirements() {
-    if (isPlatformBrowser(this.platformId) && (!this.window || !("LanguageModel" in this.window))) {
-      this.apiFlag.status = RequirementStatus.Fail;
-      this.apiFlag.message = "'LanguageModel' is not defined. Activate the flag.";
-    } else if (isPlatformBrowser(this.platformId)) {
-      this.apiFlag.status = RequirementStatus.Pass;
-      this.apiFlag.message = "Passed";
-    }
-  }
-
-  availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
+  // Retaining existing checkAvailabilityCode getter for abstract member
   get checkAvailabilityCode(): string {
     return `const status = await LanguageModel.availability({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
   expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
-})`
+})`;
   }
 
-  async checkAvailability() {
+  // Adapting existing checkAvailability method for abstract member
+  async checkAvailability(): Promise<void> {
+    this.status = TaskStatus.InProgress; // Use inherited status
+    this.availabilityError = undefined; // Use inherited availabilityError
     try {
-      // @ts-expect-error
-      this.availabilityStatus = await LanguageModel.availability({
+      // @ts-expect-error LanguageModel might not be on window directly
+      const availability = await window.LanguageModel.availability({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
-      })
+      });
+      this.availabilityStatus = availability as AvailabilityStatusEnum; // Use inherited
+      this.status = TaskStatus.Completed;
     } catch (e: any) {
-      this.availabilityStatus = AvailabilityStatusEnum.Unavailable
-      this.error = e;
+      this.availabilityStatus = AvailabilityStatusEnum.Unavailable; // Use inherited
+      this.availabilityError = e; // Use inherited
+      this.status = TaskStatus.Error;
     }
   }
 
@@ -307,19 +285,19 @@ const session = await LanguageModel.create({
     return code;
   }
 
-  async execute() {
-    try {
-      const self = this;
-      this.status = TaskStatus.Executing;
-      const abortController = new AbortController();
-      this.error = undefined;
-      this.loaded = 0;
-      this.outputCollapsed = false;
-      this.output = "";
-      this.outputChunks = [];
+  async execute(): Promise<void> { // Implements abstract method
+    const self = this;
+    this.status = TaskStatus.Executing; // Use inherited status
+    // const abortController = new AbortController(); // Use this.abortController from base class
+    this.error = undefined; // Use inherited error
+    this.loaded = 0; // Use inherited loaded
+    this.outputCollapsed = false; // Use inherited outputCollapsed
+    this.output = ""; // Use inherited output
+    this.outputChunks = []; // Use inherited outputChunks
 
-      // @ts-expect-error
-      const session = await LanguageModel.create({
+    try {
+      // @ts-expect-error LanguageModel might not be on window directly
+      const session = await window.LanguageModel.create({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
@@ -327,10 +305,10 @@ const session = await LanguageModel.create({
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
-            self.loaded = e.loaded;
+            self.loaded = e.loaded; // Use inherited loaded
           });
         },
-        signal: abortController.signal,
+        signal: this.abortController?.signal, // Use inherited abortController
       });
 
       if (this.useStreamingFormControl.value) {
@@ -350,48 +328,48 @@ const session = await LanguageModel.create({
         }
 
         const stream: ReadableStream = session.promptStreaming(prompt, {
-          signal: abortController.signal,
+          signal: this.abortController?.signal, // Use inherited abortController
         });
 
         for await (const chunk of stream) {
           // Do something with each 'chunk'
-          this.output += chunk;
-          this.outputChunks.push(chunk);
+          this.output += chunk; // Use inherited output
+          this.outputChunks.push(chunk); // Use inherited outputChunks
         }
       } else {
         switch (this.promptTypeFormControl.value) {
           case PromptTypeEnum.SequenceAILanguageModelPrompt:
-            this.output = await session.prompt(this.prompts, {
-              signal: abortController.signal,
+            this.output = await session.prompt(this.prompts, { // Use inherited output
+              signal: this.abortController?.signal, // Use inherited abortController
             });
 
             break;
           case PromptTypeEnum.String:
-            this.output = await session.prompt(this.stringPromptFormControl.value, {
-              signal: abortController.signal,
+            this.output = await session.prompt(this.stringPromptFormControl.value, { // Use inherited output
+              signal: this.abortController?.signal, // Use inherited abortController
             });
             break;
           case PromptTypeEnum.AILanguageModelPrompt:
-            this.output = await session.prompt(this.prompt, {
-              signal: abortController.signal,
+            this.output = await session.prompt(this.prompt, { // Use inherited output
+              signal: this.abortController?.signal, // Use inherited abortController
             });
             break;
         }
       }
 
-      this.status = TaskStatus.Completed;
+      this.status = TaskStatus.Completed; // Use inherited status
     } catch (e: any) {
-      this.error = e;
-      this.status = TaskStatus.Error;
+      this.error = e; // Use inherited error
+      this.status = TaskStatus.Error; // Use inherited status
     }
   }
 
   override ngOnInit() {
-    super.ngOnInit();
+    super.ngOnInit(); // Call to super.ngOnInit()
 
     this.setTitle("Prompt API | AI Playground");
 
-    this.checkRequirements()
+    // this.checkRequirements() // Removed, handled by BaseApiPageComponent's ngOnInit
 
     this.subscriptions.push(this.topKFormControl.valueChanges.subscribe((value) => {
       this.setTopK(value, {emitChangeEvent: true, emitFormControlEvent: false});

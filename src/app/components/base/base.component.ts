@@ -1,4 +1,4 @@
-import {Directive, OnDestroy, OnInit} from '@angular/core';
+import {Directive, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {Subscription} from 'rxjs';
 import {Environment} from '../../environments/environment';
@@ -13,6 +13,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 
   constructor(
     protected readonly document: Document,
+    @Inject(PLATFORM_ID) protected platformId: Object,
     ) {
     this.window = this.document?.defaultView;
   }
