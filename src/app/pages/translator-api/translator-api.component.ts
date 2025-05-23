@@ -17,6 +17,7 @@ import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
+import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
 
 declare global {
   interface Translator {
@@ -59,13 +60,14 @@ export class TranslatorApiComponent extends BaseBuiltInApiPageComponent implemen
   protected readonly StepStatus = TaskStatus;
 
   constructor(
-      private readonly router: Router,
-      private route: ActivatedRoute,
+      router: Router,
+      route: ActivatedRoute,
       @Inject(DOCUMENT) document: Document,
       @Inject(PLATFORM_ID) private platformId: Object,
       title: Title,
+      public readonly executionPerformanceManager: ExecutionPerformanceManager,
       ) {
-    super(document, title)
+    super(document, title, router, route)
   }
 
 
@@ -132,6 +134,7 @@ export class TranslatorApiComponent extends BaseBuiltInApiPageComponent implemen
     }
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset();
   }
 
   checkRequirements() {
@@ -181,7 +184,9 @@ await translator.translate("${this.content.value}")
       this.error = undefined;
       this.output = "";
       this.loaded = 0;
+      this.executionPerformanceManager.reset();
 
+      this.executionPerformanceManager.sessionCreationStarted();
       // @ts-expect-error
       const translator = await Translator.create({
         sourceLanguage: this.sourceLanguage.value,
@@ -189,11 +194,16 @@ await translator.translate("${this.content.value}")
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             self.loaded = e.loaded;
+
+            self.executionPerformanceManager.downloadUpdated(self.loaded);
           });
         },
       });
+      this.executionPerformanceManager.sessionCreationCompleted();
 
+      this.executionPerformanceManager.inferenceStarted()
       this.output = await translator.translate(this.content.value);
+      this.executionPerformanceManager.inferenceCompleted()
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {

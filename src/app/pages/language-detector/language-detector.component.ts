@@ -72,12 +72,12 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
+    route: ActivatedRoute,
+    router: Router,
     title: Title,
     public readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
-    super(document, title);
+    super(document, title, router, route);
   }
 
   override ngOnInit() {

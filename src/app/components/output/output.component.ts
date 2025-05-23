@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ToastStore} from '../../stores/toast.store';
+import {ActivatedRoute, Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-output',
@@ -26,7 +28,7 @@ export class OutputComponent implements OnChanges, AfterViewInit {
   outputCollapsed: boolean = true;
 
   @Input()
-  performanceCollapsed: boolean = true;
+  statisticsCollapsed: boolean = true;
 
   @Input()
   downloadProgress: number = 0;
@@ -52,7 +54,9 @@ export class OutputComponent implements OnChanges, AfterViewInit {
 
   constructor(
     private readonly toastStore: ToastStore,
-    private elRef:ElementRef
+    private elRef:ElementRef,
+    private router: Router,
+    private route: ActivatedRoute,
     ) {
   }
 
@@ -78,6 +82,11 @@ export class OutputComponent implements OnChanges, AfterViewInit {
         behavior: "smooth",
       });
     }
+  }
+
+  toggleStatisticsCollapse() {
+    this.statisticsCollapsed = !this.statisticsCollapsed;
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { statisticsCollapsed: this.statisticsCollapsed}, queryParamsHandling: 'merge' });
   }
 
   abortExecutionHandler() {
