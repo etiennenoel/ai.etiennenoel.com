@@ -27,6 +27,8 @@
     "@magieno/angular-bootstrap-dropdown": "^0.0.12",
     "ace-builds": "^1.37.5",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.2",
+    "chartjs-plugin-annotation": "^3.0.1",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

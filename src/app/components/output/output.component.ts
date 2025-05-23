@@ -11,6 +11,7 @@ import {
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ToastStore} from '../../stores/toast.store';
 
+
 @Component({
   selector: 'app-output',
   templateUrl: './output.component.html',
