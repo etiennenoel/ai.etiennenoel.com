@@ -76,6 +76,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.WriterApi;
     } else if(url.endsWith('summarizer-api')) {
       this.currentRoute = RouteEnum.SummarizerApi;
+    }else if(url.endsWith('autocomplete')) {
+      this.currentRoute = RouteEnum.Autocomplete;
     }else if(url.endsWith('/')) {
       this.currentRoute = RouteEnum.Home;
     }

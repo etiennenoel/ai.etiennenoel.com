@@ -5,6 +5,7 @@ export enum RouteEnum {
   WriterApi = 'writer-api',
   RewriterApi = 'rewriter-api',
   ProofreaderApi = 'proofreader-api',
+  Autocomplete = 'autocomplete',
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',
   // @start-remove-in-chrome-dev

@@ -1,0 +1,72 @@
+body {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Light gray background */
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.textarea-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* Max width for better readability */
+  border-radius: 8px; /* Rounded corners for the container */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: #ffffff; /* White background for the textarea area */
+}
+
+/* Common styles for both textareas */
+textarea {
+  width: 100%;
+  height: 200px; /* Increased height */
+  padding: 15px; /* Increased padding */
+  font-size: 16px;
+  line-height: 1.6; /* Adjusted line-height for better readability */
+  border: 1px solid #d1d5db; /* Softer border color */
+  border-radius: 8px; /* Consistent rounded corners */
+  box-sizing: border-box;
+  font-family: inherit; /* Use 'Inter' font */
+  white-space: pre-wrap; /* Preserve spaces and newlines, wrap text */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  resize: none; /* Disable manual resizing */
+  margin: 0; /* Remove any default margin */
+}
+
+#suggestion-textarea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #9ca3af; /* Lighter gray for suggestion text */
+  background-color: #ffffff; /* Match container background */
+  z-index: 1;
+  -webkit-text-fill-color: #9ca3af; /* Ensure text color on Safari */
+  opacity: 1; /* Ensure it's visible */
+  pointer-events: none; /* Make it non-interactive */
+}
+
+#main-textarea {
+  position: relative; /* Stacking context */
+  color: #1f2937; /* Darker text for user input */
+  background-color: transparent; /* Crucial: shows suggestion textarea underneath */
+  z-index: 2;
+  caret-color: #3b82f6; /* Blue caret color */
+}
+
+#main-textarea:focus {
+  outline: none;
+  border-color: #3b82f6; /* Blue border on focus */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Focus ring */
+}
+
+/* Small instruction text */
+.instructions {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #4b5563;
+}

@@ -20,6 +20,7 @@ import {EnvironmentNameEnum} from './enums/environment-name.enum';
 import {RouteEnum} from './enums/route.enum';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
+import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component';
 // @end
 
 const layouts: Routes = [
@@ -46,6 +47,10 @@ const layouts: Routes = [
   {
     path: "proofreader-api",
     component: ProofreaderApiComponent,
+  },
+  {
+    path: "autocomplete",
+    component: AutocompleteComponent,
   },
   {
     path: "prompt-api",

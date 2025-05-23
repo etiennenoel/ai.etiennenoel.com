@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row mt-5">
+    <div class="col-12 d-flex justify-content-center">
+      <div class="textarea-container-wrapper" style="width: 90%; max-width: 600px;">
+        <div class="textarea-container">
+    <textarea tabindex="-1"
+              id="suggestion-textarea"
+              class="form-control"
+              [formControl]="suggestionTextAreaFormControl"
+              #suggestionTextareaElement
+    ></textarea>
+          <textarea placeholder="Start typing here... (e.g., 'function' or 'console')"
+                    id="main-textarea"
+                    class="form-control"
+                    [formControl]="mainTextAreaFormControl"
+                    (keydown)="onKeyDown($event)"
+                    (scroll)="onScroll($event)"
+                    #mainTextareaElement
+          ></textarea>
+        </div>
+        <p class="instructions">Press <strong>Tab</strong> to accept a suggestion.</p>
+      </div>
+
+    </div>
+  </div>
+</div>

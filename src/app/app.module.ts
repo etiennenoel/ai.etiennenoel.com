@@ -51,6 +51,7 @@ import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-drop
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
+import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,8 @@ import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.c
     SummarizerApiComponent,
     TranslatorApiComponent,
     WriterApiComponent,
+
+    AutocompleteComponent,
 
 // @start-remove-in-chrome-dev
     AudioMultimodalPromptComponent,
