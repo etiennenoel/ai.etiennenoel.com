@@ -141,6 +141,10 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     Chart.register(BarElement);
 
     this.chartElement = this.document.getElementById("graph") as HTMLCanvasElement;
+    if (!this.chartElement) {
+      console.error("Canvas element with ID 'graph' not found. Chart initialization aborted.");
+      return;
+    }
 
     this.chart = new Chart(this.chartElement, {
       type: 'bar',
