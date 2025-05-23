@@ -1,5 +1,5 @@
 export enum SummarizerTypeEnum {
-  TLDR = 'tl;dr',
+  TLDR = 'tldr',
   Teaser = 'teaser',
   KeyPoints = 'key-points',
   Headline = 'headline',
