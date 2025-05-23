@@ -6,90 +6,110 @@
 
   <nav class="mt-5 ms-2 me-2 flex-grow-1">
     <ul class="list-unstyled">
-      <li [class.active]="this.currentRoute === RouteEnum.Home">
-        <a class="btn stretched-link" routerLink="/">
+      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">
+        <a class="btn" routerLink="/">
           <i class="bi bi-house"></i>
           <span>Home</span>
         </a>
       </li>
-      <li [class.active]="this.currentRoute === RouteEnum.TranslatorApi">
-        <a class="btn stretched-link" routerLink="/translator-api">
-          <i class="bi bi-translate"></i>
-          <span>Translator API</span>
-        </a>
-      </li>
-      <li [class.active]="this.currentRoute === RouteEnum.LanguageDetectorApi">
-        <a class="btn stretched-link" routerLink="/language-detector-api">
-          <i class="bi bi-globe"></i>
-          <span>Language Detector API</span>
-        </a>
-      </li>
-      <li [class.active]="this.currentRoute === RouteEnum.SummarizerApi">
-        <a class="btn stretched-link" routerLink="/summarizer-api">
-          <i class="bi bi-text-paragraph"></i>
-          <span>Summarizer API</span></a>
-      </li>
-      <li [class.active]="this.currentRoute === RouteEnum.WriterApi">
-        <a class="btn stretched-link" routerLink="/writer-api">
-          <i class="bi bi-pencil-square"></i>
-          <span>Writer API</span></a>
-      </li>
-      <li [class.active]="this.currentRoute === RouteEnum.RewriterApi">
-        <a class="btn stretched-link" routerLink="/rewriter-api">
-          <i class="bi bi-arrow-clockwise"></i>
-          <span>Rewriter API</span></a>
-      </li>
-      <li [class.active]="this.currentRoute === RouteEnum.PromptApi">
-        <a class="btn stretched-link" routerLink="/prompt-api">
-          <i class="bi bi-input-cursor-text"></i>
-          <span>Prompt API</span></a>
-      </li>
-<!-- @start-remove-in-chrome-dev -->
-      @if(Environment.multimodal) {
-        <li [class.active]="this.currentRoute === RouteEnum.MultimodalPromptApi">
-          <a class="btn stretched-link" routerLink="/multimodal-prompt-api">
-            <i class="bi bi-collection-play-fill"></i>
-            <span>Multimodal Prompt API</span>
-          </a>
-        </li>
-        <li [class.active]="this.currentRoute === RouteEnum.AudioMultimodalPromptApi">
-          <a class="btn stretched-link" routerLink="/audio-multimodal-prompt-api">
-            <i class="bi bi-volume-up"></i>
-            <span>Audio Prompt</span>
-          </a>
-        </li>
-        <li [class.active]="this.currentRoute === RouteEnum.TranscriptionAudioMultimodalPromptApi">
-          <a class="btn stretched-link" routerLink="/transcription-audio-multimodal-prompt-api">
-            <i class="bi bi-voicemail"></i>
-            <span>Transcription <small>(using Audio Prompt)</small></span>
-            <span class="badge text-bg-warning">Experimental</span>
-          </a>
-        </li>
-      }
-<!-- @end -->
 
-      <li [class.active]="this.currentRoute === RouteEnum.ProofreaderApi">
-        <a class="btn stretched-link" routerLink="/proofreader-api">
-          <i class="bi bi-spellcheck"></i>
-          <span>Proofreader API</span></a>
-        <span class="badge text-bg-warning">Experimental</span>
-      </li>
+      <li class="navigation-category">
+        <i class="bi bi-arrow-left-right"></i> <span>Built-In AI APIs</span>
 
-      <li [class.active]="this.currentRoute === RouteEnum.Autocomplete">
-        <a class="btn stretched-link" routerLink="/autocomplete">
-          <i class="bi bi-input-cursor"></i>
-          <span>Autocomplete</span></a>
-        <span class="badge text-bg-warning">Experimental</span>
+        <ul class="list-unstyled">
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.TranslatorApi">
+            <a class="btn" routerLink="/translator-api">
+              <i class="bi bi-translate"></i>
+              <span>Translator API</span>
+            </a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.LanguageDetectorApi">
+            <a class="btn" routerLink="/language-detector-api">
+               <i class="bi bi-globe"></i>
+             <span>Language Detector API</span>
+            </a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.SummarizerApi">
+            <a class="btn" routerLink="/summarizer-api">
+              <i class="bi bi-text-paragraph"></i>
+              <span>Summarizer API</span></a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.WriterApi">
+            <a class="btn" routerLink="/writer-api">
+              <i class="bi bi-pencil-square"></i>
+              <span>Writer API</span></a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.RewriterApi">
+            <a class="btn" routerLink="/rewriter-api">
+              <i class="bi bi-arrow-clockwise"></i>
+              <span>Rewriter API</span></a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.PromptApi">
+            <a class="btn" routerLink="/prompt-api">
+              <i class="bi bi-input-cursor-text"></i>
+              <span>Prompt API</span></a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.ProofreaderApi">
+            <a class="btn" routerLink="/proofreader-api">
+              <i class="bi bi-spellcheck"></i>
+              <span>Proofreader API</span>
+              <span class="badge text-bg-warning">Experimental</span>
+            </a>
+
+          </li>
+
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.MultimodalPromptApi">
+            <a class="btn" routerLink="/multimodal-prompt-api">
+              <i class="bi bi-collection-play-fill"></i>
+              <span>Multimodal Prompt API</span>
+            </a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.AudioMultimodalPromptApi">
+            <a class="btn" routerLink="/audio-multimodal-prompt-api">
+              <i class="bi bi-volume-up"></i>
+              <span>Audio Prompt</span>
+            </a>
+          </li>
+
+        </ul>
       </li>
 
-      @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
-        <li [class.active]="this.currentRoute === RouteEnum.DownloadTester">
-          <a class="btn stretched-link" routerLink="/download-tester">
-            <i class="bi bi-percent"></i>
-            <span>Download Tester</span>
-          </a>
-        </li>
-      }
+      <li class="navigation-category">
+        <i class="bi bi-window-desktop"></i> <span>Use Cases</span>
+
+        <ul class="list-unstyled">
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Autocomplete">
+            <a class="btn" routerLink="/autocomplete">
+              <i class="bi bi-input-cursor"></i>
+              <span>Autocomplete</span>
+              <span class="badge text-bg-warning">Experimental</span>
+            </a>
+
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.TranscriptionAudioMultimodalPromptApi">
+            <a class="btn" routerLink="/transcription-audio-multimodal-prompt-api">
+              <i class="bi bi-voicemail"></i>
+              <span>Transcription <small>(using Audio Prompt)</small></span>
+              <span class="badge text-bg-warning">Experimental</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="navigation-category">
+        <i class="bi bi-speedometer"></i> <span>Performance/Debug</span>
+        <ul class="list-unstyled">
+        @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.DownloadTester">
+            <a class="btn" routerLink="/download-tester">
+              <i class="bi bi-percent"></i>
+              <span>Download Tester</span>
+            </a>
+          </li>
+        }
+        </ul>
+      </li>
+
     </ul>
   </nav>
 

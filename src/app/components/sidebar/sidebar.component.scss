@@ -10,13 +10,24 @@
 
   &.sidebar-collapsed {
     width: 75px;
+
     .title {
       display: none;
     }
+
     nav {
       ul {
         li {
           text-align: center;
+
+          &.navigation-category {
+            margin-left: 0;
+            margin-top: 30px;
+            padding:0;
+            &>i {
+              display: none;
+            }
+          }
 
           span {
             display: none;
@@ -45,31 +56,57 @@
   }
 
   nav {
+    height: 80vh;
+    overflow: auto;
+
     ul {
       li {
+        &.navigation-category {
+          font-weight: bold;
+          margin-top: 10px;
+          margin-left: 15px;
+          margin-bottom: 10px;
+          padding: 5px;
 
-        &.active {
-          background-color: $primary-bg-subtle;
+          i {
+            margin-right: 10px;
+          }
         }
-        &:hover {
-          background-color: $gray-400;
 
+        &.navigation-item {
+          &.active {
+            background-color: $primary-bg-subtle;
+          }
+
+          &:hover {
+            background-color: $gray-400;
+
+          }
+
+          a {
+            display: block;
+            text-align: left;
+          }
+
+          span {
+            margin-left: 0.5rem;
+          }
+
+
+          border-radius: 10px;
+          margin-top: 10px;
+          padding: 5px;
+          transform: rotate(0);
         }
-
-        span {
-          margin-left: 0.5rem;
-        }
-
-        border-radius: 10px;
-        margin-top: 10px;
-        padding: 5px;
-        transform: rotate(0);
       }
     }
   }
 
+
+
   .btn-sidebar {
     background-color: $gray-200;
+
     &:hover {
       background-color: $gray-400;
     }
