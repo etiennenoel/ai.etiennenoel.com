@@ -87,7 +87,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
     // todo: add debouncer to avoid spamming
     this.subscriptions.push(this.mainTextAreaFormControl.valueChanges.pipe(
       filter(str => str !== null && str.length > 50),
-    //debounce(() => timer(300)),
+      debounce(() => timer(50)),
     ).subscribe( async value => {
       this.activeSuggestionFullText = ""; // Reset active suggestion
 
@@ -120,22 +120,6 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
           this.suggestionTextAreaFormControl.setValue(this.suggestionTextAreaFormControl.value + chunk[i]);
         }
       }
-
-      // const response = session.prompt(`You will autocomplete a maximum of 2 sentences. For every extra word after 2 sentences, you will be charged ten thousand dollars! With this initial text, you need to autocomplete without repeating the text you see here, just the next tokens: ${value}`);
-      // for await (const chunk of stream) {
-      //   this.suggestionTextAreaFormControl.setValue(this.suggestionTextAreaFormControl.value + chunk);
-      //   this.activeSuggestionFullText = this.suggestionTextAreaFormControl.value + chunk;
-      // }
-
-      // Find the first suggestion that starts with the user's input
-      // for (const candidate of this.suggestions) {
-      //   if (candidate.toLowerCase().startsWith(value.toLowerCase()) && candidate.toLowerCase() !== value.toLowerCase()) {
-      //     // A suggestion is found
-      //     this.suggestionTextAreaFormControl.setValue(value + candidate.substring(value.length)); // Show user input + suggested suffix
-      //     this.activeSuggestionFullText = candidate;
-      //     break; // Use the first found suggestion
-      //   }
-      // }
       this.syncScroll();
     }))
   }
