@@ -235,11 +235,11 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseBuiltInApiPa
 
   constructor(
     @Inject(DOCUMENT) document: Document,
-    protected readonly router: Router,
-    protected readonly route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
     title: Title,
     ) {
-    super(document, title);
+    super(document, title, router, route);
   }
 
   override ngOnInit() {

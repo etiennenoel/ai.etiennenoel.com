@@ -90,17 +90,17 @@
     <h2 class="accordion-header">
       <button class="accordion-button d-flex gap-2"
               type="button"
-              data-bs-target="#collapsePerformance" aria-expanded="false" aria-controls="collapsePerformance"
-              (click)="performanceCollapsed = !performanceCollapsed"
-              [class.collapsed]="performanceCollapsed"
+              data-bs-target="#statisticsCollapsed" aria-expanded="false" aria-controls="statisticsCollapsed"
+              (click)="this.toggleStatisticsCollapse()"
+              [class.collapsed]="statisticsCollapsed"
       >
         <i class="bi bi-graph-up"></i>
 
         <div class="flex-grow-1">Statistics</div>
       </button>
     </h2>
-    <div id="collapsePerformance" class="accordion-collapse" [class.collapse]="performanceCollapsed"
-         data-bs-parent="#collapsePerformance">
+    <div id="statisticsCollapsed" class="accordion-collapse" [class.collapse]="statisticsCollapsed"
+         data-bs-parent="#statisticsCollapsed">
       <div class="accordion-body p-0">
         <div class="mt-1 p-3">
           <app-execution-performance></app-execution-performance>

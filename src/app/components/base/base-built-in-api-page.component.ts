@@ -5,6 +5,7 @@ import {TaskStatus} from '../../enums/task-status.enum';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 @Directive()
@@ -12,6 +13,7 @@ export abstract class BaseBuiltInApiPageComponent extends BasePageComponent impl
   public error?: Error;
 
   public outputCollapsed = true;
+  public statisticsCollapsed = true;
 
   public outputChunks: string[] = [];
 
@@ -103,8 +105,20 @@ export abstract class BaseBuiltInApiPageComponent extends BasePageComponent impl
   constructor(
     document: Document,
     titleService: Title,
+    protected readonly router: Router,
+    public readonly route: ActivatedRoute,
   ) {
     super(document, titleService);
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+
+    this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params['statisticsCollapsed']) {
+        this.statisticsCollapsed = params['statisticsCollapsed'] === 'true';
+      }
+    }))
   }
 
   AvailabilityStatusEnum = AvailabilityStatusEnum;

@@ -52,11 +52,11 @@ export class ProofreaderApiComponent  extends BaseBuiltInApiPageComponent  imple
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
     title: Title,
   ) {
-    super(document, title);
+    super(document, title, router, route);
   }
 
 

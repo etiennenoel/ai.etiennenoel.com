@@ -1,26 +1,3 @@
-<h6>Session Creation</h6>
-<!-- TODO: Replace this with a nice chartjs graph -->
-<div class="flex-fill">StartedAt: <strong>{{ this.sessionCreationStartedAt | date: 'yyyy-MM-dd HH:mm:ss:SSS' }}</strong>
-</div>
-<div class="flex-fill">Elapsed (ms): <strong>{{ this.sessionCreationDuration }}
-  ms</strong>
-</div>
-
-<div class="flex-fill">Ended At: <strong>{{ this.sessionCreationEndedAt | date: 'yyyy-MM-dd HH:mm:ss:SSS' }}</strong>
-</div>
-
-<div id="graph-container">
+<div id="graph-container" style="height: 250px; width: 100%; position: relative;">
   <canvas id="graph" class="d-print-block"></canvas>
-</div>
-
-
-<h6 class="mt-5">Inference</h6>
-<!-- TODO: Replace this with a nice chartjs graph -->
-<div class="flex-fill">StartedAt: <strong>{{ this.inferenceStartedAt | date: 'yyyy-MM-dd HH:mm:ss:SSS' }}</strong>
-</div>
-<div class="flex-fill">Elapsed (ms): <strong>{{ this.inferenceDuration }}
-  ms</strong>
-</div>
-
-<div class="flex-fill">Ended At: <strong>{{ this.inferenceEndedAt | date: 'yyyy-MM-dd HH:mm:ss:SSS' }}</strong>
 </div>
