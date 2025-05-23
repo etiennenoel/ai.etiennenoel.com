@@ -2,12 +2,12 @@ import {Directive, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
 import {FormControl} from '@angular/forms';
-import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {DOCUMENT} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {BaseBuiltInApiPageComponent} from '../base/base-built-in-api-page.component';
 import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 
 declare global {
   interface Window { ai: any; }

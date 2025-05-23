@@ -9,7 +9,6 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
-import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {ToastStore} from '../../stores/toast.store';
 
 @Component({
@@ -27,7 +26,7 @@ export class OutputComponent implements OnChanges, AfterViewInit {
   outputCollapsed: boolean = true;
 
   @Input()
-  executionPerformanceResult?: ExecutionPerformanceResultInterface;
+  performanceCollapsed: boolean = true;
 
   @Input()
   downloadProgress: number = 0;

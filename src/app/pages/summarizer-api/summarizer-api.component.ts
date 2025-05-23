@@ -12,6 +12,7 @@ import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
+import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
 
 
 @Component({
@@ -169,6 +170,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     router: Router,
     route: ActivatedRoute,
     title: Title,
+    private readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
     super(document, router, route, title);
   }

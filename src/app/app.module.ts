@@ -52,6 +52,8 @@ import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-i
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component';
+import {ExecutionPerformanceManager} from './services/execution-performance.manager';
+import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +76,8 @@ import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component
     StepTitleComponent,
     StepContainerVisualStatusDirective,
     ToastComponent,
+
+    ExecutionPerformanceComponent,
 
     // Pages
     DownloadTesterComponent,
@@ -123,6 +127,10 @@ import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component
     AudioRecordingService,
     AudioVisualizerService,
 // @end
+
+    // Managers
+    ExecutionPerformanceManager,
+
     // Stores
     ToastStore,
   ],

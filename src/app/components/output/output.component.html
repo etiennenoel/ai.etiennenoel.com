@@ -63,26 +63,6 @@
           }
 
           <ng-content></ng-content>
-
-          <!-- This below is deprecated, should use the footer direclty -->
-          @if (this.executionPerformanceResult?.elapsedTime) {
-            <div class="flex-fill">Elapsed time: <strong>{{ this.executionPerformanceResult?.elapsedTime }} ms</strong>
-            </div>
-          }
-
-          @if (this.executionPerformanceResult?.firstResponseIn || this.executionPerformanceResult?.firstResponseNumberOfWords) {
-            <div class="flex-fill">First Response:
-              <strong>{{ this.executionPerformanceResult?.firstResponseIn ?? "N/A" }}</strong>
-              ms, <strong>{{ this.executionPerformanceResult?.firstResponseNumberOfWords ?? "N/A" }} words</strong>
-            </div>
-          }
-
-          @if (this.executionPerformanceResult?.totalExecutionTime || this.executionPerformanceResult?.totalNumberOfWords) {
-            <div class="flex-fill">Total: <strong>{{ this.executionPerformanceResult?.totalExecutionTime ?? "N/A" }}
-              ms</strong>,
-              <strong>{{ this.executionPerformanceResult?.totalNumberOfWords ?? "N/A" }} words</strong></div>
-          }
-
         </div>
         <div class="border-top border-1 p-3 bg-light m-0 d-flex gap-2 align-items-center">
           @if (status !== TaskStatus.Idle) {
@@ -101,6 +81,29 @@
               execution
             </button>
           }
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button d-flex gap-2"
+              type="button"
+              data-bs-target="#collapsePerformance" aria-expanded="false" aria-controls="collapsePerformance"
+              (click)="performanceCollapsed = !performanceCollapsed"
+              [class.collapsed]="performanceCollapsed"
+      >
+        <i class="bi bi-graph-up"></i>
+
+        <div class="flex-grow-1">Statistics</div>
+      </button>
+    </h2>
+    <div id="collapsePerformance" class="accordion-collapse" [class.collapse]="performanceCollapsed"
+         data-bs-parent="#collapsePerformance">
+      <div class="accordion-body p-0">
+        <div class="mt-1 p-3">
+          <app-execution-performance></app-execution-performance>
         </div>
       </div>
 

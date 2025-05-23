@@ -12,6 +12,7 @@ import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
 import {BasePageComponent} from '../../components/base/base-page.component';
 import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
+import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
 
 
 @Component({
@@ -74,6 +75,7 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     title: Title,
+    public readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
     super(document, title);
   }
@@ -84,6 +86,7 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
     this.setTitle('Language Detector API | AI Playground');
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset();
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['input']) {
@@ -186,21 +189,28 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.outputCollapsed = false;
       this.detectionStatus = TaskStatus.Executing;
       this.error = undefined;
+      this.executionPerformanceManager.reset();
 
+      this.executionPerformanceManager.sessionCreationStarted();
       // @ts-expect-error
       const detector = await LanguageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             self.loaded = e.loaded;
+
+            self.executionPerformanceManager.downloadUpdated(self.loaded);
           });
         },
         //signal: abortController.signal,
       });
+      this.executionPerformanceManager.sessionCreationCompleted();
 
+      this.executionPerformanceManager.inferenceStarted()
       this.results = await detector.detect(this.inputFormControl.value, {
         //signal: abortController.signal,
       });
+      this.executionPerformanceManager.inferenceCompleted()
 
       this.detectionStatus = TaskStatus.Completed;
     } catch (e: any) {
