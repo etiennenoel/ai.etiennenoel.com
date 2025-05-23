@@ -18,6 +18,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Title} from '@angular/platform-browser';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {BasePageComponent} from '../../components/base/base-page.component';
+import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
 
 
 @Component({
@@ -26,18 +27,9 @@ import {BasePageComponent} from '../../components/base/base-page.component';
   standalone: false,
   styleUrl: './prompt-api.component.scss'
 })
-export class PromptApiComponent extends BasePageComponent implements OnInit {
+export class PromptApiComponent extends BaseBuiltInApiPageComponent implements OnInit {
   medias: MediaInformationInterface[] = [];
 
-  public error?: Error;
-
-  public outputCollapsed = true;
-
-  public outputChunks: string[] = [];
-
-  output?: string;
-
-  status: TaskStatus = TaskStatus.Idle;
 
   // <editor-fold desc="TopK">
   private _topK: number | null = 3;
@@ -176,21 +168,6 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
 
   // </editor-fold>
 
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
   initialPrompts: PromptInterface<PromptInitialRoleEnum>[] = [];
 
   prompts: PromptInterface<PromptRoleEnum>[] = [];
@@ -229,8 +206,6 @@ export class PromptApiComponent extends BasePageComponent implements OnInit {
       this.apiFlag.message = "Passed";
     }
   }
-
-  availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
 
   get checkAvailabilityCode(): string {
     return `const status = await LanguageModel.availability({
@@ -588,9 +563,6 @@ const session = await LanguageModel.create({
     })
   }
 
-  protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
-  protected readonly RequirementStatus = RequirementStatus;
-  protected readonly LocaleEnum = LocaleEnum;
   protected readonly PromptInitialRoleEnum = PromptInitialRoleEnum;
   protected readonly PromptTypeEnum = PromptTypeEnum;
   protected readonly PromptRoleEnum = PromptRoleEnum;

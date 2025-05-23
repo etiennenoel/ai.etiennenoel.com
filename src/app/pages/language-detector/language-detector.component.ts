@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
 import {BasePageComponent} from '../../components/base/base-page.component';
+import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
 
 
 @Component({
@@ -19,21 +20,13 @@ import {BasePageComponent} from '../../components/base/base-page.component';
   standalone: false,
   styleUrl: './language-detector.component.scss'
 })
-export class LanguageDetectorComponent extends BasePageComponent implements OnInit {
+export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent implements OnInit {
 
   public apiFlag: RequirementInterface = {
     status: RequirementStatus.Pending,
     message: 'Pending',
     contentHtml: `Activate <span class="code">chrome://flags/#language-detection-api</span>`,
   }
-
-  availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
-  error?: Error;
-
-  outputCollapsed = true;
-
-  output: string = "";
 
   detectionStatus = TaskStatus.Idle;
 
@@ -66,53 +59,6 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
   @Output()
   expectedInputLanguagesChange = new EventEmitter<LocaleEnum[] | null>();
 
-  // </editor-fold>
-
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
   // </editor-fold>
 
   inputFormControl = new FormControl<string>("");
@@ -150,9 +96,7 @@ export class LanguageDetectorComponent extends BasePageComponent implements OnIn
         } else {
           this.expectedInputLanguages = params['expectedInputLanguages'];
         }
-
       }
-
     }));
 
     this.subscriptions.push(this.inputFormControl.valueChanges.subscribe((value) => {
@@ -274,8 +218,4 @@ const results = await detector.detect("${this.inputFormControl.value}", {
     console.log(`abortFromCreateTriggered`)
     this.abortControllerFromCreate?.abort();
   }
-
-
-  protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
-  protected readonly LocaleEnum = LocaleEnum;
 }

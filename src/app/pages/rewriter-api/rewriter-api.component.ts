@@ -102,7 +102,6 @@ export class RewriterApiComponent extends BaseWritingAssistanceApiComponent impl
   lengthChange = new EventEmitter<RewriterLengthEnum | null>();
   // </editor-fold>
 
-  protected outputStatusMessage: string = "";
   apiFlagContentHtml = `Activate <span class="code">chrome://flags/#rewriter-api-for-gemini-nano</span>`;
   getRequirement(): RequirementInterface {
     return {
@@ -331,5 +330,4 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
   RewriterToneEnum = RewriterToneEnum;
   RewriterFormatEnum = RewriterFormatEnum;
   RewriterLengthEnum = RewriterLengthEnum;
-  protected readonly LocaleEnum = LocaleEnum;
 }

@@ -6,8 +6,6 @@ import {FormControl} from '@angular/forms';
 import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../utils/text.utils';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
-import {LocaleEnum} from '../../enums/locale.enum';
 import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
 import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
@@ -104,8 +102,6 @@ export class SummarizerApiComponent extends BaseWritingAssistanceApiComponent im
   @Output()
   lengthChange = new EventEmitter<SummarizerLengthEnum | null>();
   // </editor-fold>
-
-  protected outputStatusMessage: string = "";
 
   get checkAvailabilityCode() {
     return `Summarizer.availability({
@@ -333,5 +329,4 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
   SummarizerTypeEnum = SummarizerTypeEnum;
   SummarizerFormatEnum = SummarizerFormatEnum;
   SummarizerLengthEnum = SummarizerLengthEnum;
-  protected readonly LocaleEnum = LocaleEnum;
 }

@@ -1,16 +1,13 @@
 import {Directive, EventEmitter, Inject, Input, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {TaskStatus} from '../../enums/task-status.enum';
-import {BaseComponent} from '../base/base.component';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
 import {FormControl} from '@angular/forms';
 import {ExecutionPerformanceResultInterface} from '../../interfaces/execution-performance-result.interface';
 import {LocaleEnum} from '../../enums/locale.enum';
 import {DOCUMENT} from '@angular/common';
-import {BasePageComponent} from '../base/base-page.component';
 import {Title} from '@angular/platform-browser';
+import {BaseBuiltInApiPageComponent} from '../base/base-built-in-api-page.component';
+import {RequirementStatus} from '../../enums/requirement-status.enum';
 
 declare global {
   interface Window { ai: any; }
@@ -18,16 +15,7 @@ declare global {
 
 
 @Directive()
-export abstract class BaseWritingAssistanceApiComponent extends BasePageComponent {
-
-  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
-  public outputCollapsed = true;
-
-  public error?: Error;
-
-  public availabilityError?: Error;
-
+export abstract class BaseWritingAssistanceApiComponent extends BaseBuiltInApiPageComponent {
   // <editor-fold desc="Use Streaming">
   private _useStreaming: boolean | null = true;
   public useStreamingFormControl = new FormControl<boolean>(true);
@@ -54,24 +42,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
 
   // </editor-fold>
 
-  // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
-  // </editor-fold>
-
   // <editor-fold desc="Execution Performance Result">
   executionPerformance: ExecutionPerformanceResultInterface = {
     startedExecutionAt: 0,
@@ -84,22 +54,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
 
   @Output()
   executionPerformanceChange: EventEmitter<ExecutionPerformanceResultInterface> = new EventEmitter<ExecutionPerformanceResultInterface>();
-  // </editor-fold>
-
-  // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
   // </editor-fold>
 
   // <editor-fold desc="Expected Input Languages">
@@ -268,53 +222,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
   sharedContextChange = new EventEmitter<string | null>();
   // </editor-fold>
 
-  // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
   @Output()
   errorChange = new EventEmitter<Error>();
 
@@ -325,8 +232,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
   }
 
   private executionTimeInterval: any;
-
-  public outputChunks: string[] = [];
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -443,7 +348,4 @@ export abstract class BaseWritingAssistanceApiComponent extends BasePageComponen
     console.log(`abortFromCreateTriggered`)
     this.abortControllerFromCreate?.abort();
   }
-
-  public readonly RequirementStatus = RequirementStatus;
-  public readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
 }

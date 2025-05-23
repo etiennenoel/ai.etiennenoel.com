@@ -102,8 +102,6 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
   lengthChange = new EventEmitter<WriterLengthEnum | null>();
   // </editor-fold>
 
-  protected outputStatusMessage: string = "";
-
   apiFlagContentHtml = `Activate <span class=\"code\">chrome://flags/#writer-api-for-gemini-nano</span>`;
 
   getRequirement(): RequirementInterface {
@@ -332,5 +330,4 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
   WriterToneEnum = WriterToneEnum;
   WriterFormatEnum = WriterFormatEnum;
   WriterLengthEnum = WriterLengthEnum;
-  protected readonly LocaleEnum = LocaleEnum;
 }

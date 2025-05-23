@@ -16,6 +16,7 @@ import {BasePageComponent} from '../../components/base/base-page.component';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 import {LocaleEnum} from '../../enums/locale.enum';
+import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
 
 declare global {
   interface Translator {
@@ -29,7 +30,7 @@ declare global {
   standalone: false,
   styleUrl: './translator-api.component.scss'
 })
-export class TranslatorApiComponent extends BasePageComponent implements OnInit, OnDestroy {
+export class TranslatorApiComponent extends BaseBuiltInApiPageComponent implements OnInit, OnDestroy {
   languages = languages;
   languageOptions: SearchSelectDropdownOptionsInterface[] = this.languages.map((language) => {
     return {label: language.title, value: language.locale}
@@ -38,95 +39,6 @@ export class TranslatorApiComponent extends BasePageComponent implements OnInit,
   sourceLanguage= new FormControl("en");
   targetLanguage = new FormControl('fr');
   content = new FormControl('');
-
-  public outputCollapsed = true;
-
-  public availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
-  public error?: Error;
-
-  public availabilityError?: Error;
-
-  // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
-  // </editor-fold>
-
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
-  // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortControllerFromCreate">
-  private _abortControllerFromCreate: AbortController | null = null;
-
-  get abortControllerFromCreate(): AbortController | null {
-    return this._abortControllerFromCreate;
-  }
-
-  set abortControllerFromCreate(value: AbortController | null) {
-    this._abortControllerFromCreate = value;
-    this.abortControllerFromCreateChange.emit(value);
-  }
-
-  @Output()
-  abortControllerFromCreateChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
-
-  // <editor-fold desc="AbortController">
-  private _abortController: AbortController | null = null;
-
-  get abortController(): AbortController | null {
-    return this._abortController;
-  }
-
-  set abortController(value: AbortController | null) {
-    this._abortController = value;
-    this.abortControllerChange.emit(value);
-  }
-
-  @Output()
-  abortControllerChange = new EventEmitter<AbortController | null>();
-  // </editor-fold>
 
   requirements: RequirementInterface = {
     translationApiFlag: {
@@ -300,8 +212,5 @@ await translator.translate("${this.content.value}")
     this.abortControllerFromCreate?.abort();
   }
 
-  protected readonly RequirementStatus = RequirementStatus;
   protected readonly TranslatorApiVersionEnum = TranslatorApiVersionEnum;
-  protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
-  protected readonly LocaleEnum = LocaleEnum;
 }

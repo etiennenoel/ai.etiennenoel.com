@@ -26,6 +26,7 @@ import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
 import {MediaInformationType} from '../prompt-api/media-information.type';
 import {ImageInformationType} from '../prompt-api/image-information.type';
 import {AudioInformationType} from '../prompt-api/audio-information.type';
+import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -33,12 +34,8 @@ import {AudioInformationType} from '../prompt-api/audio-information.type';
   standalone: false,
   styleUrl: './multimodal-prompt-api.component.scss'
 })
-export class MultimodalPromptApiComponent extends BasePageComponent implements OnInit {
+export class MultimodalPromptApiComponent extends BaseBuiltInApiPageComponent implements OnInit {
   medias: MediaInformationType[] = [];
-
-  error?: Error;
-
-  public availabilityError?: Error;
 
   // <editor-fold desc="Prompt Types">
   private _promptTypes: "image" | "audio" | null = "image";
@@ -65,22 +62,6 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   promptTypesChange = new EventEmitter<"image" | "audio" | null>();
   // </editor-fold>
 
-  // <editor-fold desc="Task Status">
-  private _status: TaskStatus = TaskStatus.Idle;
-
-  get status(): TaskStatus {
-    return this._status;
-  }
-
-  set status(value: TaskStatus) {
-    this._status = value;
-    this.statusChange.emit(value);
-  }
-
-  @Output()
-  public statusChange = new EventEmitter<TaskStatus>();
-  // </editor-fold>
-
   // <editor-fold desc="Prompt">
   private _prompt: string | null = "Describe this.";
   public promptFormControl: FormControl<string | null> = new FormControl<string | null>("Describe this.");
@@ -105,41 +86,6 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
   @Output()
   public promptChange = new EventEmitter<string | null>();
   // </editor-fold>
-
-  // <editor-fold desc="Output">
-  private _output: string = "";
-  get output(): string {
-    return this._output;
-  }
-
-  set output(value: string) {
-    this._output = value;
-    this.outputChange.emit(value);
-  }
-
-  @Output()
-  outputChange = new EventEmitter<string>();
-
-  @Output()
-  outputChunksChange = new EventEmitter<string[]>();
-  // </editor-fold>
-
-  // <editor-fold desc="Download Progress">
-  private _loaded: number = 0;
-  get loaded(): number {
-    return this._loaded;
-  }
-
-  set loaded(value: number) {
-    this._loaded = value;
-    this.loadedChange.emit(value);
-  }
-
-  @Output()
-  loadedChange = new EventEmitter<number>();
-  // </editor-fold>
-
-  public outputCollapsed = true;
 
   // <editor-fold desc="Json Schema">
   jsonSchema: string = "";
@@ -388,8 +334,6 @@ export class MultimodalPromptApiComponent extends BasePageComponent implements O
     })
   }
 
-  availabilityStatus: AvailabilityStatusEnum = AvailabilityStatusEnum.Unknown;
-
   get checkAvailabilityCode(): string {
     return `LanguageModel.availability({
 })`
@@ -522,6 +466,4 @@ const output = await languageModel.prompt([
       this.error = e;
     }
   }
-
-  protected readonly AvailabilityStatusEnum = AvailabilityStatusEnum;
 }
