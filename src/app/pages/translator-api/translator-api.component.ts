@@ -203,12 +203,15 @@ await translator.translate("${this.content.value}")
 
       this.executionPerformanceManager.inferenceStarted()
       this.output = await translator.translate(this.content.value);
-      this.executionPerformanceManager.inferenceCompleted()
+
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {
       this.status = TaskStatus.Error;
       this.error = e;
+    } finally {
+      this.executionPerformanceManager.sessionCreationCompleted();
+      this.executionPerformanceManager.inferenceCompleted()
     }
   }
 

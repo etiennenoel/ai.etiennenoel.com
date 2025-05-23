@@ -314,6 +314,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       this.errorChange.emit(e);
       this.error = e;
     } finally {
+      this.executionPerformanceManager.sessionCreationCompleted();
       this.executionPerformanceManager.inferenceCompleted();
     }
 

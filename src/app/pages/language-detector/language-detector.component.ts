@@ -210,12 +210,14 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.results = await detector.detect(this.inputFormControl.value, {
         //signal: abortController.signal,
       });
-      this.executionPerformanceManager.inferenceCompleted()
 
       this.detectionStatus = TaskStatus.Completed;
     } catch (e: any) {
       this.error = e;
       this.detectionStatus = TaskStatus.Error;
+    } finally {
+      this.executionPerformanceManager.sessionCreationCompleted();
+      this.executionPerformanceManager.inferenceCompleted()
     }
   }
 

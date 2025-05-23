@@ -358,6 +358,8 @@ const session = await LanguageModel.create({
     } catch (e: any) {
       this.error = e;
       this.status = TaskStatus.Error;
+    } finally {
+
     }
   }
 

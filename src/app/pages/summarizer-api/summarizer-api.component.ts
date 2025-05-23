@@ -313,6 +313,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       this.errorChange.emit(e);
       this.error = e;
     } finally {
+      this.executionPerformanceManager.sessionCreationCompleted();
       this.executionPerformanceManager.inferenceCompleted();
     }
 

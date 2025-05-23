@@ -314,6 +314,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       this.errorChange.emit(e);
       this.error = e;
     } finally {
+      this.executionPerformanceManager.sessionCreationCompleted();
       this.executionPerformanceManager.inferenceCompleted()
     }
 
