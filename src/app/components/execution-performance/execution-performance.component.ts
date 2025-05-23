@@ -38,6 +38,14 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   inferenceDuration: number = 0;
   inferenceEnd: number = 0;
 
+
+  downloadStartedAt?: Date;
+  downloadEndedAt?: Date;
+
+  downloadStart: number = 0;
+  downloadDuration: number = 0;
+  downloadEnd: number = 0;
+
   chartElement: HTMLCanvasElement | undefined;
 
   chart: Chart | undefined;
@@ -81,6 +89,20 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
 
           case PerformanceMetricEnum.InferenceDuration:
             this.inferenceDuration = Math.round(entry.duration);
+            break;
+
+          case PerformanceMetricEnum.DownloadStarted:
+            this.downloadStart = entry.startTime;
+            this.downloadStartedAt = new Date(performance.timeOrigin + entry.startTime);
+            break
+
+          case PerformanceMetricEnum.DownloadEnded:
+            this.downloadEnd = entry.startTime;
+            this.downloadEndedAt = new Date(performance.timeOrigin + entry.startTime);
+            break;
+
+          case PerformanceMetricEnum.DownloadDuration:
+            this.downloadDuration = Math.round(entry.duration);
             break;
 
           default:
@@ -193,6 +215,12 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
+        label: `Download (${this.downloadDuration}ms)`,
+        data: this.downloadDataset,
+        borderColor: 'rgb(255, 159, 64)',
+        backgroundColor: 'rgba(255, 159, 64, 0.5)',
+      },
+      {
         label: `Inference (${this.inferenceDuration}ms)`,
         data: this.inferenceDataset,
         borderColor: 'rgb(54, 162, 235)',
@@ -205,6 +233,10 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
 
   get sessionCreationDataset(): [number, number][] {
     return [[0, this.sessionCreationEnd - this.sessionCreationStart]];
+  }
+
+  get downloadDataset(): [number, number][] {
+    return [[this.downloadStart - this.sessionCreationStart, this.downloadEnd - this.sessionCreationStart]];
   }
 
   get inferenceDataset(): [number, number][] {

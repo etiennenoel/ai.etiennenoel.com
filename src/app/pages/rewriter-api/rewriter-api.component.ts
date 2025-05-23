@@ -14,6 +14,7 @@ import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
+import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
 
 
 @Component({
@@ -176,6 +177,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     router: Router,
     route: ActivatedRoute,
     title: Title,
+    public readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
     super(document, router, route, title);
   }
@@ -185,6 +187,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     super.ngOnInit();
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset()
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['rewriterTone']) {
@@ -252,12 +255,14 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     this.error = undefined;
     this.outputStatusMessage = "Running query...";
     this.loaded = 0;
+    this.executionPerformanceManager.reset()
 
     try {
       const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
+      this.executionPerformanceManager.sessionCreationStarted()
       // @ts-expect-error
       const rewriter = await Rewriter.create({
         tone: this.toneFormControl.value,
@@ -271,17 +276,15 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
             self.loaded = e.loaded;
+
+            self.executionPerformanceManager.downloadUpdated(e.loaded)
           });
         },
         signal: this.abortControllerFromCreate.signal,
       });
+      this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.startExecutionTime();
-
-      this.executionPerformance.firstResponseNumberOfWords = 0;
-      this.executionPerformance.totalNumberOfWords = 0;
-      this.emitExecutionPerformanceChange();
-
+      this.executionPerformanceManager.inferenceStarted()
       if(this.useStreamingFormControl.value) {
         const stream: ReadableStream = rewriter.rewriteStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
 
@@ -290,27 +293,16 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
         for await (const chunk of stream) {
           if(!hasFirstResponse) {
             hasFirstResponse = true;
-            this.lapFirstResponseTime();
           }
-
-          if(this.executionPerformance.firstResponseNumberOfWords == 0) {
-            this.executionPerformance.firstResponseNumberOfWords = TextUtils.countWords(chunk);
-          }
-          this.executionPerformance.totalNumberOfWords += TextUtils.countWords(chunk);
-
-          this.emitExecutionPerformanceChange();
 
           // Do something with each 'chunk'
           this.output += chunk;
           this.outputChunks.push(chunk);
           this.outputChunksChange.emit(this.outputChunks);
         }
-
       }
       else {
         const output = await rewriter.rewrite(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
-        this.executionPerformance.totalNumberOfWords = TextUtils.countWords(output);
-        this.emitExecutionPerformanceChange();
 
         this.output = output;
       }
@@ -322,7 +314,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       this.errorChange.emit(e);
       this.error = e;
     } finally {
-      this.stopExecutionTime();
+      this.executionPerformanceManager.inferenceCompleted();
     }
 
   }

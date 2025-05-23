@@ -14,6 +14,7 @@ import {LocaleEnum} from '../../enums/locale.enum';
 import {RequirementInterface} from '../../interfaces/requirement.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
+import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
 
 
 @Component({
@@ -128,6 +129,7 @@ export class WriterApiComponent extends BaseWritingAssistanceApiComponent implem
     router: Router,
     route: ActivatedRoute,
     title: Title,
+    private readonly executionPerformanceManager: ExecutionPerformanceManager
   ) {
     super(document, router, route, title);
   }
@@ -186,6 +188,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     super.ngOnInit();
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset()
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
       if (params['writerTone']) {
@@ -251,13 +254,15 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     this.output = "";
     this.error = undefined;
     this.outputStatusMessage = "Running query...";
+    this.executionPerformanceManager.reset()
 
     try {
       const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      // @ts-ignore
+      this.executionPerformanceManager.sessionCreationStarted();
+      // @ts-expect-error
       const writer = await Writer.create({
         tone: this.toneFormControl.value,
         format: this.formatFormControl.value,
@@ -270,17 +275,15 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
             self.loaded = e.loaded;
+
+            self.executionPerformanceManager.downloadUpdated(e.loaded)
           });
         },
         signal: this.abortControllerFromCreate.signal,
       });
+      this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.startExecutionTime();
-
-      this.executionPerformance.firstResponseNumberOfWords = 0;
-      this.executionPerformance.totalNumberOfWords = 0;
-      this.emitExecutionPerformanceChange();
-
+      this.executionPerformanceManager.inferenceStarted()
       if(this.useStreamingFormControl.value) {
         this.abortController = new AbortController();
         const stream: ReadableStream = writer.writeStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
@@ -290,16 +293,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
         for await (const chunk of stream) {
           if(!hasFirstResponse) {
             hasFirstResponse = true;
-            this.lapFirstResponseTime();
           }
-
-          if(this.executionPerformance.firstResponseNumberOfWords == 0) {
-            this.executionPerformance.firstResponseNumberOfWords = TextUtils.countWords(chunk);
-          }
-          this.executionPerformance.totalNumberOfWords += TextUtils.countWords(chunk);
-
-          this.emitExecutionPerformanceChange();
-
           // Do something with each 'chunk'
           this.output += chunk;
           this.outputChunks.push(chunk);
@@ -309,8 +303,6 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       }
       else {
         const output = await writer.write(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
-        this.executionPerformance.totalNumberOfWords = TextUtils.countWords(output);
-        this.emitExecutionPerformanceChange();
 
         this.output = output;
       }
@@ -322,7 +314,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       this.errorChange.emit(e);
       this.error = e;
     } finally {
-      this.stopExecutionTime();
+      this.executionPerformanceManager.inferenceCompleted()
     }
 
   }

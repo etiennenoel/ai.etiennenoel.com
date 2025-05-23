@@ -42,20 +42,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseBuiltInApiPa
 
   // </editor-fold>
 
-  // <editor-fold desc="Execution Performance Result">
-  executionPerformance: ExecutionPerformanceResultInterface = {
-    startedExecutionAt: 0,
-    firstResponseIn: 0,
-    elapsedTime: 0,
-    totalExecutionTime: 0,
-    firstResponseNumberOfWords: 0,
-    totalNumberOfWords: 0
-  }
-
-  @Output()
-  executionPerformanceChange: EventEmitter<ExecutionPerformanceResultInterface> = new EventEmitter<ExecutionPerformanceResultInterface>();
-  // </editor-fold>
-
   // <editor-fold desc="Expected Input Languages">
   private _expectedInputLanguages: LocaleEnum[] | null = [];
   public expectedInputLanguagesFormControl: FormControl<LocaleEnum[] | null> = new FormControl<LocaleEnum[] | null>([]);
@@ -306,37 +292,6 @@ export abstract class BaseWritingAssistanceApiComponent extends BaseBuiltInApiPa
         this.outputLanguageFormControl.setValue(params['outputLanguage']);
       }
     }));
-  }
-
-  emitExecutionPerformanceChange() {
-    this.executionPerformanceChange.emit(this.executionPerformance);
-  }
-
-  startExecutionTime() {
-    this.stopExecutionTime()
-
-    this.executionPerformance.firstResponseIn = 0;
-    this.executionPerformance.elapsedTime = 0;
-    this.executionPerformance.startedExecutionAt = performance.now();
-    this.executionPerformance.totalExecutionTime = 0;
-
-    this.emitExecutionPerformanceChange();
-
-    this.executionTimeInterval = setInterval(() => {
-      this.executionPerformance.elapsedTime = Math.round(performance.now() - this.executionPerformance.startedExecutionAt);
-      this.emitExecutionPerformanceChange();
-    }, 50);
-  }
-
-  lapFirstResponseTime() {
-    this.executionPerformance.firstResponseIn = Math.round(performance.now() - this.executionPerformance.startedExecutionAt);
-    this.emitExecutionPerformanceChange();
-  }
-
-  stopExecutionTime() {
-    this.executionPerformance.totalExecutionTime = Math.round(performance.now() - this.executionPerformance.startedExecutionAt);
-    this.emitExecutionPerformanceChange();
-    clearInterval(this.executionTimeInterval);
   }
 
   abortTriggered() {
