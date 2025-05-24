@@ -221,7 +221,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     }
 
     this.chart.options.scales!['x']!.min = 0;
-    this.chart.options.scales!['x']!.max = (this.inferenceEnd - this.sessionCreationStart)*1.1;
+    this.chart.options.scales!['x']!.max = (this.inferenceEnd - this.sessionCreationStart)*1.05;
 
     const a = this.tokenReceiveDataset;
 
