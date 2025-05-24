@@ -1,20 +1,20 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {TaskStatus} from '../../enums/task-status.enum';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {TaskStatus} from '../../../enums/task-status.enum';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
-import {TextUtils} from '../../utils/text.utils';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
-import {LocaleEnum} from '../../enums/locale.enum';
-import {RewriterLengthEnum} from '../../enums/rewriter-length.enum';
-import {RewriterFormatEnum} from '../../enums/rewriter-format.enum';
-import {RewriterToneEnum} from '../../enums/rewriter-tone.enum';
+import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
+import {TextUtils} from '../../../utils/text.utils';
+import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
+import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
+import {LocaleEnum} from '../../../enums/locale.enum';
+import {RewriterLengthEnum} from '../../../enums/rewriter-length.enum';
+import {RewriterFormatEnum} from '../../../enums/rewriter-format.enum';
+import {RewriterToneEnum} from '../../../enums/rewriter-tone.enum';
 import {ActivatedRoute, Router} from '@angular/router';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
-import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
+import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 
 
 @Component({
@@ -288,12 +288,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       if(this.useStreamingFormControl.value) {
         const stream: ReadableStream = rewriter.rewriteStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
 
-        let hasFirstResponse = false;
-
         for await (const chunk of stream) {
-          if(!hasFirstResponse) {
-            hasFirstResponse = true;
-          }
+          this.executionPerformanceManager.tokenReceived();
 
           // Do something with each 'chunk'
           this.output += chunk;
@@ -303,6 +299,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       }
       else {
         const output = await rewriter.rewrite(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
+        this.executionPerformanceManager.tokenReceived()
 
         this.output = output;
       }
@@ -313,8 +310,8 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       this.outputStatusMessage = `Error: ${e}`;
       this.errorChange.emit(e);
       this.error = e;
-    } finally {
       this.executionPerformanceManager.sessionCreationCompleted();
+    } finally {
       this.executionPerformanceManager.inferenceCompleted();
     }
 

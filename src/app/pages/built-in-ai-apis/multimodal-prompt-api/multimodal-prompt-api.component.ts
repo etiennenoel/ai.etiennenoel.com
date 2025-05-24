@@ -10,23 +10,23 @@ import {
   SimpleChanges
 } from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
-import {TaskStatus} from '../../enums/task-status.enum';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {TaskStatus} from '../../../enums/task-status.enum';
+import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {Title} from '@angular/platform-browser';
-import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {BaseComponent} from '../../../components/base/base.component';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {MediaInformationInterface} from '../prompt-api/media-information.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {FormControl} from '@angular/forms';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {BasePageComponent} from '../../components/base/base-page.component';
-import {AudioSampleInterface} from '../../interfaces/audio-sample.interface';
-import {ImageSampleInterface} from '../../interfaces/image-sample.interface';
+import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
+import {BasePageComponent} from '../../../components/base/base-page.component';
+import {AudioSampleInterface} from '../../../interfaces/audio-sample.interface';
+import {ImageSampleInterface} from '../../../interfaces/image-sample.interface';
 import {MediaInformationType} from '../prompt-api/media-information.type';
 import {ImageInformationType} from '../prompt-api/image-information.type';
 import {AudioInformationType} from '../prompt-api/audio-information.type';
-import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
+import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 
 @Component({
   selector: 'app-multimodal-prompt-api',

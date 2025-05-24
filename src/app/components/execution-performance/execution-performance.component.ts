@@ -1,20 +1,20 @@
 import {AfterViewInit, Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {PerformanceMetricEnum} from '../../enums/performance-metric.enum';
 import {
-  BarController, BarElement,
+  BarController,
+  BarElement,
+  CategoryScale,
   Chart,
-  ChartConfiguration,
-  ChartData,
-  ChartEvent,
-  ChartOptions,
-  ChartType, Legend,
+  Legend,
   LinearScale,
-  LineController, LineElement, PointElement, Tooltip
+  LineController, LineElement,
+  PointElement,
+  Tooltip
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
-import {CategoryScale} from 'chart.js';
 import {BaseComponent} from '../base/base.component';
-import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
+import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
 
 @Component({
   selector: 'app-execution-performance',
@@ -46,6 +46,8 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   downloadDuration: number = 0;
   downloadEnd: number = 0;
 
+  tokensReceived: number[] = [];
+
   chartElement: HTMLCanvasElement | undefined;
 
   chart: Chart | undefined;
@@ -53,12 +55,17 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
+    private readonly executionPerformanceManager: ExecutionPerformanceManager,
     ) {
     super(document);
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
+
+    this.subscriptions.push(this.executionPerformanceManager.resetSubscribers.subscribe(value => {
+      this.tokensReceived = [];
+    }));
 
     const observer = new PerformanceObserver((list, observer) => {
       list.getEntries().forEach(entry => {
@@ -105,6 +112,10 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
             this.downloadDuration = Math.round(entry.duration);
             break;
 
+          case PerformanceMetricEnum.TokenReceived:
+            this.tokensReceived.push(entry.startTime);
+            break;
+
           default:
             break;
 
@@ -136,6 +147,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     Chart.register(CategoryScale);
     Chart.register(LinearScale);
     Chart.register(LineController);
+    Chart.register(LineElement);
     Chart.register(PointElement);
     Chart.register(BarController)
     Chart.register(BarElement);
@@ -209,7 +221,9 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     }
 
     this.chart.options.scales!['x']!.min = 0;
-    this.chart.options.scales!['x']!.max = this.inferenceEnd - this.sessionCreationStart;
+    this.chart.options.scales!['x']!.max = (this.inferenceEnd - this.sessionCreationStart)*1.1;
+
+    const a = this.tokenReceiveDataset;
 
     this.chart.data.datasets = [
       {
@@ -230,6 +244,13 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
         borderColor: 'rgb(54, 162, 235)',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
       },
+      {
+        label: `Token received`,
+        type: 'line',
+        data: this.tokenReceiveDataset,
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      },
     ];
 
     this.chart?.update();
@@ -247,4 +268,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     return [[this.inferenceStart - this.sessionCreationStart, this.inferenceEnd - this.sessionCreationStart]];
   }
 
+  get tokenReceiveDataset(): any[]{
+    return this.tokensReceived.map(value => {return {x: value - this.sessionCreationStart, y:"Time"}});
+  }
 }

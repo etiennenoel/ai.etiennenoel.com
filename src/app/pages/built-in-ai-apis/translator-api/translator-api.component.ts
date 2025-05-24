@@ -1,23 +1,23 @@
 import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {TaskStatus} from "../../enums/task-status.enum";
-import {RequirementStatus} from "../../enums/requirement-status.enum";
-import {languages} from "../../constants/languages.constants";
-import {TranslatorApiVersionEnum} from "../../enums/translator-api-version.enum";
+import {TaskStatus} from "../../../enums/task-status.enum";
+import {RequirementStatus} from "../../../enums/requirement-status.enum";
+import {languages} from "../../../constants/languages.constants";
+import {TranslatorApiVersionEnum} from "../../../enums/translator-api-version.enum";
 
 import {RequirementInterface} from "./interfaces/requirement.interface";
 import {Step1} from "./interfaces/step-1.interface";
 import {Step0} from "./interfaces/step-0.interface";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Step2} from './interfaces/step-2.interface';
-import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
+import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
-import {BasePageComponent} from '../../components/base/base-page.component';
+import {BasePageComponent} from '../../../components/base/base-page.component';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {LocaleEnum} from '../../enums/locale.enum';
-import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
-import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
+import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
+import {LocaleEnum} from '../../../enums/locale.enum';
+import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
+import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 
 declare global {
   interface Translator {
@@ -209,8 +209,8 @@ await translator.translate("${this.content.value}")
     } catch (e: any) {
       this.status = TaskStatus.Error;
       this.error = e;
-    } finally {
       this.executionPerformanceManager.sessionCreationCompleted();
+    } finally {
       this.executionPerformanceManager.inferenceCompleted()
     }
   }

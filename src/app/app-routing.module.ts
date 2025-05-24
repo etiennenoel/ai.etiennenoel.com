@@ -1,26 +1,26 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RootComponent} from './components/root/root.component';
-import {TranslatorApiComponent} from './pages/translator-api/translator-api.component';
-import {PromptApiComponent} from './pages/prompt-api/prompt-api.component';
-import {LanguageDetectorComponent} from './pages/language-detector/language-detector.component';
+import {TranslatorApiComponent} from './pages/built-in-ai-apis/translator-api/translator-api.component';
+import {PromptApiComponent} from './pages/built-in-ai-apis/prompt-api/prompt-api.component';
+import {LanguageDetectorComponent} from './pages/built-in-ai-apis/language-detector/language-detector.component';
 import {IndexComponent} from './pages/index/index.component';
 import {LayoutComponent} from './components/layout/layout.component';
-import {WriterApiComponent} from './pages/writer-api/writer-api.component';
-import {SummarizerApiComponent} from './pages/summarizer-api/summarizer-api.component';
-import {RewriterApiComponent} from './pages/rewriter-api/rewriter-api.component';
+import {WriterApiComponent} from './pages/built-in-ai-apis/writer-api/writer-api.component';
+import {SummarizerApiComponent} from './pages/built-in-ai-apis/summarizer-api/summarizer-api.component';
+import {RewriterApiComponent} from './pages/built-in-ai-apis/rewriter-api/rewriter-api.component';
 import {Environment} from './environments/environment';
 // @start-remove-in-chrome-dev
-import {MultimodalPromptApiComponent} from './pages/multimodal-prompt-api/multimodal-prompt-api.component';
-import {AudioMultimodalPromptComponent} from './pages/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
+import {MultimodalPromptApiComponent} from './pages/built-in-ai-apis/multimodal-prompt-api/multimodal-prompt-api.component';
+import {AudioMultimodalPromptComponent} from './pages/built-in-ai-apis/audio-multimodal-prompt-api/audio-multimodal-prompt.component';
 import {
   TranscriptionAudioMultimodalPromptComponent
-} from './pages/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
+} from './pages/built-in-ai-apis/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
 import {EnvironmentNameEnum} from './enums/environment-name.enum';
 import {RouteEnum} from './enums/route.enum';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
-import {ProofreaderApiComponent} from './pages/proofreader-api/proofreader-api.component';
-import {AutocompleteComponent} from './pages/autocomplete/autocomplete.component';
+import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
+import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
 // @end
 
 const layouts: Routes = [

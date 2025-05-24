@@ -1,13 +1,20 @@
 import {Injectable} from '@angular/core';
 import {PerformanceMetricEnum} from '../enums/performance-metric.enum';
+import {BehaviorSubject, Observable, Subject, Subscriber, Subscription} from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ExecutionPerformanceManager {
   interval: any;
+
+  resetSubscribers: Subject<void> = new Subject();
 
   reset() {
     performance.clearMeasures()
     performance.clearMarks()
+
+    this.resetSubscribers.next();
   }
 
   sessionCreationStarted() {
@@ -56,6 +63,8 @@ export class ExecutionPerformanceManager {
     performance.measure(PerformanceMetricEnum.InferenceDuration, PerformanceMetricEnum.InferenceStarted, PerformanceMetricEnum.InferenceEnded);
   }
 
-  tokenReceived() {}
+  tokenReceived() {
+    performance.mark(PerformanceMetricEnum.TokenReceived)
+  }
 
 }

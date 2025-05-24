@@ -1,24 +1,25 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {MediaInformationInterface} from './media-information.interface';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {BaseComponent} from '../../components/base/base.component';
-import {RequirementStatusInterface} from '../../interfaces/requirement-status.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
+import {BaseComponent} from '../../../components/base/base.component';
+import {RequirementStatusInterface} from '../../../interfaces/requirement-status.interface';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {LocaleEnum} from '../../enums/locale.enum';
+import {LocaleEnum} from '../../../enums/locale.enum';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PromptInitialRoleEnum} from '../../enums/prompt-initial-role.enum';
-import {AILanguageModelParamsInterface} from '../../interfaces/ai-language-model-params.interface';
-import {TaskStatus} from '../../enums/task-status.enum';
-import {PromptTypeEnum} from '../../enums/prompt-type.enum';
-import {PromptRoleEnum} from '../../enums/prompt-role.enum';
-import {PromptInterface} from '../../components/prompt/prompt.interface';
+import {PromptInitialRoleEnum} from '../../../enums/prompt-initial-role.enum';
+import {AILanguageModelParamsInterface} from '../../../interfaces/ai-language-model-params.interface';
+import {TaskStatus} from '../../../enums/task-status.enum';
+import {PromptTypeEnum} from '../../../enums/prompt-type.enum';
+import {PromptRoleEnum} from '../../../enums/prompt-role.enum';
+import {PromptInterface} from '../../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Title} from '@angular/platform-browser';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {BasePageComponent} from '../../components/base/base-page.component';
-import {BaseBuiltInApiPageComponent} from '../../components/base/base-built-in-api-page.component';
+import {RequirementInterface} from '../../../interfaces/requirement.interface';
+import {BasePageComponent} from '../../../components/base/base-page.component';
+import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
+import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 
 
 @Component({
@@ -187,6 +188,7 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
     router: Router,
     route: ActivatedRoute,
     title: Title,
+    private readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
     super(document, title, router, route);
   }
@@ -292,7 +294,9 @@ const session = await LanguageModel.create({
       this.outputCollapsed = false;
       this.output = "";
       this.outputChunks = [];
+      this.executionPerformanceManager.reset();
 
+      this.executionPerformanceManager.sessionCreationStarted();
       // @ts-expect-error
       const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
@@ -303,11 +307,15 @@ const session = await LanguageModel.create({
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
             self.loaded = e.loaded;
+
+            self.executionPerformanceManager.downloadUpdated(e.loaded);
           });
         },
         signal: abortController.signal,
       });
+      this.executionPerformanceManager.sessionCreationCompleted();
 
+      this.executionPerformanceManager.inferenceStarted();
       if (this.useStreamingFormControl.value) {
         let prompt;
 
@@ -329,6 +337,8 @@ const session = await LanguageModel.create({
         });
 
         for await (const chunk of stream) {
+          this.executionPerformanceManager.tokenReceived();
+
           // Do something with each 'chunk'
           this.output += chunk;
           this.outputChunks.push(chunk);
@@ -352,14 +362,18 @@ const session = await LanguageModel.create({
             });
             break;
         }
+
+        this.executionPerformanceManager.tokenReceived();
       }
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {
       this.error = e;
       this.status = TaskStatus.Error;
-    } finally {
 
+      this.executionPerformanceManager.sessionCreationCompleted()
+    } finally {
+      this.executionPerformanceManager.inferenceCompleted()
     }
   }
 
@@ -369,6 +383,7 @@ const session = await LanguageModel.create({
     this.setTitle("Prompt API | AI Playground");
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset();
 
     this.subscriptions.push(this.topKFormControl.valueChanges.subscribe((value) => {
       this.setTopK(value, {emitChangeEvent: true, emitFormControlEvent: false});

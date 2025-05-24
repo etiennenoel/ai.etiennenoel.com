@@ -1,18 +1,18 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {TaskStatus} from '../../enums/task-status.enum';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {TaskStatus} from '../../../enums/task-status.enum';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
-import {TextUtils} from '../../utils/text.utils';
-import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
-import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
-import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
-import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
+import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
+import {TextUtils} from '../../../utils/text.utils';
+import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
+import {SummarizerTypeEnum} from '../../../enums/summarizer-type.enum';
+import {SummarizerFormatEnum} from '../../../enums/summarizer-format.enum';
+import {SummarizerLengthEnum} from '../../../enums/summarizer-length.enum';
 import {ActivatedRoute, Router} from '@angular/router';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
+import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
-import {ExecutionPerformanceManager} from '../../services/execution-performance.manager';
+import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 
 
 @Component({
@@ -287,12 +287,8 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       if(this.useStreamingFormControl.value) {
         const stream: ReadableStream = summarizer.summarizeStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
 
-        let hasFirstResponse = false;
-
         for await (const chunk of stream) {
-          if(!hasFirstResponse) {
-            hasFirstResponse = true;
-          }
+          this.executionPerformanceManager.tokenReceived();
 
           // Do something with each 'chunk'
           this.output += chunk;
@@ -303,6 +299,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       }
       else {
         const output = await summarizer.summarize(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
+        this.executionPerformanceManager.tokenReceived();
         this.output = output;
       }
 
@@ -312,8 +309,8 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       this.outputStatusMessage = `Error: ${e}`;
       this.errorChange.emit(e);
       this.error = e;
-    } finally {
       this.executionPerformanceManager.sessionCreationCompleted();
+    } finally {
       this.executionPerformanceManager.inferenceCompleted();
     }
 

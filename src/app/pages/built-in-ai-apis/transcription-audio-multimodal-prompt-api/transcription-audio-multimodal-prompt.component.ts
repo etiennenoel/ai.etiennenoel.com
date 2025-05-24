@@ -1,22 +1,22 @@
 import {AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
-import {BasePageComponent} from '../../components/base/base-page.component';
-import {RequirementInterface} from '../../interfaces/requirement.interface';
-import {RequirementStatus} from '../../enums/requirement-status.enum';
+import {BasePageComponent} from '../../../components/base/base-page.component';
+import {RequirementInterface} from '../../../interfaces/requirement.interface';
+import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
-import {TaskStatus} from '../../enums/task-status.enum';
-import {AudioRecordingService} from '../../services/audio-recording.service';
+import {TaskStatus} from '../../../enums/task-status.enum';
+import {AudioRecordingService} from '../../../services/audio-recording.service';
 import {FormControl} from '@angular/forms';
-import {processStream} from '../../audio-processing-module/main';
-import {AudioVisualizerService} from '../../services/audio-visualizer.service';
+import {processStream} from '../../../audio-processing-module/main';
+import {AudioVisualizerService} from '../../../services/audio-visualizer.service';
 import {
   CHUNK_SIZE,
   MIC_SAMPLE_RATE,
   SILENCE_RMS,
   STEP_SIZE,
   WINDOW
-} from '../../audio-processing-module/constants';
+} from '../../../audio-processing-module/constants';
 
 
 @Component({

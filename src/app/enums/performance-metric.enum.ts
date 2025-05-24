@@ -10,4 +10,6 @@ export enum PerformanceMetricEnum {
   InferenceStarted = 'INFERENCE_STARTED',
   InferenceEnded = 'INFERENCE_ENDED',
   InferenceDuration = 'INFERENCE_DURATION',
+
+  TokenReceived = 'TOKEN_RECEIVED',
 }
