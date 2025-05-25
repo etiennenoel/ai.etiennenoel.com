@@ -15,6 +15,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import {BaseComponent} from '../base/base.component';
 import {DOCUMENT, isPlatformServer} from '@angular/common';
 import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
+import {ExecutionPerformanceResultModel} from '../../models/execution-performance-result.model';
 
 @Component({
   selector: 'app-execution-performance',
@@ -24,33 +25,11 @@ import {ExecutionPerformanceManager} from '../../managers/execution-performance.
 })
 export class ExecutionPerformanceComponent extends BaseComponent implements OnInit, AfterViewInit {
 
-  sessionCreationStartedAt?: Date;
-  sessionCreationEndedAt?: Date;
-
-  sessionCreationStart: number = 0;
-  sessionCreationDuration: number = 0;
-  sessionCreationEnd: number = 0;
-
-  inferenceStartedAt?: Date;
-  inferenceEndedAt?: Date;
-
-  inferenceStart: number = 0;
-  inferenceDuration: number = 0;
-  inferenceEnd: number = 0;
-
-
-  downloadStartedAt?: Date;
-  downloadEndedAt?: Date;
-
-  downloadStart: number = 0;
-  downloadDuration: number = 0;
-  downloadEnd: number = 0;
-
-  tokensReceived: number[] = [];
-
   chartElement: HTMLCanvasElement | undefined;
 
   chart: Chart | undefined;
+
+  executionPerformanceResult?: ExecutionPerformanceResultModel;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -63,71 +42,11 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.subscriptions.push(this.executionPerformanceManager.resetSubscribers.subscribe(value => {
-      this.tokensReceived = [];
-    }));
-
-    const observer = new PerformanceObserver((list, observer) => {
-      list.getEntries().forEach(entry => {
-        switch (entry.name as PerformanceMetricEnum) {
-          case PerformanceMetricEnum.SessionCreationStarted:
-            this.sessionCreationStart = entry.startTime;
-            this.sessionCreationStartedAt = new Date(performance.timeOrigin + entry.startTime);
-            break
-
-          case PerformanceMetricEnum.SessionCreationEnded:
-            this.sessionCreationEnd = entry.startTime;
-            this.sessionCreationEndedAt = new Date(performance.timeOrigin + entry.startTime);
-            break;
-
-          case PerformanceMetricEnum.SessionCreationDuration:
-            this.sessionCreationDuration = Math.round(entry.duration);
-            break;
-
-          case PerformanceMetricEnum.InferenceStarted:
-            this.inferenceStart = entry.startTime;
-            this.inferenceStartedAt = new Date(performance.timeOrigin + entry.startTime);
-            break
-
-          case PerformanceMetricEnum.InferenceEnded:
-            this.inferenceEnd = entry.startTime;
-            this.inferenceEndedAt = new Date(performance.timeOrigin + entry.startTime);
-            break;
-
-          case PerformanceMetricEnum.InferenceDuration:
-            this.inferenceDuration = Math.round(entry.duration);
-            break;
-
-          case PerformanceMetricEnum.DownloadStarted:
-            this.downloadStart = entry.startTime;
-            this.downloadStartedAt = new Date(performance.timeOrigin + entry.startTime);
-            break
-
-          case PerformanceMetricEnum.DownloadEnded:
-            this.downloadEnd = entry.startTime;
-            this.downloadEndedAt = new Date(performance.timeOrigin + entry.startTime);
-            break;
-
-          case PerformanceMetricEnum.DownloadDuration:
-            this.downloadDuration = Math.round(entry.duration);
-            break;
-
-          case PerformanceMetricEnum.TokenReceived:
-            this.tokensReceived.push(entry.startTime);
-            break;
-
-          default:
-            break;
-
-        }
-      })
+    this.subscriptions.push(this.executionPerformanceManager.updateSubscribers.subscribe(value => {
+      this.executionPerformanceResult = value;
 
       this.updateGraph();
-    })
-
-    observer.observe({
-      entryTypes: ["measure", "mark"],
-    })
+    }))
   }
 
   ngAfterViewInit() {
@@ -216,30 +135,30 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   public updateGraph() {
-    if(!this.chart) {
+    if(!this.chart || !this.executionPerformanceResult) {
       return;
     }
 
     this.chart.options.scales!['x']!.min = 0;
-    this.chart.options.scales!['x']!.max = (this.inferenceEnd - this.sessionCreationStart)*1.05;
+    this.chart.options.scales!['x']!.max = (this.executionPerformanceResult.inferenceEnd - this.executionPerformanceResult.sessionCreationStart)*1.05;
 
     const a = this.tokenReceiveDataset;
 
     this.chart.data.datasets = [
       {
-        label: `Session Creation (${this.sessionCreationDuration}ms)`,
+        label: `Session Creation (${this.executionPerformanceResult.sessionCreationDuration}ms)`,
         data: this.sessionCreationDataset,
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
-        label: `Download (${this.downloadDuration}ms)`,
+        label: `Download (${this.executionPerformanceResult.downloadDuration}ms)`,
         data: this.downloadDataset,
         borderColor: 'rgb(255, 159, 64)',
         backgroundColor: 'rgba(255, 159, 64, 0.5)',
       },
       {
-        label: `Inference (${this.inferenceDuration}ms)`,
+        label: `Inference (${this.executionPerformanceResult.inferenceDuration}ms)`,
         data: this.inferenceDataset,
         borderColor: 'rgb(54, 162, 235)',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
@@ -257,18 +176,34 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   get sessionCreationDataset(): [number, number][] {
-    return [[0, this.sessionCreationEnd - this.sessionCreationStart]];
+    if(!this.executionPerformanceResult) {
+      return [];
+    }
+
+    return [[0, this.executionPerformanceResult.sessionCreationEnd - this.executionPerformanceResult.sessionCreationStart]];
   }
 
   get downloadDataset(): [number, number][] {
-    return [[this.downloadStart - this.sessionCreationStart, this.downloadEnd - this.sessionCreationStart]];
+    if(!this.executionPerformanceResult) {
+      return [];
+    }
+
+    return [[this.executionPerformanceResult.downloadStart - this.executionPerformanceResult.sessionCreationStart, this.executionPerformanceResult.downloadEnd - this.executionPerformanceResult.sessionCreationStart]];
   }
 
   get inferenceDataset(): [number, number][] {
-    return [[this.inferenceStart - this.sessionCreationStart, this.inferenceEnd - this.sessionCreationStart]];
+    if(!this.executionPerformanceResult) {
+      return [];
+    }
+
+    return [[this.executionPerformanceResult.inferenceStart - this.executionPerformanceResult.sessionCreationStart, this.executionPerformanceResult.inferenceEnd - this.executionPerformanceResult.sessionCreationStart]];
   }
 
   get tokenReceiveDataset(): any[]{
-    return this.tokensReceived.map(value => {return {x: value - this.sessionCreationStart, y:"Time"}});
+    if(!this.executionPerformanceResult) {
+      return [];
+    }
+
+    return this.executionPerformanceResult.tokensReceived.map(value => {return {x: value - this.executionPerformanceResult!.sessionCreationStart, y:"Time"}});
   }
 }

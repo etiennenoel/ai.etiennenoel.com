@@ -3,8 +3,9 @@ import {TaskStatus} from '../../../enums/task-status.enum';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
-import {TextUtils} from '../../../utils/text.utils';
+import {
+  BaseWritingAssistanceApiComponent
+} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
 import {SummarizerTypeEnum} from '../../../enums/summarizer-type.enum';
 import {SummarizerFormatEnum} from '../../../enums/summarizer-format.enum';
@@ -13,6 +14,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 
 @Component({
@@ -254,14 +256,22 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
     this.output = "";
     this.outputStatusMessage = "Running query...";
     this.loaded = 0;
-    this.executionPerformanceManager.reset()
+    this.executionPerformanceManager.start(BuiltInAiApiEnum.Summarizer)
 
     try {
       const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      this.executionPerformanceManager.sessionCreationStarted()
+      this.executionPerformanceManager.sessionCreationStarted({
+        type: this.typeFormControl.value,
+        format: this.formatFormControl.value,
+        length: this.lengthFormControl.value,
+        sharedContext: this.sharedContext,
+        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+        expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+        outputLanguage: this.outputLanguageFormControl.value})
+
       // @ts-expect-error
       const summarizer = await Summarizer.create({
         type: this.typeFormControl.value,
@@ -283,7 +293,7 @@ await summarizer.summarize('${this.input}', {context: '${this.contextFormControl
       });
       this.executionPerformanceManager.sessionCreationCompleted()
 
-      this.executionPerformanceManager.inferenceStarted()
+      this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, input: this.input, context: this.contextFormControl.value})
       if(this.useStreamingFormControl.value) {
         const stream: ReadableStream = summarizer.summarizeStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
 

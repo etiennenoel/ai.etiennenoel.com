@@ -54,6 +54,7 @@ import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
 import {ExecutionPerformanceManager} from './managers/execution-performance.manager';
 import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
+import {PerformanceResultManager} from './managers/performance-result.manager';
 
 @NgModule({
   declarations: [
@@ -130,6 +131,7 @@ import {ExecutionPerformanceComponent} from './components/execution-performance/
 
     // Managers
     ExecutionPerformanceManager,
+    PerformanceResultManager,
 
     // Stores
     ToastStore,

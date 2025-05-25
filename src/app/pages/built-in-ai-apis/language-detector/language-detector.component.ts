@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
-import {BaseComponent} from '../../../components/base/base.component';
-import {RequirementStatusInterface} from '../../../interfaces/requirement-status.interface';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
 import {LocaleEnum} from '../../../enums/locale.enum';
 import {FormControl} from '@angular/forms';
@@ -10,9 +8,9 @@ import {TaskStatus} from '../../../enums/task-status.enum';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
-import {BasePageComponent} from '../../../components/base/base-page.component';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 
 @Component({
@@ -189,7 +187,7 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.outputCollapsed = false;
       this.detectionStatus = TaskStatus.Executing;
       this.error = undefined;
-      this.executionPerformanceManager.reset();
+      this.executionPerformanceManager.start(BuiltInAiApiEnum.LanguageDetector);
 
       this.executionPerformanceManager.sessionCreationStarted();
       // @ts-expect-error
@@ -206,10 +204,11 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       });
       this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.executionPerformanceManager.inferenceStarted()
+      this.executionPerformanceManager.inferenceStarted({input: this.inputFormControl.value})
       this.results = await detector.detect(this.inputFormControl.value, {
         //signal: abortController.signal,
       });
+      this.executionPerformanceManager.tokenReceived();
 
       this.detectionStatus = TaskStatus.Completed;
     } catch (e: any) {

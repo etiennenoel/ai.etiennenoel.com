@@ -6,15 +6,15 @@ import {FormControl} from '@angular/forms';
 import {WriterToneEnum} from '../../../enums/writer-tone.enum';
 import {WriterFormatEnum} from '../../../enums/writer-format.enum';
 import {WriterLengthEnum} from '../../../enums/writer-length.enum';
-import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
-import {TextUtils} from '../../../utils/text.utils';
+import {
+  BaseWritingAssistanceApiComponent
+} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
-import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
-import {LocaleEnum} from '../../../enums/locale.enum';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 
 @Component({
@@ -254,14 +254,22 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
     this.output = "";
     this.error = undefined;
     this.outputStatusMessage = "Running query...";
-    this.executionPerformanceManager.reset()
+    this.executionPerformanceManager.start(BuiltInAiApiEnum.Writer)
 
     try {
       const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      this.executionPerformanceManager.sessionCreationStarted();
+      this.executionPerformanceManager.sessionCreationStarted({
+        tone: this.toneFormControl.value,
+        format: this.formatFormControl.value,
+        length: this.lengthFormControl.value,
+        sharedContext: this.sharedContextFormControl.value,
+        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+        expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+        outputLanguage: this.outputLanguageFormControl.value,});
+
       // @ts-expect-error
       const writer = await Writer.create({
         tone: this.toneFormControl.value,
@@ -283,7 +291,7 @@ await writer.write('${this.inputFormControl.value}', {context: '${this.contextFo
       });
       this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.executionPerformanceManager.inferenceStarted()
+      this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, input: this.input, context: this.contextFormControl.value})
       if(this.useStreamingFormControl.value) {
         this.abortController = new AbortController();
         const stream: ReadableStream = writer.writeStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});

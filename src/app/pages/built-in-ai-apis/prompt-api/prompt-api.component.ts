@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
 import {MediaInformationInterface} from './media-information.interface';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
-import {BaseComponent} from '../../../components/base/base.component';
-import {RequirementStatusInterface} from '../../../interfaces/requirement-status.interface';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
@@ -17,9 +15,9 @@ import {PromptInterface} from '../../../components/prompt/prompt.interface';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Title} from '@angular/platform-browser';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
-import {BasePageComponent} from '../../../components/base/base-page.component';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 
 @Component({
@@ -294,9 +292,14 @@ const session = await LanguageModel.create({
       this.outputCollapsed = false;
       this.output = "";
       this.outputChunks = [];
-      this.executionPerformanceManager.reset();
+      this.executionPerformanceManager.start(BuiltInAiApiEnum.Prompt);
 
-      this.executionPerformanceManager.sessionCreationStarted();
+      this.executionPerformanceManager.sessionCreationStarted({
+        topK: this.topKFormControl.value,
+        temperature: this.temperatureFormControl.value,
+        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+        initialPrompts: this.initialPrompts});
+
       // @ts-expect-error
       const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
@@ -315,7 +318,6 @@ const session = await LanguageModel.create({
       });
       this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.executionPerformanceManager.inferenceStarted();
       if (this.useStreamingFormControl.value) {
         let prompt;
 
@@ -332,6 +334,7 @@ const session = await LanguageModel.create({
             break;
         }
 
+        this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt})
         const stream: ReadableStream = session.promptStreaming(prompt, {
           signal: abortController.signal,
         });
@@ -346,17 +349,20 @@ const session = await LanguageModel.create({
       } else {
         switch (this.promptTypeFormControl.value) {
           case PromptTypeEnum.SequenceAILanguageModelPrompt:
+            this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt: this.prompts})
             this.output = await session.prompt(this.prompts, {
               signal: abortController.signal,
             });
 
             break;
           case PromptTypeEnum.String:
+            this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt: this.stringPromptFormControl.value})
             this.output = await session.prompt(this.stringPromptFormControl.value, {
               signal: abortController.signal,
             });
             break;
           case PromptTypeEnum.AILanguageModelPrompt:
+            this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt: this.prompt})
             this.output = await session.prompt(this.prompt, {
               signal: abortController.signal,
             });

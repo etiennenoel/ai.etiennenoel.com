@@ -3,11 +3,10 @@ import {TaskStatus} from '../../../enums/task-status.enum';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
-import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
-import {TextUtils} from '../../../utils/text.utils';
+import {
+  BaseWritingAssistanceApiComponent
+} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
-import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
-import {LocaleEnum} from '../../../enums/locale.enum';
 import {RewriterLengthEnum} from '../../../enums/rewriter-length.enum';
 import {RewriterFormatEnum} from '../../../enums/rewriter-format.enum';
 import {RewriterToneEnum} from '../../../enums/rewriter-tone.enum';
@@ -15,6 +14,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {Title} from '@angular/platform-browser';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 
 @Component({
@@ -255,14 +255,22 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
     this.error = undefined;
     this.outputStatusMessage = "Running query...";
     this.loaded = 0;
-    this.executionPerformanceManager.reset()
+    this.executionPerformanceManager.start(BuiltInAiApiEnum.Rewriter)
 
     try {
       const self = this;
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      this.executionPerformanceManager.sessionCreationStarted()
+      this.executionPerformanceManager.sessionCreationStarted({
+        tone: this.toneFormControl.value,
+        format: this.formatFormControl.value,
+        length: this.lengthFormControl.value,
+        sharedContext: this.sharedContext,
+        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+        expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+        outputLanguage: this.outputLanguageFormControl.value,})
+
       // @ts-expect-error
       const rewriter = await Rewriter.create({
         tone: this.toneFormControl.value,
@@ -284,7 +292,7 @@ await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.val
       });
       this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.executionPerformanceManager.inferenceStarted()
+      this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, input: this.input, context: this.contextFormControl.value})
       if(this.useStreamingFormControl.value) {
         const stream: ReadableStream = rewriter.rewriteStreaming(this.input, {context: this.contextFormControl.value, signal: this.abortController.signal});
 

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {TaskStatus} from "../../../enums/task-status.enum";
 import {RequirementStatus} from "../../../enums/requirement-status.enum";
@@ -12,12 +12,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Step2} from './interfaces/step-2.interface';
 import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
-import {BasePageComponent} from '../../../components/base/base-page.component';
 import {DOCUMENT, isPlatformBrowser} from '@angular/common';
-import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
-import {LocaleEnum} from '../../../enums/locale.enum';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 declare global {
   interface Translator {
@@ -184,9 +182,12 @@ await translator.translate("${this.content.value}")
       this.error = undefined;
       this.output = "";
       this.loaded = 0;
-      this.executionPerformanceManager.reset();
+      this.executionPerformanceManager.start(BuiltInAiApiEnum.Translator);
 
-      this.executionPerformanceManager.sessionCreationStarted();
+      this.executionPerformanceManager.sessionCreationStarted({
+        sourceLanguage: this.sourceLanguage.value,
+        targetLanguage: this.targetLanguage.value});
+
       // @ts-expect-error
       const translator = await Translator.create({
         sourceLanguage: this.sourceLanguage.value,
@@ -201,9 +202,9 @@ await translator.translate("${this.content.value}")
       });
       this.executionPerformanceManager.sessionCreationCompleted();
 
-      this.executionPerformanceManager.inferenceStarted()
+      this.executionPerformanceManager.inferenceStarted({input: this.content.value})
       this.output = await translator.translate(this.content.value);
-
+      this.executionPerformanceManager.tokenReceived();
 
       this.status = TaskStatus.Completed;
     } catch (e: any) {
