@@ -156,10 +156,14 @@ const writer = await Writer.create({
 
 const stream: ReadableStream = writer.writeStreaming('${this.inputFormControl.value}', {context: '${this.contextFormControl.value}'});
 
+let output = "";
 for await (const chunk of stream) {
   // Do something with each 'chunk'
-  this.writerOutput += chunk;
-}`;
+  output += chunk;
+}
+
+// See the complete response here
+console.log(output);`;
     } else {
       return `const abortController = new AbortController();
 
@@ -179,7 +183,10 @@ const writer = await Writer.create({
   signal: abortController.signal,
 })
 
-await writer.write('${this.inputFormControl.value}', {context: '${this.contextFormControl.value}'})`;
+const output = await writer.write('${this.inputFormControl.value}', {context: '${this.contextFormControl.value}'})
+
+// See the complete response here
+console.log(output);`;
     }
   }
 

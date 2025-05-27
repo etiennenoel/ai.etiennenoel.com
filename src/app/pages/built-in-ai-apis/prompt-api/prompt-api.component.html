@@ -55,15 +55,6 @@
                 <input type="number" class="form-control" id="temperature" [formControl]="temperatureFormControl">
               </div>
             </div>
-            <div class="col-12">
-              <div class="mb-3">
-                <label for="summarizer-expected-input-languages" class="form-label">Expected Input Languages</label>
-                <app-search-select-multiple-dropdown id="summarizer-expected-input-languages"
-                                                     [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
-                                                     [control]="expectedInputLanguagesFormControl"
-                                                     [name]="'expectedInputLanguages'"></app-search-select-multiple-dropdown>
-              </div>
-            </div>
           </div>
         </div>
 

@@ -80,35 +80,6 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
   temperatureChange = new EventEmitter<number | null>();
   // </editor-fold>
 
-  // <editor-fold desc="Expected Input Languages">
-  private _expectedInputLanguages: LocaleEnum[] | null = [];
-  public expectedInputLanguagesFormControl: FormControl<LocaleEnum[] | null> = new FormControl<LocaleEnum[] | null>([]);
-
-  get expectedInputLanguages(): LocaleEnum[] | null {
-    return this._expectedInputLanguages;
-  }
-
-  @Input()
-  set expectedInputLanguages(value: LocaleEnum[] | null) {
-    this.setExpectedInputLanguages(value);
-  }
-
-  setExpectedInputLanguages(value: LocaleEnum[] | null, options?: {
-    emitFormControlEvent?: boolean,
-    emitChangeEvent?: boolean
-  }) {
-    this._expectedInputLanguages = value;
-    this.expectedInputLanguagesFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
-    if (options?.emitChangeEvent ?? true) {
-      this.expectedInputLanguagesChange.emit(value);
-    }
-  }
-
-  @Output()
-  expectedInputLanguagesChange = new EventEmitter<LocaleEnum[] | null>();
-
-  // </editor-fold>
-
   // <editor-fold desc="Prompt Type">
   private _promptType: PromptTypeEnum | null = PromptTypeEnum.String;
   public promptTypeFormControl: FormControl<PromptTypeEnum | null> = new FormControl<PromptTypeEnum | null>(PromptTypeEnum.String);
@@ -211,7 +182,6 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
     return `const status = await LanguageModel.availability({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
-  expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
 })`
   }
 
@@ -221,7 +191,6 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
       this.availabilityStatus = await LanguageModel.availability({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
-        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unavailable
@@ -248,7 +217,6 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
 const session = await LanguageModel.create({
   topK: ${this.topKFormControl.value},
   temperature: ${this.temperatureFormControl.value},
-  expectedInputLanguages: ${JSON.stringify(this.expectedInputLanguagesFormControl.value)},
   initialPrompts: ${JSON.stringify(this.initialPrompts, null, 2)},
   monitor(m: any)  {
     m.addEventListener("downloadprogress", (e: any) => {
@@ -297,14 +265,12 @@ const session = await LanguageModel.create({
       this.executionPerformanceManager.sessionCreationStarted({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
-        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         initialPrompts: this.initialPrompts});
 
       // @ts-expect-error
       const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
-        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         initialPrompts: this.initialPrompts,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
@@ -407,14 +373,6 @@ const session = await LanguageModel.create({
         queryParamsHandling: 'merge'
       });
     }));
-    this.subscriptions.push(this.expectedInputLanguagesFormControl.valueChanges.subscribe((value) => {
-      this.setExpectedInputLanguages(value, {emitChangeEvent: true, emitFormControlEvent: false});
-      this.router.navigate(['.'], {
-        relativeTo: this.route,
-        queryParams: {expectedInputLanguages: this.expectedInputLanguages},
-        queryParamsHandling: 'merge'
-      });
-    }));
     this.subscriptions.push(this.promptTypeFormControl.valueChanges.subscribe((value) => {
       this.setPromptType(value, {emitChangeEvent: true, emitFormControlEvent: false});
       this.router.navigate(['.'], {
@@ -458,20 +416,6 @@ const session = await LanguageModel.create({
 
       if (params['stringPrompt']) {
         this.stringPromptFormControl.setValue(params['stringPrompt']);
-      }
-
-      if (params['expectedInputLanguages']) {
-        if (!Array.isArray(params['expectedInputLanguages'])) {
-          this.setExpectedInputLanguages([params['expectedInputLanguages']], {
-            emitChangeEvent: false,
-            emitFormControlEvent: false
-          });
-        } else {
-          this.setExpectedInputLanguages(params['expectedInputLanguages'], {
-            emitChangeEvent: false,
-            emitFormControlEvent: false
-          });
-        }
       }
     }));
   }

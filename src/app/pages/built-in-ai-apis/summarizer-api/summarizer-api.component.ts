@@ -139,10 +139,14 @@ const summarizer = await Summarizer.create({
 
 const stream: ReadableStream = summarizer.summarizeStreaming('${this.input}', {context: '${this.contextFormControl.value}'});
 
+let output = "";
 for await (const chunk of stream) {
   // Do something with each 'chunk'
-  this.summarizerOutput += chunk;
-}`;
+  output += chunk;
+}
+
+// See the complete response here
+console.log(output);`;
     } else {
       return `const abortController = new AbortController();
 
@@ -162,7 +166,10 @@ const summarizer = await Summarizer.create({
   signal: abortController.signal,
 })
 
-await summarizer.summarize('${this.input}', {context: '${this.contextFormControl.value}'})`;
+const output = await summarizer.summarize('${this.input}', {context: '${this.contextFormControl.value}'})
+
+// See the complete response here
+console.log(output);`;
     }
   }
 

@@ -144,10 +144,16 @@ const rewriter = await Rewriter.create({
 
 const stream: ReadableStream = rewriter.rewriteStreaming('${this.input}', {context: '${this.contextFormControl.value}'});
 
+let output = "";
+
 for await (const chunk of stream) {
   // Do something with each 'chunk'
-  this.rewriterOutput += chunk;
-}`;
+  output += chunk;
+}
+
+// See the complete response here
+console.log(output);
+`;
     } else {
       return `const abortController = new AbortController();
 
@@ -167,7 +173,11 @@ const rewriter = await Rewriter.create({
   signal: abortController.signal,
 })
 
-await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.value}'})`;
+const output = await rewriter.rewrite('${this.input}', {context: '${this.contextFormControl.value}'})
+
+// See the complete response here
+console.log(output);
+`;
     }
   }
 
