@@ -55,6 +55,8 @@ import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autoc
 import {ExecutionPerformanceManager} from './managers/execution-performance.manager';
 import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
 import {PerformanceResultManager} from './managers/performance-result.manager';
+import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
+import {MinutesAgoPipe} from './pipes/minutes-ago.pipe';
 
 @NgModule({
   declarations: [
@@ -84,6 +86,7 @@ import {PerformanceResultManager} from './managers/performance-result.manager';
     DownloadTesterComponent,
     IndexComponent,
     LanguageDetectorComponent,
+    PerformanceHistoryComponent,
     PromptApiComponent,
     ProofreaderApiComponent,
     RewriterApiComponent,
@@ -107,6 +110,7 @@ import {PerformanceResultManager} from './managers/performance-result.manager';
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
     EnumToMagienoDropdownItemsPipe,
+    MinutesAgoPipe,
 
     // Directives
     StepContainerVisualStatusDirective,

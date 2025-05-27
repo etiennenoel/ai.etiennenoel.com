@@ -35,4 +35,11 @@ export class ExecutionPerformanceResultModel {
   constructor(api: BuiltInAiApiEnum) {
     this.api = api;
   }
+
+  /**
+   * This returns either the input or prompt value depending on the API called.
+   */
+  getInput(): string {
+    return this.executionOptions?.input || this.executionOptions?.prompt;
+  }
 }

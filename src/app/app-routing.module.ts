@@ -21,6 +21,7 @@ import {RouteEnum} from './enums/route.enum';
 import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
+import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
 // @end
 
 const layouts: Routes = [
@@ -59,6 +60,15 @@ const layouts: Routes = [
   {
     path: "language-detector-api",
     component: LanguageDetectorComponent,
+  },
+  {
+    path: "performance",
+    children: [
+      {
+        path: "history",
+        component: PerformanceHistoryComponent,
+      }
+    ]
   }
 ];
 

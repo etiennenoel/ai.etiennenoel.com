@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  OnChanges,
+  OnInit,
+  PLATFORM_ID,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {PerformanceMetricEnum} from '../../enums/performance-metric.enum';
 import {
   BarController,
@@ -23,31 +34,41 @@ import {ExecutionPerformanceResultModel} from '../../models/execution-performanc
   standalone: false,
   styleUrl: './execution-performance.component.scss'
 })
-export class ExecutionPerformanceComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ExecutionPerformanceComponent extends BaseComponent implements OnInit, AfterViewInit, OnChanges {
+
+  @ViewChild("chartElement")
+  chartElementRef?: ElementRef;
+
+  @ViewChild("chartContainer")
+  chartContainerRef?: ElementRef;
 
   chartElement: HTMLCanvasElement | undefined;
 
   chart: Chart | undefined;
 
+  @Input()
   executionPerformanceResult?: ExecutionPerformanceResultModel;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
     private readonly executionPerformanceManager: ExecutionPerformanceManager,
-    ) {
+  ) {
     super(document);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['executionPerformanceResult']) {
+      this.updateGraph();
+    }
   }
 
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.subscriptions.push(this.executionPerformanceManager.updateSubscribers.subscribe(value => {
-      this.executionPerformanceResult = value;
 
-      this.updateGraph();
-    }))
   }
+
 
   ngAfterViewInit() {
     this.initGraph();
@@ -56,7 +77,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   public initGraph() {
-    if(this.chartElement !== undefined || isPlatformServer(this.platformId)) {
+    if (!this.chartElementRef || this.chartElement !== undefined || isPlatformServer(this.platformId)) {
       return;
     }
 
@@ -71,7 +92,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     Chart.register(BarController)
     Chart.register(BarElement);
 
-    this.chartElement = this.document.getElementById("graph") as HTMLCanvasElement;
+    this.chartElement = this.chartElementRef?.nativeElement as HTMLCanvasElement;
     if (!this.chartElement) {
       console.error("Canvas element with ID 'graph' not found. Chart initialization aborted.");
       return;
@@ -112,35 +133,15 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
         }
       },
     });
-
-    window.addEventListener('beforeprint', () => {
-      document.getElementById("graph-container")!.style.width = "825px";
-
-      // HIDE CHAT BOX ON PRINT
-      const liveFrame = document.querySelector("#hubspot-messages-iframe-container > iframe");
-      if (liveFrame != null) {
-        // @ts-ignore
-        liveFrame.style.setProperty("display", "none", "important");
-      }
-    });
-    window.addEventListener('afterprint', () => {
-      document.getElementById("graph-container")!.style.width = "auto";
-
-      const liveFrame = document.querySelector("#hubspot-messages-iframe-container > iframe");
-      if (liveFrame != null) {
-        // @ts-ignore
-        liveFrame.style.removeProperty("display");
-      }
-    });
   }
 
   public updateGraph() {
-    if(!this.chart || !this.executionPerformanceResult) {
+    if (!this.chart || !this.executionPerformanceResult) {
       return;
     }
 
     this.chart.options.scales!['x']!.min = 0;
-    this.chart.options.scales!['x']!.max = (this.executionPerformanceResult.inferenceEnd - this.executionPerformanceResult.sessionCreationStart)*1.05;
+    this.chart.options.scales!['x']!.max = (this.executionPerformanceResult.inferenceEnd - this.executionPerformanceResult.sessionCreationStart) * 1.05;
 
     const a = this.tokenReceiveDataset;
 
@@ -176,7 +177,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   get sessionCreationDataset(): [number, number][] {
-    if(!this.executionPerformanceResult) {
+    if (!this.executionPerformanceResult) {
       return [];
     }
 
@@ -184,7 +185,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   get downloadDataset(): [number, number][] {
-    if(!this.executionPerformanceResult) {
+    if (!this.executionPerformanceResult) {
       return [];
     }
 
@@ -192,18 +193,20 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
   }
 
   get inferenceDataset(): [number, number][] {
-    if(!this.executionPerformanceResult) {
+    if (!this.executionPerformanceResult) {
       return [];
     }
 
     return [[this.executionPerformanceResult.inferenceStart - this.executionPerformanceResult.sessionCreationStart, this.executionPerformanceResult.inferenceEnd - this.executionPerformanceResult.sessionCreationStart]];
   }
 
-  get tokenReceiveDataset(): any[]{
-    if(!this.executionPerformanceResult) {
+  get tokenReceiveDataset(): any[] {
+    if (!this.executionPerformanceResult || !this.executionPerformanceResult.tokensReceived) {
       return [];
     }
 
-    return this.executionPerformanceResult.tokensReceived.map(value => {return {x: value - this.executionPerformanceResult!.sessionCreationStart, y:"Time"}});
+    return this.executionPerformanceResult.tokensReceived.map(value => {
+      return {x: value - this.executionPerformanceResult!.sessionCreationStart, y: "Time"}
+    });
   }
 }

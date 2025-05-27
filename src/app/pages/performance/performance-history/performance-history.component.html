@@ -1,0 +1,50 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  <app-page-title [title]="'Performance History'" [icon]="'bi-clock-history'">
+    <button class="btn btn-outline-danger" (click)="clearHistory()">Clear history (Warning, NO CONFIRMATION DIALOG).</button>
+
+  </app-page-title>
+
+  <div class="row">
+    @for (result of this.results; track $index) {
+      <div class="col-12 mt-3">
+        <div class="card">
+          <div class="card-body">
+
+            @switch (result.api) {
+              @case (BuiltInAiApiEnum.LanguageDetector) {
+                <h6><i class="bi bi-globe2"></i> Language Detector</h6>
+              }
+              @case (BuiltInAiApiEnum.Prompt) {
+                 <h6><i class="bi bi-input-cursor-text"></i> Prompt</h6>
+              }
+              @case (BuiltInAiApiEnum.Proofreader) {
+                 <h6><i class="bi bi-spellcheck"></i> Proofreader</h6>
+              }
+              @case (BuiltInAiApiEnum.Rewriter) {
+                 <h6><i class="bi bi-arrow-clockwise"></i> Rewriter</h6>
+              }
+              @case (BuiltInAiApiEnum.Summarizer) {
+                 <h6><i class="bi bi-text-paragraph"></i> Summarizer</h6>
+              }
+              @case (BuiltInAiApiEnum.Translator) {
+                 <h6><i class="bi bi-translate"></i> Translator</h6>
+              }
+              @case (BuiltInAiApiEnum.Writer) {
+                 <h6><i class="bi bi-pencil-square"></i> Writer</h6>
+              }
+            }
+
+              <div class="text-muted d-flex gap-3">
+                <div><small><i class="bi bi-clock"></i> {{ result.createdAt | minutesAgo }}</small></div>
+                <div><small><i class="bi bi-input-cursor-text"></i> <strong class="ms-2">{{ result.getInput()}}</strong></small></div>
+              </div>
+            <app-execution-performance [executionPerformanceResult]="result"></app-execution-performance>
+
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+</div>

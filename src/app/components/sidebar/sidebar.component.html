@@ -99,6 +99,13 @@
       <li class="navigation-category">
         <i class="bi bi-speedometer"></i> <span>Performance/Debug</span>
         <ul class="list-unstyled">
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.PerformanceHistory">
+            <a class="btn" routerLink="/performance/history">
+              <i class="bi bi-clock-history"></i>
+              <span>Performance History</span>
+            </a>
+          </li>
+
         @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
           <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.DownloadTester">
             <a class="btn" routerLink="/download-tester">

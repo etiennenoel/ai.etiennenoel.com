@@ -2,16 +2,19 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, Inject,
   Input,
-  OnChanges,
+  OnChanges, OnInit,
   Output,
   SimpleChanges
 } from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ToastStore} from '../../stores/toast.store';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {BaseComponent} from '../base/base.component';
+import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
+import {ExecutionPerformanceResultModel} from '../../models/execution-performance-result.model';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'app-output',
@@ -19,7 +22,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   standalone: false,
   styleUrl: './output.component.scss'
 })
-export class OutputComponent implements OnChanges, AfterViewInit {
+export class OutputComponent extends BaseComponent implements OnChanges, OnInit, AfterViewInit {
 
   @Input()
   status: TaskStatus = TaskStatus.Idle;
@@ -52,12 +55,26 @@ export class OutputComponent implements OnChanges, AfterViewInit {
 
   hasLoaded = false;
 
+  executionPerformanceResult?: ExecutionPerformanceResultModel;
+
   constructor(
+    @Inject(DOCUMENT) document: Document,
     private readonly toastStore: ToastStore,
     private elRef:ElementRef,
     private router: Router,
     private route: ActivatedRoute,
+    private readonly executionPerformanceManager: ExecutionPerformanceManager,
     ) {
+    super(document)
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+
+    this.subscriptions.push(this.executionPerformanceManager.updateSubscribers.subscribe(value => {
+      // Need to assign to ensure the internal changes are propagated to the child object and that Angular detects a change (Angular doesn't detect when a property is modified).
+      this.executionPerformanceResult = Object.assign({}, value);
+    }))
   }
 
   getDownloadProgress() {
@@ -96,6 +113,4 @@ export class OutputComponent implements OnChanges, AfterViewInit {
   abortExecutionFromCreateHandler() {
     this.abortExecutionFromCreate.emit();
   }
-
-  protected readonly TaskStatus = TaskStatus;
 }
