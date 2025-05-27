@@ -229,24 +229,45 @@ const session = await LanguageModel.create({
 `;
 
     const promptString = this.useStreamingFormControl.value ? "promptStreaming" : "prompt";
+    const variableString = this.useStreamingFormControl.value ? "const stream: ReadableStream" : "const output";
 
     switch (this.promptTypeFormControl.value) {
       case PromptTypeEnum.SequenceAILanguageModelPrompt:
-        code += `session.${promptString}(${JSON.stringify(this.prompts, null, 2)}, {
+        code += `${variableString} = session.${promptString}(${JSON.stringify(this.prompts, null, 2)}, {
   signal: abortController.signal,
 });`;
         break;
       case PromptTypeEnum.String:
-        code += `session.${promptString}("${this.stringPromptFormControl.value}", {
+        code += `${variableString} = session.${promptString}("${this.stringPromptFormControl.value}", {
   signal: abortController.signal,
 });`;
         break;
       case PromptTypeEnum.AILanguageModelPrompt:
-        code += `session.${promptString}(${JSON.stringify(this.prompt, null, 2)}, {
+        code += `${variableString} = session.${promptString}(${JSON.stringify(this.prompt, null, 2)}, {
   signal: abortController.signal,
 });`;
         break;
     }
+
+    if(this.useStreamingFormControl.value) {
+      code += `
+
+let output = "";
+for await (const chunk of stream) {
+  // Do something with each 'chunk'
+  output += chunk;
+}
+
+// See the complete response here
+console.log(output);`
+    } else {
+      code += `
+
+// See the complete response here
+console.log(output);`;
+    }
+
+
     return code;
   }
 
