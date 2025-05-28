@@ -424,11 +424,11 @@ const output = await languageModel.prompt([
 
   async prompts(): Promise<any[]> {
     const prompts: any[] = await Promise.all(this.medias.filter(media => media.includeInPrompt).map(async (media) => {
-      return {
+      return {role: "", content: [{
         type: media.type,
         content: await this.getMedia(media),
-      }
-    }));
+      }]
+    }}));
 
     prompts.unshift(this.promptFormControl.value)
 
