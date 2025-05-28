@@ -27,6 +27,8 @@ import {MediaInformationType} from '../prompt-api/media-information.type';
 import {ImageInformationType} from '../prompt-api/image-information.type';
 import {AudioInformationType} from '../prompt-api/audio-information.type';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
+import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
+import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 
 @Component({
   selector: 'app-multimodal-prompt-api',
@@ -137,6 +139,7 @@ export class MultimodalPromptApiComponent extends BaseBuiltInApiPageComponent im
     router: Router,
     route: ActivatedRoute,
     title: Title,
+    public readonly executionPerformanceManager: ExecutionPerformanceManager,
   ) {
     super(document, title, router, route);
   }
@@ -149,6 +152,8 @@ export class MultimodalPromptApiComponent extends BaseBuiltInApiPageComponent im
 
   override ngOnInit() {
     super.ngOnInit();
+
+
 
     this.setTitle("Multimodal Prompt API (Experimental) | AI Playground")
 
@@ -176,7 +181,9 @@ export class MultimodalPromptApiComponent extends BaseBuiltInApiPageComponent im
     }));
 
     this.checkRequirements()
+    this.executionPerformanceManager.reset()
   }
+
 
   jsonSchemaChange(jsonSchema: string) {
     this.router.navigate(['.'], { relativeTo: this.route, queryParams: { jsonSchema}, queryParamsHandling: 'merge' });
@@ -442,7 +449,9 @@ const output = await languageModel.prompt([
       this.output = "";
       this.loaded = 0;
       this.error = undefined;
+      this.executionPerformanceManager.start(BuiltInAiApiEnum.Prompt)
 
+      this.executionPerformanceManager.sessionCreationStarted({})
       // @ts-expect-error
       const languageModel = await LanguageModel.create({
         expectedInputs: [
@@ -450,9 +459,13 @@ const output = await languageModel.prompt([
           { type: "image" }
         ]
       });
+      this.executionPerformanceManager.sessionCreationCompleted()
 
       const prompts: any[] = await this.prompts();
 
+      this.executionPerformanceManager.inferenceStarted({
+        prompt: this.promptFormControl.value,
+      });
       if(this.includeJSONSchema) {
         const jsonSchemaCleaned = this.jsonSchema.replace(/\\n/g, "\n").replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/\\\\/g, '\\');
         this.output = await languageModel.prompt(prompts, {responseConstraint: JSON.parse(jsonSchemaCleaned)});
@@ -464,6 +477,8 @@ const output = await languageModel.prompt([
     } catch (e: any) {
       this.status = TaskStatus.Error;
       this.error = e;
+    } finally {
+      this.executionPerformanceManager.inferenceCompleted();
     }
   }
 }
