@@ -430,7 +430,7 @@ const output = await languageModel.prompt([
       }]
     }}));
 
-    prompts.unshift(this.promptFormControl.value)
+    prompts.unshift({role: "user", content: this.promptFormControl.value})
 
     return prompts;
   }
