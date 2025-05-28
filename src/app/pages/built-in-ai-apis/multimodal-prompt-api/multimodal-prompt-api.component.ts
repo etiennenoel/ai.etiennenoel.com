@@ -426,7 +426,7 @@ const output = await languageModel.prompt([
     const prompts: any[] = await Promise.all(this.medias.filter(media => media.includeInPrompt).map(async (media) => {
       return {role: "user", content: [{
         type: media.type,
-        content: await this.getMedia(media),
+        value: await this.getMedia(media),
       }]
     }}));
 
