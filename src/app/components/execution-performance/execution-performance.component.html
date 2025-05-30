@@ -1,3 +1,8 @@
 <div #chartContainer style="height: 150px; width: 100%; position: relative;">
   <canvas #chartElement class="d-print-block"></canvas>
 </div>
+
+<div class="d-flex justify-content-end gap-2">
+  <button class="btn btn-outline-primary" (click)="copyToClipboard('csv')"><i class="bi bi-filetype-csv"></i> Copy results (.csv)</button>
+  <button class="btn btn-outline-primary" (click)="copyToClipboard('table')"><i class="bi bi-table"></i> Copy results (row)</button>
+</div>

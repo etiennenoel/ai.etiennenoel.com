@@ -27,6 +27,7 @@ import {BaseComponent} from '../base/base.component';
 import {DOCUMENT, isPlatformServer} from '@angular/common';
 import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
 import {ExecutionPerformanceResultModel} from '../../models/execution-performance-result.model';
+import {ToastStore} from '../../stores/toast.store';
 
 @Component({
   selector: 'app-execution-performance',
@@ -53,6 +54,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) document: Document,
     private readonly executionPerformanceManager: ExecutionPerformanceManager,
+    private readonly toastStore: ToastStore,
   ) {
     super(document);
   }
@@ -68,7 +70,6 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
 
 
   }
-
 
   ngAfterViewInit() {
     this.initGraph();
@@ -135,6 +136,20 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     });
   }
 
+  copyToClipboard(type: "csv" | "table") {
+    switch (type) {
+      case "csv":
+        return;
+      case "table":
+        navigator.clipboard.writeText(`${this.executionPerformanceResult?.sessionCreationDuration}\t${this.executionPerformanceResult?.inferenceDuration}\t${this.timeToFirstToken}`)
+        break;
+    }
+
+    this.toastStore.publish({
+      message: "Result copied to clipboard."
+    })
+  }
+
   public updateGraph() {
     if (!this.chart || !this.executionPerformanceResult) {
       return;
@@ -174,6 +189,14 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
     ];
 
     this.chart?.update();
+  }
+
+  get timeToFirstToken(): number {
+    if(!this.executionPerformanceResult?.tokensReceived || this.executionPerformanceResult.tokensReceived.length <= 0) {
+      return 0;
+    }
+
+    return this.executionPerformanceResult.tokensReceived[0] - this.executionPerformanceResult.sessionCreationStart;
   }
 
   get sessionCreationDataset(): [number, number][] {
