@@ -52,6 +52,12 @@ export class PerformanceResultManager {
       let json = await response.json();
       json = Object.assign(new ExecutionPerformanceResultModel(json.api), json);
       json.createdAt = new Date(json.createdAt);
+      json.sessionCreationStartedAt = new Date(json.sessionCreationStartedAt);
+      json.sessionCreationEndedAt = new Date(json.sessionCreationEndedAt);
+      json.inferenceStartedAt = new Date(json.inferenceStartedAt);
+      json.inferenceEndedAt = new Date(json.inferenceEndedAt);
+      json.downloadStartedAt = new Date(json.downloadStartedAt);
+      json.downloadEndedAt = new Date(json.downloadEndedAt);
 
       results.push(json);
     }
