@@ -141,7 +141,7 @@ export class ExecutionPerformanceComponent extends BaseComponent implements OnIn
       case "csv":
         return;
       case "table":
-        navigator.clipboard.writeText(`${this.executionPerformanceResult?.sessionCreationDuration}\t${this.executionPerformanceResult?.inferenceDuration}\t${this.timeToFirstToken}`)
+        navigator.clipboard.writeText(`${this.executionPerformanceResult?.sessionCreationStartedAt?.toISOString()}\t${this.executionPerformanceResult?.getInput()}\t${this.executionPerformanceResult?.api}\t${this.executionPerformanceResult?.sessionCreationDuration}\t${this.executionPerformanceResult?.inferenceDuration}\t${this.timeToFirstToken}`)
         break;
     }
 
