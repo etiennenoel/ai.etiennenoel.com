@@ -1,4 +1,4 @@
-export class ExecutionPerformanceResultBase {
+export class InferenceExecutionResult {
   sessionCreationStartedAt?: Date;
   sessionCreationEndedAt?: Date;
 
