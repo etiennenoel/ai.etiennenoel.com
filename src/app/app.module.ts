@@ -58,6 +58,10 @@ import {PerformanceResultManager} from './managers/performance-result.manager';
 import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
 import {MinutesAgoPipe} from './pipes/minutes-ago.pipe';
 import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
+import {PerformanceTestManager} from '../performance-test/managers/performance-test.manager';
+import {
+  SummarizerHeadlineSmallTestExecutor
+} from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 
 @NgModule({
   declarations: [
@@ -141,6 +145,14 @@ import {PerformanceTestRunnerPageComponent} from './pages/performance/performanc
 
     // Stores
     ToastStore,
+
+
+    //
+    // Performance Test
+    //
+
+    PerformanceTestManager,
+    SummarizerHeadlineSmallTestExecutor,
   ],
   bootstrap: [RootComponent]
 })
