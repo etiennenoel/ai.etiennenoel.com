@@ -5,6 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {RootComponent} from './components/root/root.component';
 import {TranslatorApiComponent} from './pages/built-in-ai-apis/translator-api/translator-api.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {PerformanceResultRepository} from './repositories/performance-result.repository'; // Added import
 import {StepStatusIconComponent} from "./components/step-status-icon/step-status-icon.component";
 import {StepTitleComponent} from "./components/step-title/step-title.component";
 import {StepContainerVisualStatusDirective} from "./directives/step-container-visual-status.directive";
@@ -147,6 +148,7 @@ import {
 
     // Stores
     ToastStore,
+    PerformanceResultRepository, // Added provider
 
 
     //
