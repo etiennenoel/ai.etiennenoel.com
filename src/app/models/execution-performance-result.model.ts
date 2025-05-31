@@ -1,7 +1,7 @@
 import {BuiltInAiApiEnum} from '../enums/built-in-ai-api.enum';
-import {ExecutionPerformanceResultBase} from '../../performance-test/interfaces/execution-performance-result.base';
+import {InferenceExecutionResult} from '../../performance-test/interfaces/inference-execution-result';
 
-export class ExecutionPerformanceResultModel extends ExecutionPerformanceResultBase {
+export class ExecutionPerformanceResultModel extends InferenceExecutionResult {
   createdAt = new Date();
 
   api: BuiltInAiApiEnum;

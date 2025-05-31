@@ -1,9 +1,9 @@
 import {v4 as uuid} from 'uuid';
 import {PerformanceTestSeriesEnum} from '../../app/enums/performance-test-series.enum';
-import {ExecutionPerformanceResultBase} from '../interfaces/execution-performance-result.base';
+import {InferenceExecutionResult} from '../interfaces/inference-execution-result';
 import {ExecutionEnum} from '../enums/execution.enum';
 
-export class PerformanceTestResultModel extends ExecutionPerformanceResultBase {
+export class PerformanceTestResultModel extends InferenceExecutionResult {
   id: string = uuid();
   series: PerformanceTestSeriesEnum;
   status: ExecutionEnum = ExecutionEnum.Idle;
