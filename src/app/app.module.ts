@@ -53,6 +53,7 @@ import {DownloadTesterComponent} from './pages/download-tester/download-tester.c
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
 import {ExecutionPerformanceManager} from './managers/execution-performance.manager';
+import {InferencePerformanceManager} from '../performance-test/managers/inference-performance.manager';
 import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
 import {PerformanceResultManager} from './managers/performance-result.manager';
 import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
@@ -141,6 +142,7 @@ import {
 
     // Managers
     ExecutionPerformanceManager,
+    InferencePerformanceManager,
     PerformanceResultManager,
 
     // Stores
