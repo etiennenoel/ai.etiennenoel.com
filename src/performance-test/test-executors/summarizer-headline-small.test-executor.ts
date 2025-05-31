@@ -36,7 +36,7 @@ export class SummarizerHeadlineSmallTestExecutor implements TestExecutorInterfac
 
   async execute(): Promise<ExecutionEnum> {
     this.inferencePerformanceManager.start();
-    const config = PerformanceTestSeriesConfig[this.series as any]; // Added 'as any'
+    const config = PerformanceTestSeriesConfig[this.series];
     const abortController = new AbortController();
 
     try {
