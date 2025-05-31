@@ -176,6 +176,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
   public stream?: MediaStream;
 
   public languageModel?: any;
+  private isBrowser: boolean;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -188,6 +189,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     private readonly audioVisualizerService: AudioVisualizerService,
   ) {
     super(document, title);
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   override async ngOnInit() {
@@ -229,14 +231,16 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
       if (params['window']) {
         this.setWindowAudio(params['window']);
       }
-    }))
+    }));
 
-    // @ts-expect-error
-    this.languageModel = await LanguageModel.create({
-      expectedInputs: [
-        { type: "audio" },
-      ]
-    });
+    if (this.isBrowser) {
+      // @ts-expect-error
+      this.languageModel = await LanguageModel.create({
+        expectedInputs: [
+          { type: "audio" },
+        ]
+      });
+    }
   }
 
   ngAfterViewInit() {
@@ -288,8 +292,8 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     this.status = TaskStatus.Executing
 
     try {
-      if(!this.languageModel) {
-        throw new Error("Language model not loaded");
+      if (!this.isBrowser || !this.languageModel) {
+        throw new Error("Language model not loaded or not in browser environment.");
       }
 
       const prompt = `Transcribe this`;
