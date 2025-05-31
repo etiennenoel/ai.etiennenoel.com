@@ -57,6 +57,7 @@ import {ExecutionPerformanceComponent} from './components/execution-performance/
 import {PerformanceResultManager} from './managers/performance-result.manager';
 import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
 import {MinutesAgoPipe} from './pipes/minutes-ago.pipe';
+import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import {MinutesAgoPipe} from './pipes/minutes-ago.pipe';
     IndexComponent,
     LanguageDetectorComponent,
     PerformanceHistoryComponent,
+    PerformanceTestRunnerPageComponent,
     PromptApiComponent,
     ProofreaderApiComponent,
     RewriterApiComponent,

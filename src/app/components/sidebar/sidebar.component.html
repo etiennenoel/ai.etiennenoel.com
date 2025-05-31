@@ -105,6 +105,12 @@
               <span>Performance History</span>
             </a>
           </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.PerformanceTestRunner">
+            <a class="btn" routerLink="/performance/perf-test-runner">
+              <i class="bi bi-speedometer2"></i>
+              <span>Performance Test Runner</span>
+            </a>
+          </li>
 
         @if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
           <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.DownloadTester">

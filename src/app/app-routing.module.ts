@@ -22,6 +22,7 @@ import {DownloadTesterComponent} from './pages/download-tester/download-tester.c
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
 import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
+import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
 // @end
 
 const layouts: Routes = [
@@ -67,6 +68,10 @@ const layouts: Routes = [
       {
         path: "history",
         component: PerformanceHistoryComponent,
+      },
+      {
+        path: "perf-test-runner",
+        component: PerformanceTestRunnerPageComponent,
       }
     ]
   }
