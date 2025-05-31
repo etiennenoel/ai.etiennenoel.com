@@ -80,6 +80,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.Autocomplete;
     }else if(url.endsWith('performance/history')) {
       this.currentRoute = RouteEnum.PerformanceHistory;
+    }else if(url.endsWith('performance/perf-test-runner')) {
+      this.currentRoute = RouteEnum.PerformanceTestRunner;
     }else if(url.endsWith('/')) {
       this.currentRoute = RouteEnum.Home;
     }

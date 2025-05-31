@@ -9,6 +9,7 @@ export enum RouteEnum {
   Autocomplete = 'autocomplete',
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',
+  PerformanceTestRunner = 'performance/perf-test-runner',
   // @start-remove-in-chrome-dev
   AudioMultimodalPromptApi = 'audio-multimodal-prompt-api',
   TranscriptionAudioMultimodalPromptApi = 'transcription-audio-multimodal-prompt-api',
