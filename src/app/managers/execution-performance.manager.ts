@@ -20,7 +20,7 @@ export class ExecutionPerformanceManager {
 
   constructor() {
     const observer = new PerformanceObserver((list, observer) => {
-      let receivedReferenceEnded = false;
+      let receivedInferenceEnded = false;
 
       list.getEntries().forEach(entry => {
         switch (entry.name as PerformanceMetricEnum) {
@@ -46,7 +46,7 @@ export class ExecutionPerformanceManager {
           case PerformanceMetricEnum.InferenceEnded:
             this.result.inferenceEnd = entry.startTime;
             this.result.inferenceEndedAt = new Date(performance.timeOrigin + entry.startTime);
-            receivedReferenceEnded = true;
+            receivedInferenceEnded = true;
             break;
 
           case PerformanceMetricEnum.InferenceDuration:
@@ -78,7 +78,7 @@ export class ExecutionPerformanceManager {
 
       this.updateSubscribers.next(this.result);
 
-      if(receivedReferenceEnded) {
+      if(receivedInferenceEnded) {
         this.completionSubscribers.next(this.result);
       }
     });
