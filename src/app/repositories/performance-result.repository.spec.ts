@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PerformanceResultRepository } from './performance-result.repository';
 import { PerformanceTestResultModel } from '../../performance-test/models/performance-test-result.model';
-import { PerformanceTestSeriesEnum } from '../enums/performance-test-series.enum';
+import { PerformanceTestSeriesEnum } from '../../performance-test/enums/performance-test-series.enum';
 
 describe('PerformanceResultRepository', () => {
   let repository: PerformanceResultRepository;

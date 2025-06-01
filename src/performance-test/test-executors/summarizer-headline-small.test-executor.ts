@@ -10,7 +10,7 @@ import {SummarizerTypeEnum} from '../../app/enums/summarizer-type.enum';
 import {InferencePerformanceManager} from '../managers/inference-performance.manager';
 import {ExecutionEnum} from '../enums/execution.enum';
 import {PerformanceTestSeriesConfig} from '../configs/performance-test-series.config';
-import {PerformanceTestSeriesEnum} from '../../app/enums/performance-test-series.enum';
+import {PerformanceTestSeriesEnum} from '../enums/performance-test-series.enum';
 
 // Assume Summarizer is available globally, matching how SummarizerApiComponent uses it.
 // This allows type checking but relies on the execution environment.
@@ -21,41 +21,43 @@ export class SummarizerHeadlineSmallTestExecutor implements TestExecutorInterfac
     series = PerformanceTestSeriesEnum.SummarizerHeadlineSmall;
     private isBrowser: boolean;
 
+    testResult: PerformanceTestResultModel
+
     constructor(
         private readonly inferencePerformanceManager: InferencePerformanceManager,
         @Inject(PLATFORM_ID) private platformId: object,
     ) {
         this.isBrowser = isPlatformBrowser(this.platformId);
+        this.testResult = new PerformanceTestResultModel(this.series);
     }
 
     async init(): Promise<PerformanceTestResultModel> {
-      const seriesExecution = new PerformanceTestResultModel(this.series);
+      this.testResult = new PerformanceTestResultModel(this.series);
 
-      return seriesExecution;
+      return this.testResult;
     }
 
   async execute(): Promise<ExecutionEnum> {
     this.inferencePerformanceManager.start();
     const config = PerformanceTestSeriesConfig[this.series];
-    const abortController = new AbortController();
 
     try {
       this.inferencePerformanceManager.sessionCreationStarted();
-      const summarizer = await Summarizer.create({
-        ...config.creationOptions, // Changed from config.options
-        type: SummarizerTypeEnum.Headline,
-        format: SummarizerFormatEnum.PlainText, // Corrected casing
-        length: SummarizerLengthEnum.Short, // Changed from Small to Short
-        signal: abortController.signal,
-      });
+      const summarizer = await Summarizer.create(config.creationOptions);
       this.inferencePerformanceManager.sessionCreationCompleted();
 
       this.inferencePerformanceManager.inferenceStarted();
       // Assuming input is part of executionOptions, adjust if necessary
-      const stream = summarizer.summarizeStreaming(config.executionOptions.input, {signal: abortController.signal});
+      const stream = summarizer.summarizeStreaming(config.executionOptions.input);
+
+      let output = "";
       for await (const chunk of stream) {
         this.inferencePerformanceManager.tokenReceived();
+        output += chunk;
       }
+
+      this.testResult.output = output;
+
       return ExecutionEnum.Success;
     } catch (e) {
       console.error(e);

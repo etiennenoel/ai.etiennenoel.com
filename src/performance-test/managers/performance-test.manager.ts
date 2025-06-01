@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PerformanceTestResultModel} from '../models/performance-test-result.model';
-import {PerformanceTestSeriesEnum} from '../../app/enums/performance-test-series.enum';
+import {PerformanceTestSeriesEnum} from '../enums/performance-test-series.enum';
 import {TestExecutorInterface} from '../interfaces/test-executor.interface';
 import {SummarizerHeadlineSmallTestExecutor} from '../test-executors/summarizer-headline-small.test-executor';
 import {ExecutionEnum} from '../enums/execution.enum';
@@ -22,7 +22,7 @@ export class PerformanceTestManager {
     }
   }
 
-  async execute(series: PerformanceTestSeriesEnum): Promise<void> {
+  async execute(series: PerformanceTestSeriesEnum): Promise<PerformanceTestResultModel> {
 
     const executor = this.getTestExecutor(series);
 
@@ -35,5 +35,6 @@ export class PerformanceTestManager {
 
     // todo: Save the PerformanceTestResult to IndexedDB.
 
+    return performanceTestResult;
   }
 }

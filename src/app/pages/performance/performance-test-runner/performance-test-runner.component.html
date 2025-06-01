@@ -1,1 +1,32 @@
-<p>Performance Test Runner Page Works!</p>
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  <app-page-title [title]="'Performance Test Runner'" [icon]="'bi-speedometer'">
+  </app-page-title>
+
+  <div class="row">
+    <div class="col-3">
+      <div class="form-group">
+        <magieno-bootstrap-dropdown [items]="PerformanceTestSeriesEnum | enumToMagienoDropdownItems"></magieno-bootstrap-dropdown>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-primary" (click)="executePerformanceTest()">Run Performance test</button>
+    </div>
+  </div>
+
+  @if(output) {
+  <div class="alert"
+       [class.alert-primary]="status === ExecutionEnum.InProgress"
+       [class.alert-success]="status === ExecutionEnum.Success"
+       [class.alert-danger]="status === ExecutionEnum.Error"
+  >@if(status === ExecutionEnum.InProgress) {
+    <div class="spinner-grow spinner-grow-sm text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  }
+    {{ output }}</div>
+  }
+</div>
