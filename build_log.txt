@@ -1,0 +1,91 @@
+
+> AI Playground@0.0.0 build
+> ng build
+
+❯ Building...
+✔ Building...
+Prerendered 0 static routes.
+Application bundle generation failed. [8.677 seconds]
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48                               @use
+  node_modules/bootstrap/scss/_variables.scss 2:1                                      @use
+  src/app/components/search-select-dropdown/search-select-dropdown.component.scss 2:1  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48                   @use
+  node_modules/bootstrap/scss/_variables.scss 2:1                          @use
+  src/app/pages/built-in-ai-apis/prompt-api/prompt-api.component.scss 2:1  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48  @use
+  node_modules/bootstrap/scss/_variables.scss 2:1         @use
+  src/app/pages/index/index.component.scss 2:1            root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48  @use
+  node_modules/bootstrap/scss/_variables.scss 2:1         @use
+  src/app/components/toast/toast.component.scss 2:1       root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48         @use
+  node_modules/bootstrap/scss/_variables.scss 2:1                @use
+  src/app/components/code-editor/code-editor.component.scss 3:1  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48                                                 @use
+  node_modules/bootstrap/scss/_variables.scss 2:1                                                        @use
+  src/app/components/search-select-multiple-dropdown/search-select-multiple-dropdown.component.scss 2:1  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48  @use
+  node_modules/bootstrap/scss/_variables.scss 2:1         @use
+  src/app/components/sidebar/sidebar.component.scss 2:1   root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   ╷
+11 │ $primary-text-emphasis-dark:        tint-color($primary, 40%) !default;
+   │                                                ^^^^^^^^
+   ╵
+  node_modules/bootstrap/scss/_variables-dark.scss 11:48  @use
+  node_modules/bootstrap/scss/_variables.scss 2:1         @use
+  src/styles.scss 4:1                                     root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+    angular:styles/global:styles:1:8:
+[37m      1 │ @import [32m'src/styles.scss'[37m;
+        ╵         [32m~~~~~~~~~~~~~~~~~[0m
