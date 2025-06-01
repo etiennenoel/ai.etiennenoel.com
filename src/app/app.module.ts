@@ -64,6 +64,7 @@ import {PerformanceTestManager} from '../performance-test/managers/performance-t
 import {
   SummarizerHeadlineSmallTestExecutor
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
+import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 
 @NgModule({
   declarations: [
@@ -122,6 +123,7 @@ import {
 
     // Directives
     StepContainerVisualStatusDirective,
+     PerformanceTestExecutionPage,
   ],
   imports: [
     BrowserModule,
