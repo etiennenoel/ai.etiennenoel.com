@@ -24,6 +24,7 @@ import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autoc
 import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
 import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
 import {PerformanceTestExecutionPage} from './pages/performance/performance-test-execution-page/performance-test-execution-page';
+import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
 // @end
 
 const layouts: Routes = [
@@ -72,11 +73,17 @@ const layouts: Routes = [
       },
       {
         path: "perf-test-runner",
-        component: PerformanceTestRunnerPageComponent,
-      },
-      {
-        path: "perf-test-runner/:testSeries",
-        component: PerformanceTestExecutionPage
+        children: [
+          {
+            path: "",
+            component: PerformanceTestRunnerPageComponent,
+          },
+          {
+            path: ":testSeries",
+            component: PerformanceTestExecutionPage,
+          }
+        ],
+
       }
     ]
   }
