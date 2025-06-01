@@ -17,48 +17,14 @@ export class ExecutionPerformanceManager {
   constructor(private inferenceManager: InferencePerformanceManager) {
     this.inferenceManager.updateSubscribers.subscribe(inferenceResult => {
       if (this.result && inferenceResult) {
-        // Copy common properties
-        this.result.sessionCreationStart = inferenceResult.sessionCreationStart;
-        this.result.sessionCreationEnd = inferenceResult.sessionCreationEnd;
-        this.result.sessionCreationStartedAt = inferenceResult.sessionCreationStartedAt;
-        this.result.sessionCreationEndedAt = inferenceResult.sessionCreationEndedAt;
-        this.result.sessionCreationDuration = inferenceResult.sessionCreationDuration;
-        this.result.downloadStart = inferenceResult.downloadStart;
-        this.result.downloadEnd = inferenceResult.downloadEnd;
-        this.result.downloadStartedAt = inferenceResult.downloadStartedAt;
-        this.result.downloadEndedAt = inferenceResult.downloadEndedAt;
-        this.result.downloadDuration = inferenceResult.downloadDuration;
-        this.result.inferenceStart = inferenceResult.inferenceStart;
-        this.result.inferenceStartedAt = inferenceResult.inferenceStartedAt;
-        this.result.inferenceEndedAt = inferenceResult.inferenceEndedAt;
-        this.result.inferenceEnd = inferenceResult.inferenceEnd;
-        this.result.inferenceDuration = inferenceResult.inferenceDuration;
-        this.result.tokensReceived = inferenceResult.tokensReceived;
-        // Ensure any other relevant fields from inferenceResult are copied if needed.
+        this.result = Object.assign(this.result, inferenceResult);
       }
       this.updateSubscribers.next(this.result);
     });
 
     this.inferenceManager.completionSubscribers.subscribe(inferenceResult => {
       if (this.result && inferenceResult) {
-        // Ensure final common properties are copied
-        this.result.sessionCreationStart = inferenceResult.sessionCreationStart;
-        this.result.sessionCreationEnd = inferenceResult.sessionCreationEnd;
-        this.result.sessionCreationStartedAt = inferenceResult.sessionCreationStartedAt;
-        this.result.sessionCreationEndedAt = inferenceResult.sessionCreationEndedAt;
-        this.result.sessionCreationDuration = inferenceResult.sessionCreationDuration;
-        this.result.downloadStart = inferenceResult.downloadStart;
-        this.result.downloadEnd = inferenceResult.downloadEnd;
-        this.result.downloadStartedAt = inferenceResult.downloadStartedAt;
-        this.result.downloadEndedAt = inferenceResult.downloadEndedAt;
-        this.result.downloadDuration = inferenceResult.downloadDuration;
-        this.result.inferenceStart = inferenceResult.inferenceStart;
-        this.result.inferenceStartedAt = inferenceResult.inferenceStartedAt;
-        this.result.inferenceEndedAt = inferenceResult.inferenceEndedAt;
-        this.result.inferenceEnd = inferenceResult.inferenceEnd;
-        this.result.inferenceDuration = inferenceResult.inferenceDuration;
-        this.result.tokensReceived = inferenceResult.tokensReceived;
-        // Ensure any other relevant fields from inferenceResult are copied if needed.
+        this.result = Object.assign(this.result, inferenceResult);
       }
       this.completionSubscribers.next(this.result);
     });
