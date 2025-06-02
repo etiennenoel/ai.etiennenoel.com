@@ -35,11 +35,11 @@ import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 @Component({
   selector: 'app-performance-history',
-  templateUrl: './performance-history.component.html',
+  templateUrl: './performance-history.page.html',
   standalone: false,
-  styleUrl: './performance-history.component.scss'
+  styleUrl: './performance-history.page.scss'
 })
-export class PerformanceHistoryComponent extends BasePageComponent implements OnInit {
+export class PerformanceHistoryPage extends BasePageComponent implements OnInit {
 
   results: ExecutionPerformanceResultModel[] = [];
 

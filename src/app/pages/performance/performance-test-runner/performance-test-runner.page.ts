@@ -10,11 +10,11 @@ import {ExecutionEnum} from '../../../../performance-test/enums/execution.enum';
 
 @Component({
   selector: 'app-performance-test-runner',
-  templateUrl: './performance-test-runner.component.html',
-  styleUrls: ['./performance-test-runner.component.scss'],
+  templateUrl: './performance-test-runner.page.html',
+  styleUrls: ['./performance-test-runner.page.scss'],
   standalone: false,
 })
-export class PerformanceTestRunnerPageComponent extends BasePageComponent {
+export class PerformanceTestRunnerPage extends BasePageComponent {
   protected readonly PerformanceTestSeriesEnum = PerformanceTestSeriesEnum;
 
   output: string = "";

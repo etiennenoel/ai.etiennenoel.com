@@ -19,11 +19,11 @@ import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
 
 @Component({
   selector: 'app-writer',
-  templateUrl: './writer-api.component.html',
+  templateUrl: './writer-api.page.html',
   standalone: false,
-  styleUrl: './writer-api.component.scss'
+  styleUrl: './writer-api.page.scss'
 })
-export class WriterApiComponent extends BaseWritingAssistanceApiComponent implements OnInit {
+export class WriterApiPage extends BaseWritingAssistanceApiComponent implements OnInit {
 
   // <editor-fold desc="Tone">
   private _tone: WriterToneEnum | null = WriterToneEnum.Neutral;
