@@ -30,7 +30,6 @@ import {RequirementComponent} from './components/requirement/requirement.compone
 import {IndexComponent} from './pages/index/index.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
-// import {PageTitleComponent} from './components/page-title/page-title.component'; // Removed
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/built-in-ai-apis/multimodal-prompt-api/multimodal-prompt-api.component';
