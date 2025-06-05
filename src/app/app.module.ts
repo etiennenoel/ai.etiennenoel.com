@@ -79,7 +79,6 @@ import { SharedModule } from './components/shared.module'; // Added SharedModule
     CardComponent,
     CodeEditorComponent,
     OutputComponent,
-    // PageTitleComponent, // Removed
     PageAccordionComponent,
     PromptComponent,
     RequirementComponent,
@@ -138,9 +137,6 @@ import { SharedModule } from './components/shared.module'; // Added SharedModule
     SummarizerBatchPageModule,
     SharedModule, // Added SharedModule
   ],
-  // exports: [ // Removed exports array
-  //   PageTitleComponent,
-  // ],
   providers: [
     provideClientHydration(withEventReplay()),
 
