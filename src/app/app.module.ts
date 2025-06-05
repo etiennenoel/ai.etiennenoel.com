@@ -20,6 +20,7 @@ import {ToastStore} from './stores/toast.store';
 import {ToastComponent} from './components/toast/toast.component';
 import {RewriterApiComponent} from './pages/built-in-ai-apis/rewriter-api/rewriter-api.component';
 import {SummarizerApiComponent} from './pages/built-in-ai-apis/summarizer-api/summarizer-api.component';
+import {SummarizerBatchApiComponent} from './pages/built-in-ai-apis/summarizer-batch-api/summarizer-batch-api.component';
 import {PromptApiComponent} from './pages/built-in-ai-apis/prompt-api/prompt-api.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {PromptComponent} from './components/prompt/prompt.component';
@@ -100,6 +101,7 @@ import { PerformanceTestExecutionPage } from './pages/performance/performance-te
     ProofreaderApiComponent,
     RewriterApiComponent,
     SummarizerApiComponent,
+    SummarizerBatchApiComponent,
     TranslatorApiComponent,
     WriterApiComponent,
 

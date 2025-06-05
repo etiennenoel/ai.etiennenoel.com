@@ -8,6 +8,9 @@ import {IndexComponent} from './pages/index/index.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {WriterApiComponent} from './pages/built-in-ai-apis/writer-api/writer-api.component';
 import {SummarizerApiComponent} from './pages/built-in-ai-apis/summarizer-api/summarizer-api.component';
+import {
+  SummarizerBatchApiComponent
+} from './pages/built-in-ai-apis/summarizer-batch-api/summarizer-batch-api.component';
 import {RewriterApiComponent} from './pages/built-in-ai-apis/rewriter-api/rewriter-api.component';
 import {Environment} from './environments/environment';
 // @start-remove-in-chrome-dev
@@ -39,6 +42,10 @@ const layouts: Routes = [
   {
     path: "summarizer-api",
     component: SummarizerApiComponent,
+  },
+  {
+    path: "summarizer-batch-api",
+    component: SummarizerBatchApiComponent,
   },
   {
     path: "writer-api",
