@@ -65,7 +65,6 @@ import {
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import { SummarizerBatchPageModule } from './pages/summarizer-batch-page/summarizer-batch-page.module';
-import { SharedModule } from './components/shared.module'; // Added SharedModule
 
 @NgModule({
   declarations: [
@@ -134,7 +133,6 @@ import { SharedModule } from './components/shared.module'; // Added SharedModule
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
     SummarizerBatchPageModule,
-    SharedModule, // Added SharedModule
   ],
   providers: [
     provideClientHydration(withEventReplay()),
