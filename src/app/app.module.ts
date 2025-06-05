@@ -30,6 +30,7 @@ import {RequirementComponent} from './components/requirement/requirement.compone
 import {IndexComponent} from './pages/index/index.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
+import {PageTitleComponent} from './components/page-title/page-title.component';
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/built-in-ai-apis/multimodal-prompt-api/multimodal-prompt-api.component';
@@ -64,7 +65,6 @@ import {
   SummarizerHeadlineSmallTestExecutor
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
-import { SummarizerBatchPageModule } from './pages/summarizer-batch-page/summarizer-batch-page.module';
 
 @NgModule({
   declarations: [
@@ -77,6 +77,7 @@ import { SummarizerBatchPageModule } from './pages/summarizer-batch-page/summari
     CardComponent,
     CodeEditorComponent,
     OutputComponent,
+    PageTitleComponent,
     PageAccordionComponent,
     PromptComponent,
     RequirementComponent,
@@ -132,7 +133,6 @@ import { SummarizerBatchPageModule } from './pages/summarizer-batch-page/summari
     DragDropModule,
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
-    SummarizerBatchPageModule,
   ],
   providers: [
     provideClientHydration(withEventReplay()),
