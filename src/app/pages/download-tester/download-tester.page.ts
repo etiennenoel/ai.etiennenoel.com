@@ -4,11 +4,11 @@ import {AvailabilityStatusEnum} from '../../enums/availability-status.enum';
 
 @Component({
   selector: 'app-download-tester',
-  templateUrl: './download-tester.component.html',
+  templateUrl: './download-tester.page.html',
   standalone: false,
-  styleUrl: './download-tester.component.scss'
+  styleUrl: './download-tester.page.scss'
 })
-export class DownloadTesterComponent {
+export class DownloadTesterPage {
   downloadProgressSummarizer: number = 0;
 
   statusSummarizer: TaskStatus = TaskStatus.Idle;

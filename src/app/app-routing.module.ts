@@ -4,9 +4,9 @@ import {RootComponent} from './components/root/root.component';
 import {TranslatorApiComponent} from './pages/built-in-ai-apis/translator-api/translator-api.component';
 import {PromptApiComponent} from './pages/built-in-ai-apis/prompt-api/prompt-api.component';
 import {LanguageDetectorComponent} from './pages/built-in-ai-apis/language-detector/language-detector.component';
-import {IndexComponent} from './pages/index/index.component';
+import {IndexPage} from './pages/index/index.page';
 import {LayoutComponent} from './components/layout/layout.component';
-import {WriterApiComponent} from './pages/built-in-ai-apis/writer-api/writer-api.component';
+import {WriterApiPage} from './pages/built-in-ai-apis/writer-api/writer-api.page';
 import {SummarizerApiComponent} from './pages/built-in-ai-apis/summarizer-api/summarizer-api.component';
 import {RewriterApiComponent} from './pages/built-in-ai-apis/rewriter-api/rewriter-api.component';
 import {Environment} from './environments/environment';
@@ -18,11 +18,11 @@ import {
 } from './pages/built-in-ai-apis/transcription-audio-multimodal-prompt-api/transcription-audio-multimodal-prompt.component';
 import {EnvironmentNameEnum} from './enums/environment-name.enum';
 import {RouteEnum} from './enums/route.enum';
-import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
+import {DownloadTesterPage} from './pages/download-tester/download-tester.page';
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
-import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
-import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
+import {PerformanceHistoryPage} from './pages/performance/performance-history/performance-history.page';
+import {PerformanceTestRunnerPage} from './pages/performance/performance-test-runner/performance-test-runner.page';
 import {PerformanceTestExecutionPage} from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
@@ -31,7 +31,7 @@ import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summar
 const layouts: Routes = [
   {
     path: "",
-    component: IndexComponent,
+    component: IndexPage,
   },
   {
     path: "translator-api",
@@ -43,7 +43,7 @@ const layouts: Routes = [
   },
   {
     path: "writer-api",
-    component: WriterApiComponent,
+    component: WriterApiPage,
   },
   {
     path: "rewriter-api",
@@ -74,14 +74,14 @@ const layouts: Routes = [
     children: [
       {
         path: "history",
-        component: PerformanceHistoryComponent,
+        component: PerformanceHistoryPage,
       },
       {
         path: "perf-test-runner",
         children: [
           {
             path: "",
-            component: PerformanceTestRunnerPageComponent,
+            component: PerformanceTestRunnerPage,
           },
           {
             path: ":testSeries",
@@ -98,7 +98,7 @@ if(Environment.name !== EnvironmentNameEnum.ChromeDev) {
   layouts.push(
   {
     path: RouteEnum.DownloadTester,
-      component: DownloadTesterComponent,
+      component: DownloadTesterPage,
   });
 }
 
