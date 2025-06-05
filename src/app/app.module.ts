@@ -30,7 +30,7 @@ import {RequirementComponent} from './components/requirement/requirement.compone
 import {IndexComponent} from './pages/index/index.component';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
-import {PageTitleComponent} from './components/page-title/page-title.component';
+// import {PageTitleComponent} from './components/page-title/page-title.component'; // Removed
 import {PageAccordionComponent} from './components/page-accordion/page-accordion.component';
 // @start-remove-in-chrome-dev
 import {MultimodalPromptApiComponent} from './pages/built-in-ai-apis/multimodal-prompt-api/multimodal-prompt-api.component';
@@ -65,6 +65,8 @@ import {
   SummarizerHeadlineSmallTestExecutor
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
+import { SummarizerBatchPageModule } from './pages/summarizer-batch-page/summarizer-batch-page.module';
+import { SharedModule } from './components/shared.module'; // Added SharedModule
 
 @NgModule({
   declarations: [
@@ -77,7 +79,7 @@ import { PerformanceTestExecutionPage } from './pages/performance/performance-te
     CardComponent,
     CodeEditorComponent,
     OutputComponent,
-    PageTitleComponent,
+    // PageTitleComponent, // Removed
     PageAccordionComponent,
     PromptComponent,
     RequirementComponent,
@@ -133,7 +135,12 @@ import { PerformanceTestExecutionPage } from './pages/performance/performance-te
     DragDropModule,
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
+    SummarizerBatchPageModule,
+    SharedModule, // Added SharedModule
   ],
+  // exports: [ // Removed exports array
+  //   PageTitleComponent,
+  // ],
   providers: [
     provideClientHydration(withEventReplay()),
 
