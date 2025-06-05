@@ -25,6 +25,7 @@ import {PerformanceHistoryPage} from './pages/performance/performance-history/pe
 import {PerformanceTestRunnerPage} from './pages/performance/performance-test-runner/performance-test-runner.page';
 import {PerformanceTestExecutionPage} from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
+import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 // @end
 
 const layouts: Routes = [
@@ -63,6 +64,10 @@ const layouts: Routes = [
   {
     path: "language-detector-api",
     component: LanguageDetectorComponent,
+  },
+  {
+    path: RouteEnum.SummarizerBatchPage,
+    component: SummarizerBatchPageComponent,
   },
   {
     path: "performance",

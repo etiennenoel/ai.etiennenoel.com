@@ -15,5 +15,6 @@ export enum RouteEnum {
   TranscriptionAudioMultimodalPromptApi = 'transcription-audio-multimodal-prompt-api',
   MultimodalPromptApi = 'multimodal-prompt-api',
   // @end
+  SummarizerBatchPage = 'summarizer-batch-page',
   Home = 'index'
 }

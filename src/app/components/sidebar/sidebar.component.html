@@ -76,6 +76,14 @@
 
       <li class="navigation-category">
         <i class="bi bi-tools"></i> <span>Batch Executions</span>
+        <ul class="list-unstyled">
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.SummarizerBatchPage">
+            <a class="btn" routerLink="/summarizer-batch-page">
+              <i class="bi bi-journals"></i>
+              <span>Summarizer Batch Page</span>
+            </a>
+          </li>
+        </ul>
       </li>
 
       <li class="navigation-category">
