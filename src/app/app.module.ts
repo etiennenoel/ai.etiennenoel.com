@@ -65,7 +65,7 @@ import {
   SummarizerHeadlineSmallTestExecutor
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
-import { SummarizerBatchPageComponent } from './pages/performance/summarizer-batch-page/summarizer-batch-pager.component';
+import { SummarizerBatchPageComponent } from './pages/performance/summarizer-batch-page/summarizer-batch-page.component';
 
 @NgModule({
   declarations: [
