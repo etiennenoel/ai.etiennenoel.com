@@ -11,7 +11,7 @@ import {StepTitleComponent} from "./components/step-title/step-title.component";
 import {StepContainerVisualStatusDirective} from "./directives/step-container-visual-status.directive";
 import {SearchSelectDropdownComponent} from './components/search-select-dropdown/search-select-dropdown.component';
 import {EnumToSearchSelectDropdownOptionsPipe} from './pipes/enum-to-search-select-dropdown-options.pipe';
-import {WriterApiComponent} from './pages/built-in-ai-apis/writer-api/writer-api.component';
+import {WriterApiPage} from './pages/built-in-ai-apis/writer-api/writer-api.page';
 import {CodeEditorComponent} from './components/code-editor/code-editor.component';
 import {
   SearchSelectMultipleDropdownComponent
@@ -27,7 +27,7 @@ import {OutputComponent} from './components/output/output.component';
 import {CardComponent} from './components/card/card.component';
 import {LanguageDetectorComponent} from './pages/built-in-ai-apis/language-detector/language-detector.component';
 import {RequirementComponent} from './components/requirement/requirement.component';
-import {IndexComponent} from './pages/index/index.component';
+import {IndexPage} from './pages/index/index.page';
 import {SidebarComponent} from './components/sidebar/sidebar.component';
 import {LayoutComponent} from './components/layout/layout.component';
 import {PageTitleComponent} from './components/page-title/page-title.component';
@@ -50,16 +50,16 @@ import {MagienoDragAndDropComponent} from '@magieno/angular-drag-and-drop';
 import {Environment} from './environments/environment';
 import {MagienoBootstrapDropdownComponent} from '@magieno/angular-bootstrap-dropdown';
 import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-items.pipe';
-import {DownloadTesterComponent} from './pages/download-tester/download-tester.component';
+import {DownloadTesterPage} from './pages/download-tester/download-tester.page';
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
 import {ExecutionPerformanceManager} from './managers/execution-performance.manager';
 import {InferencePerformanceManager} from '../performance-test/managers/inference-performance.manager';
 import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
 import {PerformanceResultManager} from './managers/performance-result.manager';
-import {PerformanceHistoryComponent} from './pages/performance/performance-history/performance-history.component';
+import {PerformanceHistoryPage} from './pages/performance/performance-history/performance-history.page';
 import {MinutesAgoPipe} from './pipes/minutes-ago.pipe';
-import {PerformanceTestRunnerPageComponent} from './pages/performance/performance-test-runner/performance-test-runner.component';
+import {PerformanceTestRunnerPage} from './pages/performance/performance-test-runner/performance-test-runner.page';
 import {PerformanceTestManager} from '../performance-test/managers/performance-test.manager';
 import {
   SummarizerHeadlineSmallTestExecutor
@@ -91,17 +91,17 @@ import { PerformanceTestExecutionPage } from './pages/performance/performance-te
     ExecutionPerformanceComponent,
 
     // Pages
-    DownloadTesterComponent,
-    IndexComponent,
+    DownloadTesterPage,
+    IndexPage,
     LanguageDetectorComponent,
-    PerformanceHistoryComponent,
-    PerformanceTestRunnerPageComponent,
+    PerformanceHistoryPage,
+    PerformanceTestRunnerPage,
     PromptApiComponent,
     ProofreaderApiComponent,
     RewriterApiComponent,
     SummarizerApiComponent,
     TranslatorApiComponent,
-    WriterApiComponent,
+    WriterApiPage,
 
     AutocompleteComponent,
 
