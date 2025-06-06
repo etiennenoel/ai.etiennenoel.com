@@ -48,6 +48,11 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
     inputs.push(this.fb.control(''));
   }
 
+  deleteRow(index: number): void {
+    const inputs = this.batchForm.get('inputs') as FormArray;
+    inputs.removeAt(index);
+  }
+
   public onPaste(event: ClipboardEvent, rowIndex: number): void {
     event.preventDefault();
     const pastedText = event.clipboardData?.getData('text');
