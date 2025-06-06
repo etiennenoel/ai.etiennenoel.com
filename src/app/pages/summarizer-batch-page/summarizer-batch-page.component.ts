@@ -14,7 +14,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } f
 })
 export class SummarizerBatchPageComponent extends BaseComponent implements OnInit {
   batchForm: FormGroup;
-  public TaskStatus = TaskStatus;
+  public StoredTaskStatus = TaskStatus;
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -89,5 +89,15 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
         inputs.insert(rowIndex + i, newFormGroup);
       }
     }
+  }
+
+  public getTextControl(rowIndex: number): FormControl {
+    const formGroup = this.rowControls[rowIndex] as FormGroup;
+    return formGroup.get('text') as FormControl;
+  }
+
+  public getStatusValue(rowIndex: number): TaskStatus | undefined {
+    const formGroup = this.rowControls[rowIndex] as FormGroup;
+    return formGroup.get('status')?.value;
   }
 }

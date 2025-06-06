@@ -13,18 +13,18 @@
       <tbody formArrayName="inputs">
         <tr *ngFor="let row of rowControls; let i = index">
           <td>
-            <textarea class="form-control" rows="3" [formControl]="row.get('text')" (paste)="onPaste($event, i)"></textarea>
+            <textarea class="form-control" rows="3" [formControl]="getTextControl(i)" (paste)="onPaste($event, i)"></textarea>
           </td>
           <td>
             <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
           </td>
           <td>
             <span class="badge"
-                  [class.text-bg-secondary]="rowControls[i].get('status').value === TaskStatus.Idle"
-                  [class.text-bg-primary]="rowControls[i].get('status').value === TaskStatus.Executing"
-                  [class.text-bg-success]="rowControls[i].get('status').value === TaskStatus.Completed"
-                  [class.text-bg-danger]="rowControls[i].get('status').value === TaskStatus.Error"
-            >{{ rowControls[i].get('status').value }}</span>
+                  [class.text-bg-secondary]="getStatusValue(i) === StoredTaskStatus.Idle"
+                  [class.text-bg-primary]="getStatusValue(i) === StoredTaskStatus.Executing"
+                  [class.text-bg-success]="getStatusValue(i) === StoredTaskStatus.Completed"
+                  [class.text-bg-danger]="getStatusValue(i) === StoredTaskStatus.Error"
+            >{{ getStatusValue(i) }}</span>
           </td>
           <td>
             <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
