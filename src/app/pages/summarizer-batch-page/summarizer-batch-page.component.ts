@@ -47,4 +47,27 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
     const inputs = this.batchForm.get('inputs') as FormArray;
     inputs.push(this.fb.control(''));
   }
+
+  public onPaste(event: ClipboardEvent, rowIndex: number): void {
+    event.preventDefault();
+    const pastedText = event.clipboardData?.getData('text');
+    if (!pastedText) {
+      return;
+    }
+
+    const lines = pastedText.split('\n').map(line => line.trim());
+    const inputs = this.batchForm.get('inputs') as FormArray;
+
+    if (lines.length > 0) {
+      // Set the first line to the current input
+      inputs.at(rowIndex).setValue(lines[0]);
+
+      // For subsequent lines, insert new rows
+      for (let i = 1; i < lines.length; i++) {
+        const newFormControl = this.fb.control(lines[i]);
+        // Insert after the current rowIndex + number of lines already added
+        inputs.insert(rowIndex + i, newFormControl);
+      }
+    }
+  }
 }

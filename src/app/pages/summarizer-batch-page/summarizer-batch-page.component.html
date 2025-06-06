@@ -14,7 +14,7 @@
       <tbody formArrayName="inputs">
         <tr *ngFor="let control of inputControls; let i = index">
           <td>
-            <textarea class="form-control" rows="3" [formControlName]="i"></textarea>
+            <textarea class="form-control" rows="3" [formControlName]="i" (paste)="onPaste($event, i)"></textarea>
           </td>
           <td>
             <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
