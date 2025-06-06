@@ -1,10 +1,16 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import {Component, OnInit, Inject, PLATFORM_ID, Input, Output, EventEmitter} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { TaskStatus } from '../../enums/task-status.enum';
 import { BaseComponent } from '../../components/base/base.component'; // Assuming a base component exists
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
+import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
+import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
+import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
+import {
+  BaseWritingAssistanceApiComponent
+} from '../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 
 @Component({
   selector: 'app-summarizer-batch-page',
@@ -12,19 +18,101 @@ import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } f
   styleUrls: ['./summarizer-batch-page.component.scss'],
   standalone: false, // Explicitly set standalone to false
 })
-export class SummarizerBatchPageComponent extends BaseComponent implements OnInit {
+export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiComponent implements OnInit {
   batchForm: FormGroup;
   public StoredTaskStatus = TaskStatus;
+
+  // <editor-fold desc="Type">
+  private _type: SummarizerTypeEnum | null = SummarizerTypeEnum.Headline;
+  public typeFormControl: FormControl<SummarizerTypeEnum | null> = new FormControl<SummarizerTypeEnum | null>(SummarizerTypeEnum.Headline);
+
+  get type(): SummarizerTypeEnum | null {
+    return this._type;
+  }
+
+  @Input()
+  set type(value: SummarizerTypeEnum | null) {
+    this.setType(value);
+  }
+
+  setType(value: SummarizerTypeEnum | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._type = value;
+    this.typeFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.typeChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerType: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  typeChange = new EventEmitter<SummarizerTypeEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Format">
+  private _format: SummarizerFormatEnum | null = SummarizerFormatEnum.PlainText;
+  public formatFormControl: FormControl<SummarizerFormatEnum | null> = new FormControl<SummarizerFormatEnum | null>(SummarizerFormatEnum.PlainText);
+
+  get format(): SummarizerFormatEnum | null {
+    return this._format;
+  }
+
+  @Input()
+  set format(value: SummarizerFormatEnum | null) {
+    this.setFormat(value);
+  }
+
+  setFormat(value: SummarizerFormatEnum | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._format = value;
+    this.formatFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.formatChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerFormat: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  formatChange = new EventEmitter<SummarizerFormatEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="Length">
+  private _length: SummarizerLengthEnum | null = SummarizerLengthEnum.Medium;
+  public lengthFormControl: FormControl<SummarizerLengthEnum | null> = new FormControl<SummarizerLengthEnum | null>(SummarizerLengthEnum.Medium);
+
+  get length(): SummarizerLengthEnum | null {
+    return this._length;
+  }
+
+  @Input()
+  set length(value: SummarizerLengthEnum | null) {
+    this.setLength(value);
+  }
+
+  setLength(value: SummarizerLengthEnum | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean}) {
+    this._length = value;
+    this.lengthFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if(options?.emitChangeEvent ?? true) {
+      this.lengthChange.emit(value);
+    }
+
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { summarizerLength: value}, queryParamsHandling: 'merge' });
+  }
+
+  @Output()
+  lengthChange = new EventEmitter<SummarizerLengthEnum | null>();
+  // </editor-fold>
+
 
   constructor(
     @Inject(DOCUMENT) document: Document,
     @Inject(PLATFORM_ID) private platformId: Object,
-    protected readonly router: Router,
-    protected readonly route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
     protected readonly title: Title,
     private fb: FormBuilder
   ) {
-    super(document);
+    super(document, router, route, title);
     this.batchForm = this.fb.group({
       inputs: this.fb.array([]) // We will populate this in addInitialInput
     });
@@ -100,4 +188,27 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
     const formGroup = this.rowControls[rowIndex] as FormGroup;
     return formGroup.get('status')?.value;
   }
+
+  async summarizeBatch() {
+    try {
+      // @ts-expect-error
+      const summarizer = await Summarizer.create({
+        type: this.typeFormControl.value,
+        format: this.formatFormControl.value,
+        length: this.lengthFormControl.value,
+        sharedContext: this.sharedContext,
+        expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
+        expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
+        outputLanguage: this.outputLanguageFormControl.value,
+      });
+      
+
+    } catch (e) {
+
+    }
+  }
+
+  protected readonly SummarizerFormatEnum = SummarizerFormatEnum;
+  protected readonly SummarizerLengthEnum = SummarizerLengthEnum;
+  protected readonly SummarizerTypeEnum = SummarizerTypeEnum;
 }

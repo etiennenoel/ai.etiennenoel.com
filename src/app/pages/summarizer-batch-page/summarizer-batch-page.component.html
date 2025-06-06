@@ -1,39 +1,129 @@
-<app-page-title [title]="'Summarizer Batch'" [icon]="'bi-journal-text'"></app-page-title>
 <div class="container mt-4">
-  <form [formGroup]="batchForm">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col" style="width: 25%;">Input</th>
-          <th scope="col" style="width: 25%;">Output</th>
-          <th scope="col" style="width: 25%;">Status</th>
-          <th scope="col" style="width: 25%;">Actions</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="inputs">
-        <tr *ngFor="let row of rowControls; let i = index">
-          <td>
-            <textarea class="form-control" rows="3" [formControl]="getTextControl(i)" (paste)="onPaste($event, i)"></textarea>
-          </td>
-          <td>
-            <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
-          </td>
-          <td>
+<app-page-title [title]="'Summarizer Batch'" [icon]="'bi-journal-text'"></app-page-title>
+
+
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <h3 class="mt-3">Context:</h3>
+      <textarea class="form-control" rows="3" [formControl]="contextFormControl"></textarea>
+
+    </div>
+    <div class="col-12 col-md-6">
+      <h4 class="mt-4">Options</h4>
+
+
+      <div class="row">
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="summarizer-tone" class="form-label">Tone</label>
+            <app-search-select-dropdown id="summarizer-tone"
+                                        [options]="SummarizerTypeEnum | enumToSearchSelectDropdownOptions"
+                                        [control]="typeFormControl"
+                                        [name]="'summarizerType'"></app-search-select-dropdown>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="summarizer-format" class="form-label">Format</label>
+            <app-search-select-dropdown id="summarizer-format"
+                                        [options]="SummarizerFormatEnum | enumToSearchSelectDropdownOptions"
+                                        [control]="formatFormControl"
+                                        [name]="'summarizerFormat'"></app-search-select-dropdown>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mb-3">
+            <label for="summarizer-length" class="form-label">Length</label>
+            <app-search-select-dropdown id="summarizer-length"
+                                        [options]="SummarizerLengthEnum | enumToSearchSelectDropdownOptions"
+                                        [control]="lengthFormControl"
+                                        [name]="'summarizerLength'"></app-search-select-dropdown>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="summarizer-expected-input-languages" class="form-label">Expected Input Languages</label>
+            <app-search-select-multiple-dropdown id="summarizer-expected-input-languages"
+                                                 [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
+                                                 [control]="expectedInputLanguagesFormControl"
+                                                 [name]="'expectedInputLanguages'"></app-search-select-multiple-dropdown>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="summarizer-expected-context-languages" class="form-label">Expected Context Languages</label>
+            <app-search-select-multiple-dropdown id="summarizer-expected-context-languages"
+                                                 [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
+                                                 [control]="expectedContextLanguagesFormControl"
+                                                 [name]="'expectedContextLanguages'"></app-search-select-multiple-dropdown>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="summarizer-output-language" class="form-label">Output Language</label>
+            <app-search-select-dropdown id="summarizer-output-language"
+                                        [options]="LocaleEnum | enumToSearchSelectDropdownOptions"
+                                        [control]="outputLanguageFormControl"
+                                        [name]="'outputLanguage'"></app-search-select-dropdown>
+          </div>
+
+        </div>
+        <div class="col-12">
+          <div class="mb-3">
+            <label for="summarizer-context" class="form-label">Shared Context</label>
+            <textarea class="form-control" id="summarizer-context" rows="3"
+                      [formControl]="sharedContextFormControl"></textarea>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="batchForm">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th scope="col" style="width: 25%;">Input</th>
+            <th scope="col" style="width: 25%;">Output</th>
+            <th scope="col" style="width: 25%;">Status</th>
+            <th scope="col" style="width: 25%;">Actions</th>
+          </tr>
+          </thead>
+          <tbody formArrayName="inputs">
+          <tr *ngFor="let row of rowControls; let i = index">
+            <td>
+              <textarea class="form-control" rows="3" [formControl]="getTextControl(i)" (paste)="onPaste($event, i)"></textarea>
+            </td>
+
+            <td>
             <span class="badge"
                   [class.text-bg-secondary]="getStatusValue(i) === StoredTaskStatus.Idle"
                   [class.text-bg-primary]="getStatusValue(i) === StoredTaskStatus.Executing"
                   [class.text-bg-success]="getStatusValue(i) === StoredTaskStatus.Completed"
                   [class.text-bg-danger]="getStatusValue(i) === StoredTaskStatus.Error"
             >{{ getStatusValue(i) }}</span>
-          </td>
-          <td>
-            <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="mb-3">
-      <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
+            </td>
+            <td>
+              <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="mb-3">
+          <button type="button" class="btn btn-outline-primary" (click)="addRow()">Add Row</button>
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-lg btn-primary" (click)="summarizeBatch()">Summarize Batch</button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
+
 </div>
