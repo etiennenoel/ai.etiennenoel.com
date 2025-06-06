@@ -1,10 +1,9 @@
-import {Component, OnInit, Inject, PLATFORM_ID, Input, Output, EventEmitter} from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { TaskStatus } from '../../enums/task-status.enum';
-import { BaseComponent } from '../../components/base/base.component'; // Assuming a base component exists
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
+import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {TaskStatus} from '../../enums/task-status.enum';
+import {Title} from '@angular/platform-browser';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {SummarizerFormatEnum} from '../../enums/summarizer-format.enum';
 import {SummarizerLengthEnum} from '../../enums/summarizer-length.enum';
 import {SummarizerTypeEnum} from '../../enums/summarizer-type.enum';
@@ -19,8 +18,11 @@ import {
   standalone: false, // Explicitly set standalone to false
 })
 export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiComponent implements OnInit {
-  batchForm: FormGroup;
-  public StoredTaskStatus = TaskStatus;
+  form: FormArray<FormGroup<{
+    input: FormControl<string| null>,
+    status: FormControl<TaskStatus | null>,
+    output: FormControl<string | null>,
+  }>>;
 
   // <editor-fold desc="Type">
   private _type: SummarizerTypeEnum | null = SummarizerTypeEnum.Headline;
@@ -103,7 +105,6 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
   lengthChange = new EventEmitter<SummarizerLengthEnum | null>();
   // </editor-fold>
 
-
   constructor(
     @Inject(DOCUMENT) document: Document,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -113,9 +114,12 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     private fb: FormBuilder
   ) {
     super(document, router, route, title);
-    this.batchForm = this.fb.group({
-      inputs: this.fb.array([]) // We will populate this in addInitialInput
-    });
+
+    this.form = new FormArray<FormGroup<{
+      input: FormControl<string| null>,
+      status: FormControl<TaskStatus | null>,
+      output: FormControl<string | null>,
+    }>>([]); // Initialize the FormArray
   }
 
   override ngOnInit(): void {
@@ -124,33 +128,32 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     this.addInitialInput();
   }
 
-  // get inputControls() {
-  //   return (this.batchForm.get('inputs') as FormArray).controls;
-  // }
-
-  get rowControls() {
-    return (this.batchForm.get('inputs') as FormArray).controls;
-  }
-
   addInitialInput(): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.group({
-      text: this.fb.control(''),
-      status: this.fb.control(TaskStatus.Idle)
+    this.form.push(new FormGroup<{
+      input: FormControl<string| null>,
+      status: FormControl<TaskStatus | null>,
+      output: FormControl<string | null>,
+    }>({
+      input: new FormControl(null),
+      status: new FormControl(TaskStatus.Idle),
+      output: new FormControl(null),
     }));
   }
 
   addRow(): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.group({
-      text: this.fb.control(''),
-      status: this.fb.control(TaskStatus.Idle)
+    this.form.push(new FormGroup<{
+      input: FormControl<string| null>,
+      status: FormControl<TaskStatus | null>,
+      output: FormControl<string | null>,
+    }>({
+      input: new FormControl(null),
+      status: new FormControl(TaskStatus.Idle),
+      output: new FormControl(null),
     }));
   }
 
   deleteRow(index: number): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.removeAt(index);
+    const inputs = this.form.removeAt(index);
   }
 
   public onPaste(event: ClipboardEvent, rowIndex: number): void {
@@ -161,32 +164,39 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     }
 
     const lines = pastedText.split('\n').map(line => line.trim());
-    const inputs = this.batchForm.get('inputs') as FormArray; // ensure 'inputs' is correctly typed
 
     if (lines.length > 0) {
       // Set the first line to the text control of the current row's FormGroup
-      (inputs.at(rowIndex) as FormGroup).get('text')?.setValue(lines[0]);
+      (this.form.at(rowIndex).controls.input.setValue(lines[0]));
 
       // For subsequent lines, insert new FormGroups
       for (let i = 1; i < lines.length; i++) {
-        const newFormGroup = this.fb.group({
-          text: this.fb.control(lines[i]),
-          status: this.fb.control(TaskStatus.Idle)
+        const newFormGroup = new FormGroup<{
+          input: FormControl<string| null>,
+          status: FormControl<TaskStatus | null>,
+          output: FormControl<string | null>,
+        }>({
+          input: new FormControl(lines[i]),
+          status: new FormControl(TaskStatus.Idle),
+          output: new FormControl(null),
         });
         // Insert after the current rowIndex + number of lines already added
-        inputs.insert(rowIndex + i, newFormGroup);
+        this.form.insert(rowIndex + i, newFormGroup);
       }
     }
   }
 
-  public getTextControl(rowIndex: number): FormControl {
-    const formGroup = this.rowControls[rowIndex] as FormGroup;
-    return formGroup.get('text') as FormControl;
-  }
-
-  public getStatusValue(rowIndex: number): TaskStatus | undefined {
-    const formGroup = this.rowControls[rowIndex] as FormGroup;
-    return formGroup.get('status')?.value;
+  copyOutputToClipboard(): void {
+    const outputText = this.form.controls.map(control => control.controls.output.value).join('\n');
+    if (outputText) {
+      navigator.clipboard.writeText(outputText).then(() => {
+        console.log('Output copied to clipboard');
+      }).catch(err => {
+        console.error('Failed to copy output: ', err);
+      });
+    } else {
+      console.warn('No output to copy');
+    }
   }
 
   async summarizeBatch() {
@@ -201,10 +211,30 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
         expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
         outputLanguage: this.outputLanguageFormControl.value,
       });
-      
 
-    } catch (e) {
+      for (const value of this.form.controls) {
+        try {
+          const input = value.controls.input.value;
+          value.controls.status.setValue(TaskStatus.Executing);
 
+          value.controls.output.setValue("");
+
+          // Summarize this input.
+          const stream: ReadableStream = summarizer.summarizeStreaming(input, {context: this.contextFormControl.value});
+
+          for await (const chunk of stream) {
+            // Append the chunk to the output control.
+            const currentOutput = value.controls.output.value || '';
+            value.controls.output.setValue(currentOutput + chunk);
+          }
+
+          value.controls.status.setValue(TaskStatus.Completed);
+        } catch (e) {
+          value.controls.status.setValue(TaskStatus.Error);
+        }
+      }
+    } catch (e: any) {
+      this.error = e;
     }
   }
 

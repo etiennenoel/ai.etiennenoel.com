@@ -83,46 +83,60 @@
 
   <div class="row">
     <div class="col-12">
-      <form [formGroup]="batchForm">
+        @if(error) {
+          <div class="alert alert-danger" role="alert">
+            <strong>Error:</strong> {{ error }}
+          </div>
+        }
+
         <table class="table table-hover">
           <thead>
           <tr>
             <th scope="col" style="width: 25%;">Input</th>
             <th scope="col" style="width: 25%;">Output</th>
-            <th scope="col" style="width: 25%;">Status</th>
+            <th scope="col" style="width: 25%;">Status <button class="btn btn-sm btn-outline-primary" (click)="copyOutputToClipboard()">Copy output to clipboard</button> </th>
             <th scope="col" style="width: 25%;">Actions</th>
           </tr>
           </thead>
-          <tbody formArrayName="inputs">
-          <tr *ngFor="let row of rowControls; let i = index">
-            <td>
-              <textarea class="form-control" rows="3" [formControl]="getTextControl(i)" (paste)="onPaste($event, i)"></textarea>
-            </td>
+          <tbody>
+            @for (row of form.controls; track $index) {
+              <tr>
+                <td>
+                  <textarea class="form-control" rows="3" [formControl]="row.controls.input" (paste)="onPaste($event, $index)"></textarea>
+                </td>
 
-            <td>
+                <td>
+                  @let status = row.controls.status.value;
             <span class="badge"
-                  [class.text-bg-secondary]="getStatusValue(i) === StoredTaskStatus.Idle"
-                  [class.text-bg-primary]="getStatusValue(i) === StoredTaskStatus.Executing"
-                  [class.text-bg-success]="getStatusValue(i) === StoredTaskStatus.Completed"
-                  [class.text-bg-danger]="getStatusValue(i) === StoredTaskStatus.Error"
-            >{{ getStatusValue(i) }}</span>
-            </td>
-            <td>
-              <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
-            </td>
-            <td>
-              <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
-            </td>
-          </tr>
+                  [class.text-bg-secondary]="status === TaskStatus.Idle"
+                  [class.text-bg-primary]="status === TaskStatus.Executing"
+                  [class.text-bg-success]="status === TaskStatus.Completed"
+                  [class.text-bg-danger]="status === TaskStatus.Error"
+            >{{ status }}</span>
+                </td>
+                <td>
+                  <textarea class="form-control" [formControl]="row.controls.output" rows="3" [disabled]="true" placeholder="Output will appear here"></textarea>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-danger" (click)="deleteRow($index)">Delete Row</button>
+                </td>
+              </tr>
+            }
+
           </tbody>
         </table>
         <div class="mb-3">
           <button type="button" class="btn btn-outline-primary" (click)="addRow()">Add Row</button>
         </div>
+
+      @if(error) {
+        <div class="alert alert-danger" role="alert">
+          <strong>Error:</strong> {{ error }}
+        </div>
+      }
         <div class="d-grid">
           <button class="btn btn-lg btn-primary" (click)="summarizeBatch()">Summarize Batch</button>
         </div>
-      </form>
     </div>
   </div>
 
