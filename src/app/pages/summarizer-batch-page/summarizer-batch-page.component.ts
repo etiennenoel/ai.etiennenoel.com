@@ -158,7 +158,49 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
 
   public onPaste(event: ClipboardEvent, rowIndex: number): void {
     event.preventDefault();
-    const pastedText = event.clipboardData?.getData('text');
+    const clipboardData = event.clipboardData;
+    const htmlData = clipboardData?.getData('text/html');
+
+    if (htmlData) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlData, 'text/html');
+      const table = doc.querySelector('table');
+
+      if (table) {
+        const rows = Array.from(table.querySelectorAll('tr'));
+        const lines: string[] = [];
+        rows.forEach(row => {
+          const firstCell = row.querySelector('td, th'); // Get first cell (td or th)
+          if (firstCell) {
+            lines.push(firstCell.textContent?.trim() || '');
+          }
+        });
+
+        if (lines.length > 0) {
+          // Set the first line to the text control of the current row's FormGroup
+          this.form.at(rowIndex).controls.input.setValue(lines[0]);
+
+          // For subsequent lines, insert new FormGroups
+          for (let i = 1; i < lines.length; i++) {
+            const newFormGroup = new FormGroup<{
+              input: FormControl<string | null>,
+              status: FormControl<TaskStatus | null>,
+              output: FormControl<string | null>,
+            }>({
+              input: new FormControl(lines[i]),
+              status: new FormControl(TaskStatus.Idle),
+              output: new FormControl(null),
+            });
+            // Insert after the current rowIndex + number of lines already added
+            this.form.insert(rowIndex + i, newFormGroup);
+          }
+        }
+        return; // Exit after processing HTML table
+      }
+    }
+
+    // Fallback to plain text pasting
+    const pastedText = clipboardData?.getData('text');
     if (!pastedText) {
       return;
     }
@@ -167,7 +209,7 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
 
     if (lines.length > 0) {
       // Set the first line to the text control of the current row's FormGroup
-      (this.form.at(rowIndex).controls.input.setValue(lines[0]));
+      this.form.at(rowIndex).controls.input.setValue(lines[0]);
 
       // For subsequent lines, insert new FormGroups
       for (let i = 1; i < lines.length; i++) {
