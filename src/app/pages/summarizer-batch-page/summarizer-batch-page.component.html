@@ -1,6 +1,28 @@
 <app-page-title [title]="'Summarizer Batch'" [icon]="'bi-journal-text'"></app-page-title>
 <div class="container mt-4">
-  <p>
-    Summarizer Batch Page content will go here.
-  </p>
+  <form [formGroup]="batchForm">
+    <div class="row mb-3">
+      <div class="col">
+        <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Input</h5>
+      </div>
+      <div class="col-md-6">
+        <h5>Output</h5>
+      </div>
+    </div>
+    <div formArrayName="inputs">
+      <div class="row mb-3" *ngFor="let control of inputControls; let i = index">
+        <div class="col-md-6">
+          <textarea class="form-control" rows="3" [formControlName]="i"></textarea>
+        </div>
+        <div class="col-md-6">
+          <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
