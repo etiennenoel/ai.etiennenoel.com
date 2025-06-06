@@ -19,7 +19,7 @@ import {
   standalone: false, // Explicitly set standalone to false
 })
 export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiComponent implements OnInit {
-  batchForm: FormGroup;
+  batchForm: FormArray<FormGroup<{ input: FormControl<string| null>, status: FormControl<TaskStatus | null>, output: FormControl<string | null> }>>;
   public StoredTaskStatus = TaskStatus;
 
   // <editor-fold desc="Type">
@@ -113,9 +113,7 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     private fb: FormBuilder
   ) {
     super(document, router, route, title);
-    this.batchForm = this.fb.group({
-      inputs: this.fb.array([]) // We will populate this in addInitialInput
-    });
+    this.batchForm = this.fb.array<{ input: FormControl<string| null>, status: FormControl<TaskStatus | null>, output: FormControl<string | null> }>([]);
   }
 
   override ngOnInit(): void {
@@ -124,33 +122,28 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     this.addInitialInput();
   }
 
-  // get inputControls() {
-  //   return (this.batchForm.get('inputs') as FormArray).controls;
-  // }
-
   get rowControls() {
-    return (this.batchForm.get('inputs') as FormArray).controls;
+    return this.batchForm.controls;
   }
 
   addInitialInput(): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.group({
-      text: this.fb.control(''),
-      status: this.fb.control(TaskStatus.Idle)
+    this.batchForm.push(this.fb.group({
+      input: this.fb.control(''),
+      status: this.fb.control(TaskStatus.Idle),
+      output: this.fb.control(null)
     }));
   }
 
   addRow(): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.group({
-      text: this.fb.control(''),
-      status: this.fb.control(TaskStatus.Idle)
+    this.batchForm.push(this.fb.group({
+      input: this.fb.control(''),
+      status: this.fb.control(TaskStatus.Idle),
+      output: this.fb.control(null)
     }));
   }
 
   deleteRow(index: number): void {
-    const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.removeAt(index);
+    this.batchForm.removeAt(index);
   }
 
   public onPaste(event: ClipboardEvent, rowIndex: number): void {
@@ -161,17 +154,18 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     }
 
     const lines = pastedText.split('\n').map(line => line.trim());
-    const inputs = this.batchForm.get('inputs') as FormArray; // ensure 'inputs' is correctly typed
+    const inputs = this.batchForm; // ensure 'inputs' is correctly typed
 
     if (lines.length > 0) {
       // Set the first line to the text control of the current row's FormGroup
-      (inputs.at(rowIndex) as FormGroup).get('text')?.setValue(lines[0]);
+      (inputs.at(rowIndex) as FormGroup).get('input')?.setValue(lines[0]);
 
       // For subsequent lines, insert new FormGroups
       for (let i = 1; i < lines.length; i++) {
         const newFormGroup = this.fb.group({
-          text: this.fb.control(lines[i]),
-          status: this.fb.control(TaskStatus.Idle)
+          input: this.fb.control(lines[i]),
+          status: this.fb.control(TaskStatus.Idle),
+          output: this.fb.control(null)
         });
         // Insert after the current rowIndex + number of lines already added
         inputs.insert(rowIndex + i, newFormGroup);
@@ -179,14 +173,19 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
     }
   }
 
-  public getTextControl(rowIndex: number): FormControl {
+  public getInputControl(rowIndex: number): FormControl {
     const formGroup = this.rowControls[rowIndex] as FormGroup;
-    return formGroup.get('text') as FormControl;
+    return formGroup.get('input') as FormControl;
   }
 
   public getStatusValue(rowIndex: number): TaskStatus | undefined {
     const formGroup = this.rowControls[rowIndex] as FormGroup;
     return formGroup.get('status')?.value;
+  }
+
+  public getOutputControl(rowIndex: number): FormControl {
+    const formGroup = this.rowControls[rowIndex] as FormGroup;
+    return formGroup.get('output') as FormControl;
   }
 
   async summarizeBatch() {

@@ -93,22 +93,21 @@
             <th scope="col" style="width: 25%;">Actions</th>
           </tr>
           </thead>
-          <tbody formArrayName="inputs">
-          <tr *ngFor="let row of rowControls; let i = index">
+          <tbody>
+          <tr *ngFor="let row of rowControls; let i = index" [formGroupName]="i">
             <td>
-              <textarea class="form-control" rows="3" [formControl]="getTextControl(i)" (paste)="onPaste($event, i)"></textarea>
-            </td>
-
-            <td>
-            <span class="badge"
-                  [class.text-bg-secondary]="getStatusValue(i) === StoredTaskStatus.Idle"
-                  [class.text-bg-primary]="getStatusValue(i) === StoredTaskStatus.Executing"
-                  [class.text-bg-success]="getStatusValue(i) === StoredTaskStatus.Completed"
-                  [class.text-bg-danger]="getStatusValue(i) === StoredTaskStatus.Error"
-            >{{ getStatusValue(i) }}</span>
+              <textarea class="form-control" rows="3" formControlName="input" (paste)="onPaste($event, i)"></textarea>
             </td>
             <td>
-              <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
+              <textarea class="form-control" formControlName="output" disabled></textarea>
+            </td>
+            <td>
+              <span class="badge"
+                    [class.text-bg-secondary]="getStatusValue(i) === StoredTaskStatus.Idle"
+                    [class.text-bg-primary]="getStatusValue(i) === StoredTaskStatus.Executing"
+                    [class.text-bg-success]="getStatusValue(i) === StoredTaskStatus.Completed"
+                    [class.text-bg-danger]="getStatusValue(i) === StoredTaskStatus.Error"
+              >{{ getStatusValue(i) }}</span>
             </td>
             <td>
               <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
