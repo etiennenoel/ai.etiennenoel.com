@@ -7,8 +7,10 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th scope="col" style="width: 50%;">Input</th>
-          <th scope="col" style="width: 50%;">Output</th>
+          <th scope="col" style="width: 25%;">Input</th>
+          <th scope="col" style="width: 25%;">Output</th>
+          <th scope="col" style="width: 25%;">Status</th>
+          <th scope="col" style="width: 25%;">Actions</th>
         </tr>
       </thead>
       <tbody formArrayName="inputs">
@@ -18,6 +20,10 @@
           </td>
           <td>
             <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
+          </td>
+          <td></td>
+          <td>
+            <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
           </td>
         </tr>
       </tbody>
