@@ -229,7 +229,7 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
   }
 
   copyOutputToClipboard(): void {
-    const outputText = this.form.controls.map(control => control.controls.output.value).join('\n');
+    const outputText = this.form.controls.map(control => control.controls.output.value?.replace(/\n/g, '')).join('\n');
     if (outputText) {
       navigator.clipboard.writeText(outputText).then(() => {
         console.log('Output copied to clipboard');
