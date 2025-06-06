@@ -1,0 +1,27 @@
+table.table {
+  border: 1px solid #dee2e6; // Ensure the table itself has a border
+  border-collapse: collapse; // To make cell borders look cleaner
+
+  th,
+  td {
+    border: 1px solid #dee2e6;
+  }
+
+  td:has(> textarea.form-control) {
+    padding: 0; // Remove padding from the table cell itself.
+
+    textarea.form-control {
+      // .form-control from Bootstrap already provides:
+      // width: 100%;
+      // display: block;
+      // and some default padding, border, and border-radius.
+
+      // Override or enhance .form-control styles for a "fill-cell" spreadsheet look:
+      height: 100%;         // Aims to fill the cell's height.
+      min-height: 70px;     // Provides a minimum usable height.
+      box-sizing: border-box; // Crucial for width/height calculations.
+      resize: none;           // Disables user resizing of the textarea.
+      border-radius: 0;       // Removes Bootstrap's default rounded corners.
+    }
+  }
+}
