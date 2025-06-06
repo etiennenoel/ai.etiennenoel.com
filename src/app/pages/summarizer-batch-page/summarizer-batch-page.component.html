@@ -1,9 +1,6 @@
 <app-page-title [title]="'Summarizer Batch'" [icon]="'bi-journal-text'"></app-page-title>
 <div class="container mt-4">
   <form [formGroup]="batchForm">
-    <div class="mb-3">
-      <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
-    </div>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -14,19 +11,29 @@
         </tr>
       </thead>
       <tbody formArrayName="inputs">
-        <tr *ngFor="let control of inputControls; let i = index">
+        <tr *ngFor="let row of rowControls; let i = index">
           <td>
-            <textarea class="form-control" rows="3" [formControlName]="i" (paste)="onPaste($event, i)"></textarea>
+            <textarea class="form-control" rows="3" [formControl]="row.get('text')" (paste)="onPaste($event, i)"></textarea>
           </td>
           <td>
             <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
           </td>
-          <td></td>
+          <td>
+            <span class="badge"
+                  [class.text-bg-secondary]="rowControls[i].get('status').value === TaskStatus.Idle"
+                  [class.text-bg-primary]="rowControls[i].get('status').value === TaskStatus.Executing"
+                  [class.text-bg-success]="rowControls[i].get('status').value === TaskStatus.Completed"
+                  [class.text-bg-danger]="rowControls[i].get('status').value === TaskStatus.Error"
+            >{{ rowControls[i].get('status').value }}</span>
+          </td>
           <td>
             <button class="btn btn-sm btn-danger" (click)="deleteRow(i)">Delete Row</button>
           </td>
         </tr>
       </tbody>
     </table>
+    <div class="mb-3">
+      <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
+    </div>
   </form>
 </div>

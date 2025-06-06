@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { TaskStatus } from '../../enums/task-status.enum';
 import { BaseComponent } from '../../components/base/base.component'; // Assuming a base component exists
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } f
 })
 export class SummarizerBatchPageComponent extends BaseComponent implements OnInit {
   batchForm: FormGroup;
+  public TaskStatus = TaskStatus;
 
   constructor(
     @Inject(DOCUMENT) document: Document,
@@ -24,7 +26,7 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
   ) {
     super(document);
     this.batchForm = this.fb.group({
-      inputs: this.fb.array([])
+      inputs: this.fb.array([]) // We will populate this in addInitialInput
     });
   }
 
@@ -34,18 +36,28 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
     this.addInitialInput();
   }
 
-  get inputControls() {
+  // get inputControls() {
+  //   return (this.batchForm.get('inputs') as FormArray).controls;
+  // }
+
+  get rowControls() {
     return (this.batchForm.get('inputs') as FormArray).controls;
   }
 
   addInitialInput(): void {
     const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.control(''));
+    inputs.push(this.fb.group({
+      text: this.fb.control(''),
+      status: this.fb.control(TaskStatus.Idle)
+    }));
   }
 
   addRow(): void {
     const inputs = this.batchForm.get('inputs') as FormArray;
-    inputs.push(this.fb.control(''));
+    inputs.push(this.fb.group({
+      text: this.fb.control(''),
+      status: this.fb.control(TaskStatus.Idle)
+    }));
   }
 
   deleteRow(index: number): void {
@@ -61,17 +73,20 @@ export class SummarizerBatchPageComponent extends BaseComponent implements OnIni
     }
 
     const lines = pastedText.split('\n').map(line => line.trim());
-    const inputs = this.batchForm.get('inputs') as FormArray;
+    const inputs = this.batchForm.get('inputs') as FormArray; // ensure 'inputs' is correctly typed
 
     if (lines.length > 0) {
-      // Set the first line to the current input
-      inputs.at(rowIndex).setValue(lines[0]);
+      // Set the first line to the text control of the current row's FormGroup
+      (inputs.at(rowIndex) as FormGroup).get('text')?.setValue(lines[0]);
 
-      // For subsequent lines, insert new rows
+      // For subsequent lines, insert new FormGroups
       for (let i = 1; i < lines.length; i++) {
-        const newFormControl = this.fb.control(lines[i]);
+        const newFormGroup = this.fb.group({
+          text: this.fb.control(lines[i]),
+          status: this.fb.control(TaskStatus.Idle)
+        });
         // Insert after the current rowIndex + number of lines already added
-        inputs.insert(rowIndex + i, newFormControl);
+        inputs.insert(rowIndex + i, newFormGroup);
       }
     }
   }
