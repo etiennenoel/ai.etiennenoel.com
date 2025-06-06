@@ -1,28 +1,26 @@
 <app-page-title [title]="'Summarizer Batch'" [icon]="'bi-journal-text'"></app-page-title>
 <div class="container mt-4">
   <form [formGroup]="batchForm">
-    <div class="row mb-3">
-      <div class="col">
-        <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
-      </div>
+    <div class="mb-3">
+      <button type="button" class="btn btn-primary" (click)="addRow()">Add Row</button>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <h5>Input</h5>
-      </div>
-      <div class="col-md-6">
-        <h5>Output</h5>
-      </div>
-    </div>
-    <div formArrayName="inputs">
-      <div class="row mb-3" *ngFor="let control of inputControls; let i = index">
-        <div class="col-md-6">
-          <textarea class="form-control" rows="3" [formControlName]="i"></textarea>
-        </div>
-        <div class="col-md-6">
-          <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
-        </div>
-      </div>
-    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 50%;">Input</th>
+          <th scope="col" style="width: 50%;">Output</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="inputs">
+        <tr *ngFor="let control of inputControls; let i = index">
+          <td>
+            <textarea class="form-control" rows="3" [formControlName]="i"></textarea>
+          </td>
+          <td>
+            <textarea class="form-control" rows="3" disabled placeholder="Output will appear here"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </form>
 </div>
