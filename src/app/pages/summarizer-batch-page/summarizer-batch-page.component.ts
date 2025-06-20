@@ -243,6 +243,7 @@ export class SummarizerBatchPageComponent extends BaseWritingAssistanceApiCompon
 
   async summarizeBatch() {
     try {
+      // @ts-expect-error
       const summarizer = await Summarizer.create({
         type: this.typeFormControl.value,
         format: this.formatFormControl.value,
