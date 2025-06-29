@@ -82,7 +82,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
 
     // todo: add debouncer to avoid spamming
     this.subscriptions.push(this.mainTextAreaFormControl.valueChanges.pipe(
-      filter(str => str !== null && str.length > 50),
+      filter(str => str !== null && str.length > 25),
       debounce(() => timer(50)),
     ).subscribe( async value => {
       this.activeSuggestionFullText = ""; // Reset active suggestion
@@ -95,18 +95,16 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
       // Default: suggestion textarea mirrors user input (keeps text aligned if no suggestion found)
       this.suggestionTextAreaFormControl.setValue(value);
 
-      if(!session) {
-        return;
-      }
+      // @ts-expect-error
+      session = await LanguageModel.create({
+        topK: 1,
+        temperature: 0,
+      });
 
       const stream = session.promptStreaming([
         {
-          role: "user",
-          content: value
-        },
-        {
           role: "assistant",
-          content: "", // Start with an empty assistant message
+          content: value,
           prefix: true
         }
       ]);
