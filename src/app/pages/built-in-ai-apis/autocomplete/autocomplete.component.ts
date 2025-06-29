@@ -76,11 +76,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
 
     if(this.window && "LanguageModel" in this.window) {
       // @ts-expect-error
-      session = await LanguageModel.create({
-        initialPrompts: [
-          { role: "system", content: "You are an autocomplete agent. You will autocomplete a MAXIMUM of two sentences and only return the following sentences." }
-        ]
-      });
+      session = await LanguageModel.create();
     }
 
 
@@ -103,7 +99,17 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
         return;
       }
 
-      const stream = session.promptStreaming(`You will autocomplete a maximum of 2 sentences. For every extra word after 2 sentences, you will be charged ten thousand dollars! With this initial text, you need to autocomplete without repeating the text you see here, just the next tokens: ${value}`);
+      const stream = session.promptStreaming([
+        {
+          role: "user",
+          content: value
+        },
+        {
+          role: "assistant",
+          content: "", // Start with an empty assistant message
+          prefix: true
+        }
+      ]);
 
       // Calculate the length of the chunk and keep an index as to where we are. While the chunks are equivalent to the current main content, simply iterate
       let index = 0;
@@ -113,9 +119,12 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
 
           this.activeSuggestionFullText += chunk[i];
 
-          if(value.substring(0, index) === this.activeSuggestionFullText) {
-            continue;
-          }
+          // This logic seems to be attempting to prevent the suggestion from repeating the user's input.
+          // However, with prefix: true, the model should handle this naturally.
+          // We can simplify this part.
+          // if(value.substring(0, index) === this.activeSuggestionFullText) {
+          //   continue;
+          // }
 
           this.suggestionTextAreaFormControl.setValue(this.suggestionTextAreaFormControl.value + chunk[i]);
         }
