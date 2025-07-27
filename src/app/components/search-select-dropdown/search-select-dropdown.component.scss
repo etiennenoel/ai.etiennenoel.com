@@ -11,6 +11,11 @@
   }
 }
 
+.dropdown-menu {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
 .focus {
   color: $input-focus-color;
   background-color: $input-focus-bg !important;
