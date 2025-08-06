@@ -3,4 +3,11 @@
   (codeChange)="codeChange($event)"
   [readonly]="readonly"
   [height]="height"
-  ></magieno-code-editor>
+  [coordinator]="coordinator"
+  >
+  <div toolbar>
+    <button class="btn" (click)="coordinator.reformatCode.next()" placement="top" ngbTooltip="Reformat code"><i class="bi bi-code-square"></i> </button>
+    <button class="btn" (click)="coordinator.copyToClipboard.next()" placement="top" ngbTooltip="Copy to clipboard"><i class="bi bi-clipboard"></i> </button>
+    <button class="btn" (click)="coordinator.toggleFullscreen.next()" placement="top" ngbTooltip="Toggle fullscreen"><i class="bi bi-arrows-angle-expand"></i> </button>
+  </div>
+</magieno-code-editor>

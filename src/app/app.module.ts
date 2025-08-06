@@ -68,6 +68,7 @@ import { PerformanceTestExecutionPage } from './pages/performance/performance-te
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
 import {MagienoCodeEditorComponent} from '@magieno/angular-code-editor';
+import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -141,6 +142,7 @@ import {MagienoCodeEditorComponent} from '@magieno/angular-code-editor';
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
     MagienoCodeEditorComponent,
+    NgbTooltip,
   ],
   providers: [
     provideClientHydration(withEventReplay()),

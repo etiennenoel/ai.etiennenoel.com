@@ -13,6 +13,7 @@ import {RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 
 import {isPlatformBrowser, isPlatformServer} from '@angular/common';
+import {CodeEditorActionsCoordinator} from '@magieno/angular-code-editor';
 
 @Component({
   selector: 'code-editor',
@@ -32,6 +33,8 @@ export class CodeEditorComponent {
 
   @Input()
   height: string = "250px"
+
+  coordinator = new CodeEditorActionsCoordinator();
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: Object) {
   }
