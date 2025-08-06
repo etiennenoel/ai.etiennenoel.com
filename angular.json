@@ -48,6 +48,10 @@
               {
                 "input": "node_modules/ace-builds/src/",
                 "glob": "theme-xcode.js"
+              },
+              {
+                "input": "node_modules/ace-builds/src/",
+                "glob": "theme-github_dark.js"
               }
             ],
             "styles": [

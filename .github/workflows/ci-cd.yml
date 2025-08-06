@@ -38,8 +38,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build the app
-        run: npm install
+        run: npm ci
         working-directory: ./
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_LOGIN_READ_TOKEN }}
 
       # Runs a single command using the runners shell
       - name: Build the app
