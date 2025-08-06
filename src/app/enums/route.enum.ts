@@ -11,10 +11,14 @@ export enum RouteEnum {
   PromptApi = 'prompt-api',
   PerformanceTestRunner = 'performance/perf-test-runner',
   // @start-remove-in-chrome-dev
+  ImageMultimodalPromptApi = 'image-multimodal-prompt-api',
   AudioMultimodalPromptApi = 'audio-multimodal-prompt-api',
   TranscriptionAudioMultimodalPromptApi = 'transcription-audio-multimodal-prompt-api',
   MultimodalPromptApi = 'multimodal-prompt-api',
   // @end
   SummarizerBatchPage = 'summarizer-batch-page',
-  Home = 'index'
+  Home = 'index',
+
+  // Studio
+  Chat = 'chat',
 }

@@ -13,6 +13,38 @@
         </a>
       </li>
 
+
+<!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
+<!--        <a class="btn" routerLink="/">-->
+<!--          <i class="bi bi-translate"></i>-->
+<!--          <span>Translation</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
+<!--        <a class="btn" routerLink="/">-->
+<!--          <i class="bi bi-pencil-square"></i>-->
+<!--          <span>Writing Assistance</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
+<!--        <a class="btn" routerLink="/">-->
+<!--          <i class="bi bi-collection-play-fill"></i>-->
+<!--          <span>Image Interpretation</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
+<!--        <a class="btn" routerLink="/">-->
+<!--          <i class="bi bi-volume-up"></i>-->
+<!--          <span>Audio Interpretation</span>-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
+<!--        <a class="btn" routerLink="/">-->
+<!--          <i class="bi bi-input-cursor"></i>-->
+<!--          <span>Auto Completion</span>-->
+<!--        </a>-->
+<!--      </li>-->
+
       <li class="navigation-category">
         <i class="bi bi-arrow-left-right"></i> <span>Built-In AI APIs</span>
 
@@ -62,6 +94,12 @@
             <a class="btn" routerLink="/multimodal-prompt-api">
               <i class="bi bi-collection-play-fill"></i>
               <span>Multimodal Prompt API</span>
+            </a>
+          </li>
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.ImageMultimodalPromptApi">
+            <a class="btn" routerLink="/image-multimodal-prompt-api">
+              <i class="bi bi-images"></i>
+              <span>Image Prompt</span>
             </a>
           </li>
           <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.AudioMultimodalPromptApi">
@@ -135,6 +173,12 @@
         </ul>
       </li>
 
+      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Chat">
+        <a class="btn" [routerLink]="RouteEnum.Chat">
+          <i class="bi bi-chat-left"></i>
+          <span>Chat</span>
+        </a>
+      </li>
     </ul>
   </nav>
 

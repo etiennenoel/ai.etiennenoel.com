@@ -84,7 +84,10 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.PerformanceTestRunner;
     }else if(url.endsWith('/')) {
       this.currentRoute = RouteEnum.Home;
+    } else if(url.endsWith('chat')) {
+      this.currentRoute = RouteEnum.Chat;
     }
+
   }
 
   toggleSidebar() {

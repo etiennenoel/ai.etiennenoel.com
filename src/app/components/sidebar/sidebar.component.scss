@@ -3,7 +3,7 @@
 
 
 .sidebar {
-  background-color: $gray-200;
+  background-color: var(--bs-secondary-bg);
   height: 100vh;
   margin: 0;
   width: 420px;
@@ -75,12 +75,11 @@
 
         &.navigation-item {
           &.active {
-            background-color: $primary-bg-subtle;
+            background-color: var(--bs-primary-bg-subtle);
           }
 
           &:hover {
-            background-color: $gray-400;
-
+            background-color: var(--bs-dark-bg-subtle);
           }
 
           a {
@@ -105,10 +104,10 @@
 
 
   .btn-sidebar {
-    background-color: $gray-200;
+    background-color: var(--bs-secondary-bg);
 
     &:hover {
-      background-color: $gray-400;
+      background-color: var(--bs-dark-bg-subtle);
     }
   }
 }

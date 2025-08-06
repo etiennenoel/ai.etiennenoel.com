@@ -26,6 +26,8 @@ import {PerformanceTestRunnerPage} from './pages/performance/performance-test-ru
 import {PerformanceTestExecutionPage} from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
+import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
+import {ChatComponent} from './pages/chat/chat.component';
 // @end
 
 const layouts: Routes = [
@@ -62,6 +64,10 @@ const layouts: Routes = [
     component: PromptApiComponent,
   },
   {
+    path: RouteEnum.ImageMultimodalPromptApi,
+    component: ImagePromptApiComponent,
+  },
+  {
     path: "language-detector-api",
     component: LanguageDetectorComponent,
   },
@@ -91,6 +97,10 @@ const layouts: Routes = [
 
       }
     ]
+  },
+  {
+    path: RouteEnum.Chat,
+    component: ChatComponent,
   }
 ];
 

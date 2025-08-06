@@ -50,7 +50,7 @@ jobs:
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          path: dist/chromium.etiennenoel.com/browser
+          path: dist/ai.etiennenoel.com/browser
 
       - name: Deploy
         id: deployment

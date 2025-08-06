@@ -1,10 +1,10 @@
-import {ItemInterface} from '@magieno/angular-bootstrap-dropdown';
+import {ItemInterface} from '@magieno/common';
 
 export class EnumToMagienoDropdownItemsMapper {
   static map(enumType: any): ItemInterface[] {
     return Object.entries(enumType).map(([key, value]) => ({
-      title: key,
-      value: value
+      label: key,
+      id: value
     } as ItemInterface));
   }
 }

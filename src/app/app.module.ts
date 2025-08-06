@@ -66,6 +66,8 @@ import {
 } from '../performance-test/test-executors/summarizer-headline-small.test-executor';
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
+import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
+import {MagienoCodeEditorComponent} from '@magieno/angular-code-editor';
 
 
 @NgModule({
@@ -119,6 +121,8 @@ import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summar
     TranscriptionAudioMultimodalPromptComponent,
 // @end
 
+    ImagePromptApiComponent,
+
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
     EnumToMagienoDropdownItemsPipe,
@@ -136,6 +140,7 @@ import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summar
     DragDropModule,
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
+    MagienoCodeEditorComponent,
   ],
   providers: [
     provideClientHydration(withEventReplay()),

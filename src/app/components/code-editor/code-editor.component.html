@@ -1,5 +1,6 @@
-<div
-  class="app-ace-editor"
-  #editor
-  [style.height]="height"
->{{ code }}</div>
+<magieno-code-editor
+  [(code)]="code"
+  (codeChange)="codeChange($event)"
+  [readonly]="readonly"
+  [height]="height"
+  ></magieno-code-editor>
