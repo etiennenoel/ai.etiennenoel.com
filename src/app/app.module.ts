@@ -69,6 +69,10 @@ import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summar
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
 import {MagienoCodeEditorComponent} from '@magieno/angular-code-editor';
 import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
+import {MagienoAIModule} from '@magieno/angular-ai';
+import {MagienoCoreModule} from '@magieno/angular-core';
+import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
+import {ChatComponent} from './pages/chat/chat.component';
 
 
 @NgModule({
@@ -124,6 +128,8 @@ import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 
     ImagePromptApiComponent,
 
+    ChatComponent,
+
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
     EnumToMagienoDropdownItemsPipe,
@@ -142,6 +148,9 @@ import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
     MagienoCodeEditorComponent,
+    MagienoCoreModule,
+    MagienoAdvancedTableComponent,
+    MagienoAIModule,
     NgbTooltip,
   ],
   providers: [
