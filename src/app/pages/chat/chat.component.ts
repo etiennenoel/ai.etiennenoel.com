@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
+import {ConversationManager, ConversationStateEnum, PromptInputStateEnum, PromptRunOptions} from '@magieno/angular-ai';
 
 @Component({
   selector: 'page-chat',
@@ -12,6 +13,8 @@ import {ExecutionPerformanceManager} from '../../managers/execution-performance.
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent extends BasePageComponent implements OnInit, OnDestroy {
+  state: PromptInputStateEnum = PromptInputStateEnum.Ready;
+
   constructor(
     router: Router,
     route: ActivatedRoute,
@@ -19,8 +22,19 @@ export class ChatComponent extends BasePageComponent implements OnInit, OnDestro
     @Inject(PLATFORM_ID) private platformId: Object,
     title: Title,
     public readonly executionPerformanceManager: ExecutionPerformanceManager,
+    public readonly conversationManager: ConversationManager,
   ) {
     super(document, title)
   }
 
+  async onRun(options: PromptRunOptions) {
+    await this.conversationManager.run(options);
+    this.state = PromptInputStateEnum.Ready;
+  }
+
+  onCancel() {
+    //this.conversationManager.cancel();
+  }
+
+  protected readonly ConversationStateEnum = ConversationStateEnum;
 }

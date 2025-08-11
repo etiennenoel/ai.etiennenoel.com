@@ -67,7 +67,7 @@ import {
 import { PerformanceTestExecutionPage } from './pages/performance/performance-test-execution-page/performance-test-execution-page';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
-import {MagienoCodeEditorComponent} from '@magieno/angular-code-editor';
+import {MagienoCodeEditorComponent, MagienoCodeEditorModule} from '@magieno/angular-code-editor';
 import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 import {MagienoAIModule} from '@magieno/angular-ai';
 import {MagienoCoreModule} from '@magieno/angular-core';
@@ -147,7 +147,7 @@ import {ChatComponent} from './pages/chat/chat.component';
     DragDropModule,
     MagienoDragAndDropComponent,
     MagienoBootstrapDropdownComponent,
-    MagienoCodeEditorComponent,
+    MagienoCodeEditorModule,
     MagienoCoreModule,
     MagienoAdvancedTableComponent,
     MagienoAIModule,
