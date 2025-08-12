@@ -33,7 +33,7 @@ export class ChatComponent extends BasePageComponent implements OnInit, OnDestro
   }
 
   onCancel() {
-    //this.conversationManager.cancel();
+    this.conversationManager.cancel();
   }
 
   protected readonly ConversationStateEnum = ConversationStateEnum;
