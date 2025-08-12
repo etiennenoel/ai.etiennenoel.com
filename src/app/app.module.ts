@@ -73,6 +73,7 @@ import {MagienoAIModule} from '@magieno/angular-ai';
 import {MagienoCoreModule} from '@magieno/angular-core';
 import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
 import {ChatComponent} from './pages/chat/chat.component';
+import {MagienoMediaModule} from '@magieno/angular-media';
 
 
 @NgModule({
@@ -149,6 +150,7 @@ import {ChatComponent} from './pages/chat/chat.component';
     MagienoBootstrapDropdownComponent,
     MagienoCodeEditorModule,
     MagienoCoreModule,
+    MagienoMediaModule,
     MagienoAdvancedTableComponent,
     MagienoAIModule,
     NgbTooltip,

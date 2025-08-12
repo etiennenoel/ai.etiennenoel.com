@@ -52,6 +52,10 @@
               {
                 "input": "node_modules/ace-builds/src/",
                 "glob": "theme-github_dark.js"
+              },
+              {
+                "glob": "pdf.worker.mjs",
+                "input": "node_modules/pdfjs-dist/build/"
               }
             ],
             "styles": [
