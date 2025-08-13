@@ -13,7 +13,12 @@
         </a>
       </li>
 
-
+      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Chat">
+        <a class="btn" [routerLink]="RouteEnum.Chat">
+          <i class="bi bi-chat-left"></i>
+          <span>Chat</span>
+        </a>
+      </li>
 <!--      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Home">-->
 <!--        <a class="btn" routerLink="/">-->
 <!--          <i class="bi bi-translate"></i>-->
@@ -173,12 +178,7 @@
         </ul>
       </li>
 
-      <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.Chat">
-        <a class="btn" [routerLink]="RouteEnum.Chat">
-          <i class="bi bi-chat-left"></i>
-          <span>Chat</span>
-        </a>
-      </li>
+
     </ul>
   </nav>
 
