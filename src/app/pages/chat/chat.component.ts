@@ -25,6 +25,9 @@ export class ChatComponent extends BasePageComponent implements OnInit, OnDestro
     public readonly conversationManager: ConversationManager,
   ) {
     super(document, title)
+
+    this.setTitle("Web AI Studio | AI Playground")
+
   }
 
   async onRun(options: PromptRunOptions) {
