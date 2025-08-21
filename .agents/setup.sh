@@ -7,7 +7,7 @@ cd ${current_file_location}/.. || exit
 
 echo "//npm.pkg.github.com/:_authToken=${NPM_READ_TOKEN}" >> .npmrc
 
-npm install
+npm ci
 
 npm run build
 
