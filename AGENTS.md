@@ -15,7 +15,10 @@ These are the most critical rules that you must follow at all times.
     A successful build with no errors is required before considering your task complete.
 4.  **No Test Files**: Do **NOT** write any unit tests (`.spec.ts` files). This project is for playground and prototyping purposes, and tests add unnecessary complexity. When generating components, use the `--skip-tests=true` flag, like so:
     `ng generate component MyComponent --standalone=false --skip-tests=true`
-
+5. Before committing, you must run the file 
+    ```bash
+   .agents/cleanup.sh
+    ```
 ---
 
 ##  Workflow & Procedures
