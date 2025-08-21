@@ -10,8 +10,7 @@ These are the most critical rules that you must follow at all times.
 2.  **Centralized Module Declarations**: Every new component, directive, or pipe **MUST** be explicitly imported and declared in the `declarations` array of the main `app.module.ts` file. Similarly, new services must be provided in the `providers` array if they are not provided in root.
 3.  **Mandatory Build Verification**: After making any changes, you **MUST** run the following commands in sequence to ensure the project installs dependencies and compiles successfully:
     ```bash
-    npm install
-    npm run build
+    .agents/setup.sh
     ```
     A successful build with no errors is required before considering your task complete.
 4.  **No Test Files**: Do **NOT** write any unit tests (`.spec.ts` files). This project is for playground and prototyping purposes, and tests add unnecessary complexity. When generating components, use the `--skip-tests=true` flag, like so:
