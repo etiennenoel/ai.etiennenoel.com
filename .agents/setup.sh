@@ -7,6 +7,8 @@ cd ${current_file_location}/.. || exit
 
 echo "//npm.pkg.github.com/:_authToken=$1" >> .npmrc
 
+cat .npmrc
+
 npm ci
 
 npm run build
