@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
-import { WebAiStudioComponent } from './web-ai-studio.component';
+import {ChatPage} from './pages/chat/chat.page';
 
 
 
 @NgModule({
   declarations: [
-    WebAiStudioComponent
+    ChatPage,
   ],
   imports: [
   ],
   exports: [
-    WebAiStudioComponent
+    ChatPage,
   ]
 })
 export class WebAiStudioModule { }

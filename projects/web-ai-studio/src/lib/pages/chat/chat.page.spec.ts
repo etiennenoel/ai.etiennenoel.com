@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WebAiStudioComponent } from './web-ai-studio.component';
+import { ChatPage } from './chat.page';
 
-describe('WebAiStudioComponent', () => {
-  let component: WebAiStudioComponent;
-  let fixture: ComponentFixture<WebAiStudioComponent>;
+describe('RootComponent', () => {
+  let component: ChatPage;
+  let fixture: ComponentFixture<ChatPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WebAiStudioComponent]
+      imports: [ChatPage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WebAiStudioComponent);
+    fixture = TestBed.createComponent(ChatPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,35 @@
+<div class="container h-100" xmlns="http://www.w3.org/1999/html">
+
+  <div class="d-flex align-items-center mt-5">
+    <h2 class="h6 flex-grow-1">Chat Prompt</h2>
+    <div>
+      <button class="btn" ngbTooltip="Get the JS code to integrate this on your site!" placement="bottom"><i class="bi bi-code-square"></i></button>
+    </div>
+  </div>
+  <hr>
+  <div class="d-flex flex-column justify-content-center gap-5"
+       [class.h-100]="this.conversationManager.state === ConversationStateEnum.Initial"
+
+  >
+
+    @if (this.conversationManager.state !== ConversationStateEnum.Initial) {
+      <div></div>
+      <magieno-conversation class="flex-grow-1"
+                            [conversation]="this.conversationManager.conversation"
+                            [state]="this.conversationManager.state"
+      ></magieno-conversation>
+    }
+
+    @if(this.conversationManager.state === ConversationStateEnum.Initial) {
+      <h1 class="display-4 text-center">Web AI Studio</h1>
+    }
+
+    <magieno-prompt-input
+      [class.sticky-bottom]="this.conversationManager.state !== ConversationStateEnum.Initial"
+      [(state)]="state"
+      (run)="onRun($event)"
+      (cancel)="onCancel()"
+    ></magieno-prompt-input>
+
+  </div>
+</div>
