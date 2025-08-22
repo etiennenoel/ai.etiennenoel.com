@@ -21,4 +21,5 @@ export enum RouteEnum {
 
   // Studio
   Chat = 'chat',
+  WebAiStudio = 'web-ai-studio',
 }

@@ -139,6 +139,10 @@ const routes: Routes = [
           path: "",
           component: LayoutComponent,
           children: layouts,
+        },
+        {
+          path: RouteEnum.WebAiStudio,
+          component: ChatPage,
         }
       ]
     },
