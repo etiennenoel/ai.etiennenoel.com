@@ -72,8 +72,8 @@ import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 import {MagienoAIModule} from '@magieno/angular-ai';
 import {MagienoCoreModule} from '@magieno/angular-core';
 import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
-import {ChatComponent} from './pages/chat/chat.component';
 import {MagienoMediaModule} from '@magieno/angular-media';
+import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-studio.module';
 
 
 @NgModule({
@@ -129,8 +129,6 @@ import {MagienoMediaModule} from '@magieno/angular-media';
 
     ImagePromptApiComponent,
 
-    ChatComponent,
-
     // Pipes
     EnumToSearchSelectDropdownOptionsPipe,
     EnumToMagienoDropdownItemsPipe,
@@ -154,6 +152,7 @@ import {MagienoMediaModule} from '@magieno/angular-media';
     MagienoAdvancedTableComponent,
     MagienoAIModule,
     NgbTooltip,
+    WebAiStudioModule,
   ],
   providers: [
     provideClientHydration(withEventReplay()),

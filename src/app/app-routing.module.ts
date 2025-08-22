@@ -27,7 +27,7 @@ import {PerformanceTestExecutionPage} from './pages/performance/performance-test
 import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
-import {ChatComponent} from './pages/chat/chat.component';
+import {ChatPage} from '../../projects/web-ai-studio/src/lib/pages/chat/chat.page';
 // @end
 
 const layouts: Routes = [
@@ -100,7 +100,7 @@ const layouts: Routes = [
   },
   {
     path: RouteEnum.Chat,
-    component: ChatComponent,
+    component: ChatPage,
   }
 ];
 
