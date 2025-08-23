@@ -2,5 +2,47 @@
   <div class="mt-3">
   <button class="btn btn-soft sidebar-icon"><i class="bi bi-list"></i></button>
   </div>
+
+  <div class="d-flex align-items-center mt-5 ms-3 me-3">
+    <h2 class="h6 flex-grow-1">Chat Prompt</h2>
+    <div class="d-flex align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <div><small>Local LLM status:</small></div>
+        <div><span
+          class="badge text-bg-secondary"
+          [class.text-bg-secondary]="this.languageModelAvailability === 'downloadable'"
+          [class.text-bg-danger]="this.languageModelAvailability === 'unavailable'"
+          [class.text-bg-success]="this.languageModelAvailability === 'available'"
+          [class.text-bg-primary]="this.languageModelAvailability === 'downloading'">{{ this.languageModelAvailability }}</span>
+        </div>
+      </div>
+      <button class="btn" ngbTooltip="Get the JS code to integrate this on your site!" placement="bottom"><i
+        class="bi bi-code-square"></i></button>
+    </div>
+  </div>
+  @if (this.languageModelAvailability && this.languageModelAvailability !== "available") {
+    <div class="alert"
+         [class.alert-warning]="languageModelAvailability === 'downloadable' || languageModelAvailability === 'downloading'"
+         [class.alert-danger]="languageModelAvailability === 'unavailable'"
+    >
+
+      <div>The Browser's LLM is not installed. Click here to trigger the download and installation in your
+        browser.
+      </div>
+
+      <div class="d-grid">
+        <button class="btn btn-primary mt-3" (click)="triggerDownload()">Trigger Local LLM Download</button>
+      </div>
+
+      @if (this.languageModelAvailability === "downloading" || progress !== 0) {
+        Download in progress:
+        <div class="progress mt-4" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0"
+             aria-valuemax="100">
+          <div class="progress-bar" [style.width]="progress * 100 + '%'"></div>
+        </div>
+      }
+    </div>
+  }
+  <hr class=" ms-3 me-3">
 </div>
 

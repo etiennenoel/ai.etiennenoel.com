@@ -15,6 +15,7 @@ import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 import { LayoutComponent } from './components/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TranslationPage } from './pages/translation/translation.page';
 
 
 
@@ -24,6 +25,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     LayoutComponent,
     HeaderComponent,
     SidebarComponent,
+    TranslationPage,
   ],
   imports: [
     BrowserModule,
