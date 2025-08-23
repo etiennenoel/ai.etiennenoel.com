@@ -1,0 +1,19 @@
+h1 {
+  font-size: 2.0rem;
+  font-weight: 200;
+}
+
+.nav-item {
+  border-radius: 12px;
+  .nav-link {
+    color: var(--bs-secondary-text-emphasis) !important;
+  }
+  font-size: 0.9rem;
+
+  &:hover {
+    background-color: var(--bs-light-bg-subtle)!important;
+    .nav-link {
+    color: var(--bs-emphasis-color)!important
+  }
+  }
+}

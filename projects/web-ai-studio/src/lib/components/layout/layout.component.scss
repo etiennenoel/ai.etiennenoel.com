@@ -1,0 +1,15 @@
+webai-studio-sidebar {
+  height: 100vh;
+  position: fixed;
+  width: 220px !important;
+
+  .collapsed {
+    width: 80px !important;
+  }
+
+  @media screen and (min-width: 992px) {
+    position: unset;
+    visibility: visible;
+    transform: none !important;
+  }
+}

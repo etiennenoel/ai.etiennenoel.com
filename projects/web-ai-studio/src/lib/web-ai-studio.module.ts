@@ -12,12 +12,18 @@ import {MagienoMediaModule} from '@magieno/angular-media';
 import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
 import {MagienoAIModule} from '@magieno/angular-ai';
 import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
+import { LayoutComponent } from './components/layout/layout.component';
+import { HeaderComponent } from './components/header/header.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 
 
 @NgModule({
   declarations: [
     ChatPage,
+    LayoutComponent,
+    HeaderComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

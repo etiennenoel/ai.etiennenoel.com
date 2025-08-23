@@ -28,6 +28,7 @@ import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-t
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
 import {ChatPage} from '../../projects/web-ai-studio/src/lib/pages/chat/chat.page';
+import {WebAiRoutes} from '../../projects/web-ai-studio/src/lib/web-ai-routes';
 // @end
 
 const layouts: Routes = [
@@ -141,8 +142,8 @@ const routes: Routes = [
           children: layouts,
         },
         {
-          path: RouteEnum.WebAiStudio,
-          component: ChatPage,
+          path: "web-ai-studio",
+          children: WebAiRoutes
         }
       ]
     },
