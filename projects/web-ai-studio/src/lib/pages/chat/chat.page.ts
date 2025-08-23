@@ -67,14 +67,18 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
       return;
     }
 
-    // @ts-expect-error
-    this.languageModelAvailability = await LanguageModel.availability({
-      expectedInputs: [
-        { type: "text", languages: ["en"] },
-        { type: "audio", languages: ["en"] },
-        { type: "image", languages: ["en"] },
-      ]
-    });
+    try {
+      // @ts-expect-error
+      this.languageModelAvailability = await LanguageModel.availability({
+        expectedInputs: [
+          { type: "text", languages: ["en"] },
+          { type: "audio", languages: ["en"] },
+          { type: "image", languages: ["en"] },
+        ]
+      });
+    } catch (e) {
+      this.languageModelAvailability = "unavailable";
+    }
   }
 
   async onRun(options: PromptRunOptions) {
