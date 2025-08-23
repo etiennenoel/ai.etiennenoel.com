@@ -37,7 +37,10 @@
       }
 
       @if (this.languageModelAvailability && this.languageModelAvailability !== "available") {
-        <div class="alert alert-warning">
+        <div class="alert"
+             [class.alert-warning]="languageModelAvailability === 'downloadable' || languageModelAvailability === 'downloading'"
+             [class.alert-danger]="languageModelAvailability === 'unavailable'"
+        >
 
           <div>The Browser's LLM is not installed. Click here to trigger the download and installation in your
             browser.

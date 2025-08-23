@@ -1,3 +1,7 @@
+:host {
+  background-color: rgba(var(--bs-tertiary-bg-rgb), var(--bs-bg-opacity, 1)) !important;
+}
+
 h1 {
   font-size: 2.0rem;
   font-weight: 200;
@@ -11,7 +15,8 @@ h1 {
   font-size: 0.9rem;
 
   &:hover {
-    background-color: var(--bs-light-bg-subtle)!important;
+    background-color: var(--bs-dark-bg-subtle) !important;
+    
     .nav-link {
     color: var(--bs-emphasis-color)!important
   }
