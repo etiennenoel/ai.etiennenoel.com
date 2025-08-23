@@ -1,9 +1,8 @@
 webai-studio-sidebar {
   height: 100vh;
   position: fixed;
-  width: 220px !important;
 
-  .collapsed {
+  &.collapsed {
     width: 80px !important;
   }
 

@@ -11,7 +11,7 @@ import {MagienoCoreModule} from '@magieno/angular-core';
 import {MagienoMediaModule} from '@magieno/angular-media';
 import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
 import {MagienoAIModule} from '@magieno/angular-ai';
-import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
+import {NgbOffcanvas, NgbOffcanvasModule, NgbTooltip, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import { LayoutComponent } from './components/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -40,7 +40,8 @@ import { TranslationPage } from './pages/translation/translation.page';
     MagienoMediaModule,
     MagienoAdvancedTableComponent,
     MagienoAIModule,
-    NgbTooltip,
+    NgbTooltipModule,
+    NgbOffcanvasModule,
   ],
   exports: [
     ChatPage,

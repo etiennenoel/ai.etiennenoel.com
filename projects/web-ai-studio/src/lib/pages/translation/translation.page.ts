@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'lib-translation',
   standalone: false,
   templateUrl: './translation.page.html',
-  styleUrl: './translation.page.css'
+  styleUrl: './translation.page.scss'
 })
 export class TranslationPage {
 }

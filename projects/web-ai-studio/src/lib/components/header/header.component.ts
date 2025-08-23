@@ -1,5 +1,7 @@
-import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
 import {isPlatformServer} from '@angular/common';
+import {NgbOffcanvas} from '@ng-bootstrap/ng-bootstrap';
+import {SidebarComponent} from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'webai-studio-header',
@@ -13,13 +15,21 @@ export class HeaderComponent implements OnInit {
 
   progress: number = 0;
 
+  @Input()
+  title: string = "";
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
+    protected readonly ngbOffcanvas: NgbOffcanvas
   ) {
   }
 
   async ngOnInit() {
     await this.checkAvailability()
+  }
+
+  openSidebar() {
+    this.ngbOffcanvas.open(SidebarComponent, { panelClass: 'w-auto' })
   }
 
   async triggerDownload() {
