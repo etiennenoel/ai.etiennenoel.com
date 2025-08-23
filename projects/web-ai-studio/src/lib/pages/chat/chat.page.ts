@@ -1,9 +1,10 @@
 import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DOCUMENT} from '@angular/common';
+import {DOCUMENT, isPlatformServer} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ConversationManager, ConversationStateEnum, PromptInputStateEnum, PromptRunOptions} from '@magieno/angular-ai';
 import {BasePage} from '../base-page';
+
 
 @Component({
   selector: 'page-chat',
@@ -13,6 +14,10 @@ import {BasePage} from '../base-page';
 })
 export class ChatPage extends BasePage implements OnInit, OnDestroy {
   state: PromptInputStateEnum = PromptInputStateEnum.Ready;
+
+  languageModelAvailability?: "unavailable" | "downloadable" | "downloading" | "available";
+
+  progress: number = 0;
 
   constructor(
     router: Router,
@@ -26,6 +31,50 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
 
     this.setTitle("Web AI Studio | AI Playground")
 
+  }
+
+  override async ngOnInit() {
+    super.ngOnInit();
+
+    await this.checkAvailability()
+  }
+
+  async triggerDownload() {
+    const self = this;
+
+    // @ts-expect-error
+    const session = await LanguageModel.create({
+      expectedInputs: [
+        { type: "text", languages: ["en"] },
+        { type: "audio", languages: ["en"] },
+        { type: "image", languages: ["en"] },
+      ],
+      monitor(m: any) {
+        m.addEventListener("downloadprogress", (e: any) => {
+          console.log(`Downloaded ${e.loaded * 100}%`);
+          self.progress = e.loaded;
+
+          self.checkAvailability();
+        });
+      },
+    })
+
+    await this.checkAvailability();
+  }
+
+  async checkAvailability() {
+    if(isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    // @ts-expect-error
+    this.languageModelAvailability = await LanguageModel.availability({
+      expectedInputs: [
+        { type: "text", languages: ["en"] },
+        { type: "audio", languages: ["en"] },
+        { type: "image", languages: ["en"] },
+      ]
+    });
   }
 
   async onRun(options: PromptRunOptions) {
