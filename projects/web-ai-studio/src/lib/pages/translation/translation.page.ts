@@ -112,7 +112,8 @@ export class TranslationPage {
       isPlatformServer(this.platformId) ||
       !("Translator" in self) ||
       !this.sourceLocale ||
-      !this.destinationLocale
+      !this.destinationLocale ||
+      this.sourceLocale === this.destinationLocale
     ) {
       return;
     }
@@ -146,6 +147,7 @@ export class TranslationPage {
       languagePacksDownload.status = 'completed';
     } catch (e) {
       languagePacksDownload.status = 'unavailable';
+      console.error(e);
     }
 
   }
