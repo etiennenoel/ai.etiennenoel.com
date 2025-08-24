@@ -6,14 +6,14 @@
       <ul class="nav nav-underline ms-3 flex-fill w-100">
         <li class="nav-item">
           @if(this.detectedLanguage) {
-            <button class="nav-link active" [class.active]="this.sourceLocale === undefined" aria-current="page" href="#">{{ this.detectedLanguage.language }} - Detected</button>
+            <button class="nav-link" (click)="onDetectLanguageClick()" [class.active]="this.sourceLocale === undefined" aria-current="page" href="#">{{ this.detectedLanguage.language }} - Detected</button>
           } @else {
-            <button class="nav-link active" [class.active]="this.sourceLocale === undefined" aria-current="page" href="#">Detect Language</button>
+            <button class="nav-link" (click)="onDetectLanguageClick()" [class.active]="this.sourceLocale === undefined" aria-current="page" href="#">Detect Language</button>
           }
         </li>
         @for (locale of recentSourceLocales | slice:0:2; track $index) {
           <li class="nav-item">
-            <button class="nav-link" href="#" [class.active]="sourceLocale?.code === locale.code">{{ locale.language }}</button>
+            <button class="nav-link" (click)="onRecentSourceLanguageClick(locale)" href="#" [class.active]="sourceLocale?.code === locale.code">{{ locale.language }}</button>
           </li>
         }
         <li class="nav-item dropdown">
@@ -21,9 +21,9 @@
             <i class="bi bi-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark">
-            <li><button class="dropdown-item" href="#">Action</button></li>
-            <li><button class="dropdown-item" href="#">Another action</button></li>
-            <li><button class="dropdown-item" href="#">Something else here</button></li>
+            @for (locale of locales; track locale.code) {
+              <li><button class="dropdown-item" type="button" (click)="onSourceLanguageSelect(locale)">{{ locale.language }}</button></li>
+            }
           </ul>
         </li>
       </ul>
@@ -33,7 +33,7 @@
       <ul class="nav nav-underline ms-3 flex-fill w-100">
         @for (locale of recentDestinationLocales | slice:0:2; track $index) {
           <li class="nav-item">
-            <button class="nav-link" href="#" [class.active]="destinationLocale?.code === locale.code">{{ locale.language }}</button>
+            <button class="nav-link" (click)="onRecentDestinationLanguageClick(locale)" href="#" [class.active]="destinationLocale?.code === locale.code">{{ locale.language }}</button>
           </li>
         }
         <li class="nav-item dropdown">
@@ -41,9 +41,9 @@
             <i class="bi bi-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark">
-            <li><button class="dropdown-item" href="#">Action</button></li>
-            <li><button class="dropdown-item" href="#">Another action</button></li>
-            <li><button class="dropdown-item" href="#">Something else here</button></li>
+            @for (locale of locales; track locale.code) {
+              <li><button class="dropdown-item" type="button" (click)="onDestinationLanguageSelect(locale)">{{ locale.language }}</button></li>
+            }
           </ul>
         </li>
       </ul>
