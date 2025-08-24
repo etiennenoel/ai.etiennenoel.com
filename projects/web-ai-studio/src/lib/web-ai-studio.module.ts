@@ -16,6 +16,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TranslationPage } from './pages/translation/translation.page';
+import { WritingAssistancePage } from './pages/writing-assistance/writing-assistance.page';
 
 
 
@@ -26,6 +27,7 @@ import { TranslationPage } from './pages/translation/translation.page';
     HeaderComponent,
     SidebarComponent,
     TranslationPage,
+    WritingAssistancePage,
   ],
   imports: [
     BrowserModule,

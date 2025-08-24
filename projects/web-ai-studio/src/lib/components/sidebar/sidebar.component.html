@@ -11,7 +11,7 @@
       <a class="nav-link"  [routerLink]="getRouterLink(RouteEnum.Translation)"><i class="bi bi-translate me-1"></i> Translation</a>
     </li>
     <li class="nav-item" [class.active]="routeEnum === RouteEnum.WritingAssistance">
-      <a class="nav-link position-relative" [routerLink]="getRouterLink(RouteEnum.Chat)">
+      <a class="nav-link position-relative" [routerLink]="getRouterLink(RouteEnum.WritingAssistance)">
         <i class="bi bi-pencil-square me-1"></i>
         Writing Assistance
         <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
@@ -19,6 +19,7 @@
         </span>
       </a>
     </li>
+
     <li class="nav-item" [class.active]="routeEnum === RouteEnum.MediaGeneration">
       <a class="nav-link position-relative" [routerLink]="getRouterLink(RouteEnum.Chat)"><i class="bi bi-chat-left-heart me-1"></i> Media Generation
         <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
