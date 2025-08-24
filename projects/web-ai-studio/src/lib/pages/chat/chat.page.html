@@ -18,12 +18,9 @@
           class="bi bi-code-square"></i></button>
       </div>
     </div>
-    @if (this.languageModelAvailability && this.languageModelAvailability !== "available") {
-      <div class="alert"
-           [class.alert-warning]="languageModelAvailability === 'downloadable' || languageModelAvailability === 'downloading'"
-           [class.alert-danger]="languageModelAvailability === 'unavailable'"
+    @if (this.languageModelAvailability === "downloadable" || this.languageModelAvailability === "downloading") {
+      <div class="alert alert-warning"
       >
-
         <div>The Browser's LLM is not installed. Click here to trigger the download and installation in your
           browser.
         </div>
@@ -40,6 +37,8 @@
           </div>
         }
       </div>
+    } @else if (this.languageModelAvailability === "unavailable") {
+      <div class="alert alert-danger">The "Prompt API" is not available. Make sure you are using a compatible hardware or browser. <a href="https://developer.chrome.com/docs/ai/prompt-api#hardware-requirements">See more details</a></div>
     }
   </webai-studio-header>
 
