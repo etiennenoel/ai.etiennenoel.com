@@ -18,7 +18,7 @@ export class TranslationPage {
 
   protected sourceLocale?: LocaleInterface;
 
-  protected destinationLocale?: LocaleInterface;
+  protected destinationLocale?: LocaleInterface = LOCALES_MAP['es'];
 
   protected recentSourceLocales: LocaleInterface[] = [
     LOCALES_MAP['fr'],
