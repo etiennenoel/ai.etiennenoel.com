@@ -90,6 +90,23 @@ export class TranslationPage {
     this.setupTranslator();
   }
 
+  onSwapLanguagesClick(): void {
+    const source = this.sourceLocale;
+    const dest = this.destinationLocale;
+
+    if (dest) {
+      this.onSourceLanguageSelect(dest);
+    } else {
+      this.onDetectLanguageClick();
+    }
+
+    if (source) {
+      this.onDestinationLanguageSelect(source);
+    } else {
+      this.destinationLocale = undefined;
+    }
+  }
+
   async setupTranslator() {
     if(
       isPlatformServer(this.platformId) ||
