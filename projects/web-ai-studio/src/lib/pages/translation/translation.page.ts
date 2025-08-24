@@ -55,4 +55,21 @@ export class TranslationPage {
       ...this.recentDestinationLocales.filter(l => l.code !== locale.code)
     ].slice(0, 3);
   }
+
+  onSwapLanguagesClick(): void {
+    const source = this.sourceLocale;
+    const dest = this.destinationLocale;
+
+    if (dest) {
+      this.onSourceLanguageSelect(dest);
+    } else {
+      this.onDetectLanguageClick();
+    }
+
+    if (source) {
+      this.onDestinationLanguageSelect(source);
+    } else {
+      this.destinationLocale = undefined;
+    }
+  }
 }
