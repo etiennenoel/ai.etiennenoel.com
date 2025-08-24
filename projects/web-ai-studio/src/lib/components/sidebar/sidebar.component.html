@@ -24,7 +24,20 @@
         <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
           Soon</span>
       </a>
-      
+
+    </li>
+    <li class="nav-item" [class.active]="routeEnum === RouteEnum.Build">
+      <a class="nav-link position-relative" [routerLink]="getRouterLink(RouteEnum.Chat)"><i class="bi bi-puzzle"></i> Build
+        <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
+          Soon</span>
+      </a>
+
+    </li>
+    <li class="nav-item" [class.active]="routeEnum === RouteEnum.Demos">
+      <a class="nav-link position-relative" [routerLink]="getRouterLink(RouteEnum.Chat)"><i class="bi bi-display"></i> Demos
+        <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
+          Soon</span>
+      </a>
     </li>
   </ul>
 </div>
