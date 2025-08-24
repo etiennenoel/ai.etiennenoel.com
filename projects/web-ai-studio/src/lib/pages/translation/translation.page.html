@@ -117,17 +117,17 @@
     </div>
 
     <div class="d-flex flex-row gap-3">
-      <textarea class="form-control flex-grow-1 w-100" rows="8"></textarea>
+      <textarea class="form-control flex-grow-1 w-100" rows="8" [formControl]="textareaFormControl"></textarea>
       <div class="card bg-body-secondary flex-grow-1 w-100">
         <div class="card-body">
-
+          {{ this.translatedText }}
         </div>
 
       </div>
     </div>
 
     <div class="d-grid mt-3">
-      <button class="btn btn-primary btn-lg">Translate</button>
+      <button class="btn btn-primary btn-lg" (click)="translate()">Translate</button>
     </div>
   </div>
 

@@ -3,6 +3,7 @@ import {LocaleInterface} from '../../interfaces/locale.interface';
 import {LOCALES} from '../../constants/locales.constant';
 import {LOCALES_MAP} from '../../constants/locales-map.constant';
 import {isPlatformServer} from '@angular/common';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'lib-translation',
@@ -33,6 +34,10 @@ export class TranslationPage {
 
   // @ts-expect-error
   translator: Translator;
+
+  textareaFormControl = new FormControl('');
+
+  translatedText = '';
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: Object){
   }
@@ -118,14 +123,18 @@ export class TranslationPage {
       return;
     }
 
+    await this.createTranslator(this.sourceLocale, this.destinationLocale)
+  }
+
+  async createTranslator(sourceLocale: LocaleInterface, targetLocale: LocaleInterface) {
     const languagePacksDownload: {
       sourceLocale: LocaleInterface;
       destinationLocale: LocaleInterface;
       progress: number;
       status: "downloading" | "completed" | "unavailable";
     } = {
-      sourceLocale: this.sourceLocale!,
-      destinationLocale: this.destinationLocale!,
+      sourceLocale: sourceLocale,
+      destinationLocale: targetLocale,
       progress: 0,
       status: 'downloading'
     }
@@ -135,8 +144,8 @@ export class TranslationPage {
     try {
       // @ts-expect-error
       this.translator = await Translator.create({
-        sourceLanguage: this.sourceLocale?.code,
-        targetLanguage: this.destinationLocale?.code,
+        sourceLanguage: sourceLocale.code,
+        targetLanguage: targetLocale.code,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             languagePacksDownload.progress = e.loaded;
@@ -149,7 +158,31 @@ export class TranslationPage {
       languagePacksDownload.status = 'unavailable';
       console.error(e);
     }
-
   }
 
+  async translate() {
+    if(!this.destinationLocale) {
+      return;
+    }
+
+    if(!this.sourceLocale) {
+      // Use the language detector API to find the locale.
+      // @ts-expect-error
+      const detector = await LanguageDetector.create();
+
+      const locales = await detector.detect(this.textareaFormControl.value);
+      console.log(locales);
+
+      if(locales[0].detectedLanguage === 'und') {
+        return; // todo: add a visual error.
+      }
+
+      this.detectedLanguage = LOCALES_MAP[locales[0].detectedLanguage];
+
+      await this.createTranslator(this.detectedLanguage, this.destinationLocale);
+    }
+
+    // @ts-expect-error
+    this.translatedText = await this.translator.translate(this.textareaFormControl.value);
+  }
 }
