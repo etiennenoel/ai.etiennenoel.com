@@ -26,7 +26,7 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
   ) {
     super(document, title)
 
-    this.setTitle("Web AI Studio")
+    this.setTitle("Chat")
 
   }
 
