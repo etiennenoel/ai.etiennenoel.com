@@ -1,7 +1,8 @@
-import {Component, Inject, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnInit, Optional, PLATFORM_ID} from '@angular/core';
 import {BaseComponent} from '../base.component';
 import {DOCUMENT, isPlatformServer} from '@angular/common';
 import {RouteEnum} from '../../enums/route.enum';
+import {WEBAI_STUDIO_BASE_URL} from '../../tokens/base-url.token';
 
 @Component({
   selector: 'webai-studio-sidebar',
@@ -15,6 +16,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   constructor(@Inject(DOCUMENT) document: Document,
               @Inject(PLATFORM_ID) private platformId: Object,
+              @Optional() @Inject(WEBAI_STUDIO_BASE_URL) private readonly baseUrl?: string,
   ) {
     super(document)
   }
@@ -33,7 +35,11 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.determineCurrentActiveRoute((new URL(event.destination.url)).pathname);
     });
   }
-  
+
+  getRouterLink(route: RouteEnum) {
+    return this.baseUrl + route;
+  }
+
   determineCurrentActiveRoute(pathname: string) {
     const pathParts = pathname.split("/");
 

@@ -3,12 +3,12 @@
 
   <ul class="nav flex-column mt-3 gap-1">
     <li class="nav-item" [class.active]="routeEnum === RouteEnum.Chat">
-      <a class="nav-link" routerLink="./">
+      <a class="nav-link" [routerLink]="getRouterLink(RouteEnum.Chat)">
         <i class="bi bi-chat-left me-1"></i>
         Chat</a>
     </li>
     <li class="nav-item" [class.active]="routeEnum === RouteEnum.Translation">
-      <a class="nav-link" routerLink="./translation"><i class="bi bi-translate me-1"></i> Translation</a>
+      <a class="nav-link"  [routerLink]="getRouterLink(RouteEnum.Translation)"><i class="bi bi-translate me-1"></i> Translation</a>
     </li>
     <li class="nav-item" [class.active]="routeEnum === RouteEnum.WritingAssistance">
       <a class="nav-link" href="#"><i class="bi bi-pencil-square me-1"></i> Writing Assistance</a>

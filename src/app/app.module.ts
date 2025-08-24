@@ -74,6 +74,7 @@ import {MagienoCoreModule} from '@magieno/angular-core';
 import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
 import {MagienoMediaModule} from '@magieno/angular-media';
 import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-studio.module';
+import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens/base-url.token';
 
 
 @NgModule({
@@ -179,6 +180,11 @@ import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-stu
 
     PerformanceTestManager,
     SummarizerHeadlineSmallTestExecutor,
+
+    {
+      provide: WEBAI_STUDIO_BASE_URL,
+      useValue: "/web-ai-studio"
+    }
   ],
   bootstrap: [RootComponent]
 })
