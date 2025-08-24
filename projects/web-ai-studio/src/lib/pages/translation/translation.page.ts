@@ -10,6 +10,8 @@ import {LOCALES_MAP} from '../../constants/locales-map.constant';
   styleUrl: './translation.page.scss'
 })
 export class TranslationPage {
+  protected readonly locales = LOCALES;
+
   protected detectedLanguage?:LocaleInterface;
 
   protected sourceLocale?: LocaleInterface;
@@ -25,4 +27,32 @@ export class TranslationPage {
     LOCALES_MAP['es'],
     LOCALES_MAP['pt'],
   ];
+
+  onDetectLanguageClick(): void {
+    this.sourceLocale = undefined;
+  }
+
+  onRecentSourceLanguageClick(locale: LocaleInterface): void {
+    this.sourceLocale = locale;
+  }
+
+  onRecentDestinationLanguageClick(locale: LocaleInterface): void {
+    this.destinationLocale = locale;
+  }
+
+  onSourceLanguageSelect(locale: LocaleInterface): void {
+    this.sourceLocale = locale;
+    this.recentSourceLocales = [
+      locale,
+      ...this.recentSourceLocales.filter(l => l.code !== locale.code)
+    ].slice(0, 3);
+  }
+
+  onDestinationLanguageSelect(locale: LocaleInterface): void {
+    this.destinationLocale = locale;
+    this.recentDestinationLocales = [
+      locale,
+      ...this.recentDestinationLocales.filter(l => l.code !== locale.code)
+    ].slice(0, 3);
+  }
 }
