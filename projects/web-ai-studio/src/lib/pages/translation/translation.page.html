@@ -1,5 +1,10 @@
 <div class="container-fluid h-100 d-flex flex-column" xmlns="http://www.w3.org/1999/html">
-  <webai-studio-header title="Translation"></webai-studio-header>
+  <webai-studio-header>
+    <div class="d-flex align-items-center mt-5 ms-3 me-3">
+      <h2 class="h6 flex-grow-1">Translation</h2>
+    </div>
+    
+  </webai-studio-header>
 
   <div class="container">
     <div class="d-flex flex-row gap-3 align-items-center">
@@ -17,7 +22,7 @@
           </li>
         }
         <li class="nav-item dropdown">
-          <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-soft dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark">
@@ -28,7 +33,7 @@
         </li>
       </ul>
       <div class="ms-2">
-        <button class="btn btn-dark"><i class="bi bi-arrow-left-right"></i></button>
+        <button class="btn btn-soft"><i class="bi bi-arrow-left-right"></i></button>
       </div>
       <ul class="nav nav-underline ms-3 flex-fill w-100">
         @for (locale of recentDestinationLocales | slice:0:2; track $index) {
@@ -37,7 +42,7 @@
           </li>
         }
         <li class="nav-item dropdown">
-          <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-soft dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-chevron-down"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark">

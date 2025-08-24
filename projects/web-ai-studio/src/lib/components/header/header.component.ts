@@ -11,13 +11,6 @@ import {SidebarComponent} from '../sidebar/sidebar.component';
 })
 export class HeaderComponent implements OnInit {
 
-  languageModelAvailability?: "unavailable" | "downloadable" | "downloading" | "available";
-
-  progress: number = 0;
-
-  @Input()
-  title: string = "";
-
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     protected readonly ngbOffcanvas: NgbOffcanvas
@@ -25,52 +18,11 @@ export class HeaderComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.checkAvailability()
+
   }
 
   openSidebar() {
     this.ngbOffcanvas.open(SidebarComponent, { panelClass: 'w-auto' })
   }
 
-  async triggerDownload() {
-    const self = this;
-
-    // @ts-expect-error
-    const session = await LanguageModel.create({
-      expectedInputs: [
-        { type: "text", languages: ["en"] },
-        { type: "audio", languages: ["en"] },
-        { type: "image", languages: ["en"] },
-      ],
-      monitor(m: any) {
-        m.addEventListener("downloadprogress", (e: any) => {
-          console.log(`Downloaded ${e.loaded * 100}%`);
-          self.progress = e.loaded;
-
-          self.checkAvailability();
-        });
-      },
-    })
-
-    await this.checkAvailability();
-  }
-
-  async checkAvailability() {
-    if(isPlatformServer(this.platformId)) {
-      return;
-    }
-
-    try {
-      // @ts-expect-error
-      this.languageModelAvailability = await LanguageModel.availability({
-        expectedInputs: [
-          { type: "text", languages: ["en"] },
-          { type: "audio", languages: ["en"] },
-          { type: "image", languages: ["en"] },
-        ]
-      });
-    } catch (e) {
-      this.languageModelAvailability = "unavailable";
-    }
-  }
 }
