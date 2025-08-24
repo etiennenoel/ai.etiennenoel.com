@@ -9,7 +9,8 @@
 
           <button class="btn  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Language Packs Download: <span
-            class="badge text-bg-secondary"
+            class="badge"
+            [class.text-bg-secondary]="downloadStatus === 'idle'"
             [class.text-bg-primary]="downloadStatus === 'downloading'"
             [class.text-bg-danger]="downloadStatus === 'unavailable'"
             [class.text-bg-success]="downloadStatus === 'completed'">{{ downloadStatus }}</span>
@@ -31,7 +32,7 @@
                   </div>
 
                   <span
-                    class="badge text-bg-secondary"
+                    class="badge"
                     [class.text-bg-primary]="languagePackDownload.status === 'downloading'"
                     [class.text-bg-danger]="languagePackDownload.status === 'unavailable'"
                     [class.text-bg-success]="languagePackDownload.status === 'completed'">{{ languagePackDownload.status }}</span>
