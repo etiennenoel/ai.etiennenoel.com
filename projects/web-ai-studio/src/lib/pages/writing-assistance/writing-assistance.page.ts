@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ConversationStateEnum} from '@magieno/angular-ai';
 
 @Component({
   selector: 'webai-studio-writing-assistance',
@@ -8,4 +9,5 @@ import { Component } from '@angular/core';
 })
 export class WritingAssistancePage {
 
+  protected readonly ConversationStateEnum = ConversationStateEnum;
 }
