@@ -67,6 +67,7 @@ export class AudioVisualizerService {
     const self = this;
     requestAnimationFrame(() => self.draw());
 
+    // @ts-expect-error
     this.analyser.getByteTimeDomainData(this.dataArray);
 
     canvasCtx.fillStyle = "rgb(237,237,237)";
