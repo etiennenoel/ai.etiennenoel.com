@@ -7,12 +7,13 @@ import {
   OnInit,
   Output,
   PLATFORM_ID,
-  SimpleChanges
+  SimpleChanges,
+  DOCUMENT
 } from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../../enums/task-status.enum';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {BaseComponent} from '../../../components/base/base.component';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';

@@ -2,29 +2,29 @@
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button d-flex gap-2"
-              type="button"
-              data-bs-target="#collapseOutput" aria-expanded="false" aria-controls="collapseOutput"
-              (click)="outputCollapsed = !outputCollapsed"
-              [class.collapsed]="outputCollapsed"
-              [class.bg-light-subtle]="status === TaskStatus.Idle"
-              [class.bg-primary-subtle]="status === TaskStatus.Executing"
-              [class.bg-success-subtle]="status === TaskStatus.Completed"
-              [class.bg-danger-subtle]="status === TaskStatus.Error"
-      >
+        type="button"
+        data-bs-target="#collapseOutput" aria-expanded="false" aria-controls="collapseOutput"
+        (click)="outputCollapsed = !outputCollapsed"
+        [class.collapsed]="outputCollapsed"
+        [class.bg-light-subtle]="status === TaskStatus.Idle"
+        [class.bg-primary-subtle]="status === TaskStatus.Executing"
+        [class.bg-success-subtle]="status === TaskStatus.Completed"
+        [class.bg-danger-subtle]="status === TaskStatus.Error"
+        >
         <i class="bi bi-terminal"></i>
 
         <div class="flex-grow-1">Output</div>
 
         <span class="badge"
-              [class.text-bg-secondary]="status === TaskStatus.Idle"
-              [class.text-bg-primary]="status === TaskStatus.Executing"
-              [class.text-bg-success]="status === TaskStatus.Completed"
-              [class.text-bg-danger]="status === TaskStatus.Error"
+          [class.text-bg-secondary]="status === TaskStatus.Idle"
+          [class.text-bg-primary]="status === TaskStatus.Executing"
+          [class.text-bg-success]="status === TaskStatus.Completed"
+          [class.text-bg-danger]="status === TaskStatus.Error"
         >{{ status }}</span>
       </button>
     </h2>
     <div id="collapseOutput" class="accordion-collapse" [class.collapse]="outputCollapsed"
-         data-bs-parent="#collapseOutput">
+      data-bs-parent="#collapseOutput">
       <div class="accordion-body p-0">
         <div class="mt-1 p-3">
 
@@ -34,18 +34,20 @@
           }
 
           <div>{{ this.output }}
-            <button class="btn btn-link" *ngIf="this.output != ''" (click)="copyToClipboard(this.output)"><i
+            @if (this.output != '') {
+              <button class="btn btn-link" (click)="copyToClipboard(this.output)"><i
               class="bi bi-copy"></i></button>
+            }
           </div>
 
           @if (outputChunks.length > 0 && status !== TaskStatus.Idle) {
 
             <table class="table mt-3">
               <thead>
-              <tr>
-                <th>#</th>
-                <th>Chunk</th>
-              </tr>
+                <tr>
+                  <th>#</th>
+                  <th>Chunk</th>
+                </tr>
               </thead>
               <tbody>
 
@@ -69,7 +71,7 @@
             <div class="flex-grow-1 me-4">
               <h6 class="mt-0">Model download:</h6>
               <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0"
-                   aria-valuemin="0" aria-valuemax="100">
+                aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-bar" [style.width]="getDownloadProgress() + '%'">{{ getDownloadProgress() }}%</div>
               </div>
             </div>
@@ -89,18 +91,18 @@
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button d-flex gap-2"
-              type="button"
-              data-bs-target="#statisticsCollapsed" aria-expanded="false" aria-controls="statisticsCollapsed"
-              (click)="this.toggleStatisticsCollapse()"
-              [class.collapsed]="statisticsCollapsed"
-      >
+        type="button"
+        data-bs-target="#statisticsCollapsed" aria-expanded="false" aria-controls="statisticsCollapsed"
+        (click)="this.toggleStatisticsCollapse()"
+        [class.collapsed]="statisticsCollapsed"
+        >
         <i class="bi bi-graph-up"></i>
 
         <div class="flex-grow-1">Statistics</div>
       </button>
     </h2>
     <div id="statisticsCollapsed" class="accordion-collapse" [class.collapse]="statisticsCollapsed"
-         data-bs-parent="#statisticsCollapsed">
+      data-bs-parent="#statisticsCollapsed">
       <div class="accordion-body p-0">
         <div class="mt-1 p-3">
           <app-execution-performance [executionPerformanceResult]="executionPerformanceResult"></app-execution-performance>

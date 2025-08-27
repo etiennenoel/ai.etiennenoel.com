@@ -6,7 +6,8 @@ import {
   Input,
   OnChanges, OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  DOCUMENT
 } from '@angular/core';
 import {TaskStatus} from '../../enums/task-status.enum';
 import {ToastStore} from '../../stores/toast.store';
@@ -14,7 +15,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {BaseComponent} from '../base/base.component';
 import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
 import {ExecutionPerformanceResultModel} from '../../models/execution-performance-result.model';
-import {DOCUMENT} from '@angular/common';
+
 
 @Component({
   selector: 'app-output',

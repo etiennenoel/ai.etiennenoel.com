@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild, DOCUMENT} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
-import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
+import {isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {BaseComponent} from '../base/base.component';
 import {FormControl} from '@angular/forms';
 import {AudioRecordingService} from '../../services/audio-recording.service';

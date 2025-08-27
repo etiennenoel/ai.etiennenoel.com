@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild, DOCUMENT} from '@angular/core';
 import {BasePageComponent} from '../../../components/base/base-page.component';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {TaskStatus} from '../../../enums/task-status.enum';

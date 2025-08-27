@@ -1,6 +1,6 @@
-import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {isPlatformServer} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {ConversationManager, ConversationStateEnum, PromptInputStateEnum, PromptRunOptions} from '@magieno/angular-ai';
 import {BasePage} from '../base-page';

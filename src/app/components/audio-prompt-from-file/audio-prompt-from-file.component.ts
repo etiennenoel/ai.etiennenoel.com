@@ -1,7 +1,7 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
-import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {isPlatformServer} from '@angular/common';
 import {BaseComponent} from '../base/base.component';
 import {FormControl} from '@angular/forms';
 

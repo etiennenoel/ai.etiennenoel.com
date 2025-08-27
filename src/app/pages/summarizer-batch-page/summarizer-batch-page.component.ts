@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {DOCUMENT} from '@angular/common';
+import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, DOCUMENT} from '@angular/core';
+
 import {TaskStatus} from '../../enums/task-status.enum';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';

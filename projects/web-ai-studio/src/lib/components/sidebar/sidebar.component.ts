@@ -1,6 +1,6 @@
-import {Component, Inject, OnInit, Optional, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnInit, Optional, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {BaseComponent} from '../base.component';
-import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {isPlatformServer} from '@angular/common';
 import {RouteEnum} from '../../enums/route.enum';
 import {WEBAI_STUDIO_BASE_URL} from '../../tokens/base-url.token';
 

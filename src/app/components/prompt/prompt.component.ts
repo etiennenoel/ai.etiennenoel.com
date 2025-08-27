@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Inject, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnChanges, Output, SimpleChanges, DOCUMENT} from '@angular/core';
 import {RouterOutlet} from "@angular/router";
 import {TaskStatus} from '../../enums/task-status.enum';
 import {FormControl, FormGroup} from '@angular/forms';
 import {SearchSelectDropdownOptionsInterface} from '../../interfaces/search-select-dropdown-options.interface';
 import {PromptInterface} from './prompt.interface';
 import {BaseComponent} from '../base/base.component';
-import {DOCUMENT} from '@angular/common';
+
 
 @Component({
   selector: 'app-prompt',

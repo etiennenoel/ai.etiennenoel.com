@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {MediaInformationInterface} from './media-information.interface';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
 import {LocaleEnum} from '../../../enums/locale.enum';
 import {ActivatedRoute, Router} from '@angular/router';

@@ -1,6 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, DOCUMENT} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {DOCUMENT} from '@angular/common';
+
 import {Title} from '@angular/platform-browser';
 import {BasePageComponent} from '../../components/base/base-page.component';
 import {TaskStatus} from '../../enums/task-status.enum';

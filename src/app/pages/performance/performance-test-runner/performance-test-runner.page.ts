@@ -1,7 +1,7 @@
-import {Component, Inject, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {PerformanceTestSeriesEnum} from '../../../../performance-test/enums/performance-test-series.enum';
 import {BasePageComponent} from '../../../components/base/base-page.component';
-import {DOCUMENT} from '@angular/common';
+
 import {ActivatedRoute, Router} from '@angular/router';
 import {PerformanceResultManager} from '../../../managers/performance-result.manager';
 import {Title} from '@angular/platform-browser';

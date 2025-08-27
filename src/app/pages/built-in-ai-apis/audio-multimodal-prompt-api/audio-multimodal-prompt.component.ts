@@ -1,8 +1,8 @@
-import {Component, Inject, Input, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, Input, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {BasePageComponent} from '../../../components/base/base-page.component';
 import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser, isPlatformServer} from '@angular/common';
+import {isPlatformBrowser, isPlatformServer} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
 import {FormControl} from '@angular/forms';

@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID} from '@angular/core';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, DOCUMENT} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
 import {AvailabilityStatusEnum} from '../../../enums/availability-status.enum';
 import {LocaleEnum} from '../../../enums/locale.enum';

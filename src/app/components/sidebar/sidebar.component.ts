@@ -1,6 +1,6 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit, DOCUMENT} from '@angular/core';
 import {BaseComponent} from '../base/base.component';
-import {DOCUMENT} from '@angular/common';
+
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {RouteEnum} from '../../enums/route.enum';
 import {Environment} from '../../environments/environment';

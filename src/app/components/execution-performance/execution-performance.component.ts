@@ -8,7 +8,8 @@ import {
   OnInit,
   PLATFORM_ID,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  DOCUMENT
 } from '@angular/core';
 import {PerformanceMetricEnum} from '../../enums/performance-metric.enum';
 import {
@@ -24,7 +25,7 @@ import {
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
 import {BaseComponent} from '../base/base.component';
-import {DOCUMENT, isPlatformServer} from '@angular/common';
+import {isPlatformServer} from '@angular/common';
 import {ExecutionPerformanceManager} from '../../managers/execution-performance.manager';
 import {ExecutionPerformanceResultModel} from '../../models/execution-performance-result.model';
 import {ToastStore} from '../../stores/toast.store';

@@ -8,11 +8,12 @@ import {
   OnInit,
   Output,
   PLATFORM_ID, ViewChild,
-  viewChild
+  viewChild,
+  DOCUMENT
 } from '@angular/core';
 import {TaskStatus} from '../../../enums/task-status.enum';
 import {RequirementStatus} from '../../../enums/requirement-status.enum';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {FormControl} from '@angular/forms';
 import {BaseWritingAssistanceApiComponent} from '../../../components/base-writing-assistance-api/base-writing-assistance-api.component';
 import {TextUtils} from '../../../utils/text.utils';

@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {TaskStatus} from "../../../enums/task-status.enum";
 import {RequirementStatus} from "../../../enums/requirement-status.enum";
@@ -12,7 +12,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Step2} from './interfaces/step-2.interface';
 import {SearchSelectDropdownOptionsInterface} from '../../../interfaces/search-select-dropdown-options.interface';
 import {Title} from '@angular/platform-browser';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import {isPlatformBrowser} from '@angular/common';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
