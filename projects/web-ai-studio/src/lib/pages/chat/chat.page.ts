@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angu
 import {ActivatedRoute, Router} from '@angular/router';
 import {isPlatformServer} from '@angular/common';
 import {Title} from '@angular/platform-browser';
-import {ConversationManager, ConversationStateEnum, PromptInputStateEnum, PromptRunOptions} from '@magieno/angular-ai';
+import {ConversationManager, InferenceStateEnum, PromptInputStateEnum, PromptRunOptions} from '@magieno/angular-ai';
 import {BasePage} from '../base-page';
 
 
@@ -14,7 +14,6 @@ import {BasePage} from '../base-page';
 })
 export class ChatPage extends BasePage implements OnInit, OnDestroy {
   state: PromptInputStateEnum = PromptInputStateEnum.Ready;
-
 
   languageModelAvailability?: "unavailable" | "downloadable" | "downloading" | "available";
 
@@ -30,7 +29,6 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
     super(document, title)
 
     this.setTitle("Chat")
-
   }
 
   override async ngOnInit() {
@@ -47,7 +45,6 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
   onCancel() {
     this.conversationManager.cancel();
   }
-
 
   async triggerDownload() {
     const self = this;
@@ -91,5 +88,5 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
     }
   }
 
-  protected readonly ConversationStateEnum = ConversationStateEnum;
+  protected readonly InferenceStateEnum = InferenceStateEnum;
 }

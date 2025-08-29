@@ -6,13 +6,13 @@
       <div class="d-flex align-items-center gap-2">
         <div class="d-flex align-items-center gap-2">
           <div><small>Local LLM status:</small></div>
-          <!--          <div><span-->
-          <!--            class="badge text-bg-secondary"-->
-          <!--            [class.text-bg-secondary]="this.languageModelAvailability === 'downloadable'"-->
-          <!--            [class.text-bg-danger]="this.languageModelAvailability === 'unavailable'"-->
-          <!--            [class.text-bg-success]="this.languageModelAvailability === 'available'"-->
-          <!--            [class.text-bg-primary]="this.languageModelAvailability === 'downloading'">{{ this.languageModelAvailability }}</span>-->
-          <!--          </div>-->
+          <div><span
+            class="badge text-bg-secondary"
+            [class.text-bg-secondary]="this.languageModelAvailability === 'downloadable'"
+            [class.text-bg-danger]="this.languageModelAvailability === 'unavailable'"
+            [class.text-bg-success]="this.languageModelAvailability === 'available'"
+            [class.text-bg-primary]="this.languageModelAvailability === 'downloading'">{{ this.languageModelAvailability }}</span>
+          </div>
         </div>
         <button class="btn" ngbTooltip="Get the JS code to integrate this on your site!" placement="bottom"><i
           class="bi bi-code-square"></i></button>
@@ -22,23 +22,24 @@
   <div class="container flex-grow-1" style="    height: calc(100vh - 120px);">
     <div class="d-flex flex-column justify-content-center gap-5 h-100 ">
 
-      <!--        @if (this.conversationManager.state !== ConversationStateEnum.Initial) {-->
-      <!--          <magieno-conversation class="flex-grow-1"-->
-      <!--                                [conversation]="this.conversationManager.conversation"-->
-      <!--                                [state]="this.conversationManager.state"-->
-      <!--                                style="height: calc(100vh - 190px); overflow:auto;"-->
-      <!--          ></magieno-conversation>-->
-      <!--        }-->
+      @if (this.manager.state !== InferenceStateEnum.Initial) {
+        <magieno-conversation class="flex-grow-1"
+                              [conversation]="this.manager.conversation"
+                              [state]="this.manager.state"
+                              style="height: calc(100vh - 190px); overflow:auto;"
+        ></magieno-conversation>
+      }
 
-      <!--        @if (this.conversationManager.state === ConversationStateEnum.Initial) {-->
-      <!--          <h1 class="display-4 text-center">Web AI Studio</h1>-->
-      <!--        }-->
+      @if (this.manager.state === InferenceStateEnum.Initial) {
+        <h1 class="display-4 text-center">Web AI Studio</h1>
+      }
 
-      <h1 class="display-4 text-center position-relative">Web AI Studio        <span class="position-absolute top-0 start-75 translate-middle badge rounded-pill bg-warning">
-        WIP
-        </span></h1>
-
-      <magieno-writing-assistance-input></magieno-writing-assistance-input>
+      <magieno-writing-assistance-input
+        (apiSelection)="this.apiSelected($event)"
+        (run)="run($event)"
+        [(state)]="this.state"
+        (cancel)="onCancel()"
+      ></magieno-writing-assistance-input>
 
     </div>
   </div>
