@@ -75,6 +75,7 @@ import {MagienoAdvancedTableComponent} from '@magieno/angular-advanced-table';
 import {MagienoMediaModule} from '@magieno/angular-media';
 import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-studio.module';
 import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens/base-url.token';
+import { RedirectComponent } from './components/redirect/redirect.component';
 
 
 @NgModule({
@@ -138,6 +139,7 @@ import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens
     // Directives
     StepContainerVisualStatusDirective,
      PerformanceTestExecutionPage,
+     RedirectComponent,
   ],
   imports: [
     BrowserModule,
