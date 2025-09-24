@@ -1,0 +1,24 @@
+<h1>Availability Tester</h1>
+
+<div class="card">
+  <div class="card-body">
+    <h2>Prompt API</h2>
+
+    @if(this.promptError) {
+      <div class="alert alert-danger">{{ this.promptError }}</div>
+    }
+
+    <div class="d-flex">
+      <div>Status:</div>
+      <span
+        class="badge text-bg-secondary"
+        [class.text-bg-secondary]="this.promptAvailability === 'downloadable'"
+        [class.text-bg-danger]="this.promptAvailability === 'unavailable'"
+        [class.text-bg-success]="this.promptAvailability === 'available'"
+        [class.text-bg-primary]="this.promptAvailability === 'downloading'">{{ this.promptAvailability }}</span>
+
+      <button class="btn btn-primary" (click)="checkPromptAvailability()">Check availability</button>
+    </div>
+  </div>
+</div>
+

@@ -76,6 +76,7 @@ import {MagienoMediaModule} from '@magieno/angular-media';
 import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-studio.module';
 import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens/base-url.token';
 import { RedirectComponent } from './components/redirect/redirect.component';
+import {AvailabilityPage} from './pages/availability/availability.page';
 
 
 @NgModule({
@@ -115,6 +116,7 @@ import { RedirectComponent } from './components/redirect/redirect.component';
     TranslatorApiComponent,
     SummarizerBatchPageComponent,
     WriterApiPage,
+    AvailabilityPage,
 
     AutocompleteComponent,
 
