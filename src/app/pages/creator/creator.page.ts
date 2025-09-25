@@ -8,26 +8,26 @@ import {Title} from '@angular/platform-browser';
 import {isPlatformServer} from '@angular/common';
 
 @Component({
-  selector: 'page-availability',
-  templateUrl: './availability.page.html',
+  selector: 'page-creator',
+  templateUrl: './creator.page.html',
   standalone: false,
-  styleUrl: './availability.page.scss'
+  styleUrl: './creator.page.scss'
 })
-export class AvailabilityPage extends BasePageComponent implements OnInit {
+export class CreatorPage extends BasePageComponent implements OnInit {
 
-  promptAvailability: 'loading' | 'downloadable' | 'unavailable' | 'available' | 'downloading' = 'loading'
+  promptCreationSuccess?: boolean;
   promptError?: string;
 
-  proofreaderAvailability: 'loading' | 'downloadable' | 'unavailable' | 'available' | 'downloading' = 'loading'
+  proofreaderCreationSuccess?: boolean;
   proofreaderError?: string;
 
-  rewriterAvailability: 'loading' | 'downloadable' | 'unavailable' | 'available' | 'downloading' = 'loading'
+  rewriterCreationSuccess?: boolean;
   rewriterError?: string;
 
-  summarizerAvailability: 'loading' | 'downloadable' | 'unavailable' | 'available' | 'downloading' = 'loading'
+  summarizerCreationSuccess?: boolean;
   summarizerError?: string;
 
-  writerAvailability: 'loading' | 'downloadable' | 'unavailable' | 'available' | 'downloading' = 'loading'
+  writerCreationSuccess?: boolean;
   writerError?: string;
 
   constructor(
@@ -41,75 +41,85 @@ export class AvailabilityPage extends BasePageComponent implements OnInit {
   override ngOnInit() {
     super.ngOnInit();
 
-    this.checkPromptAvailability();
-    this.checkProofreaderAvailability();
-    this.checkRewriterAvailability();
-    this.checkSummarizerAvailability();
-    this.checkWriterAvailability();
+    this.createPrompt();
+    this.createProofreader();
+    this.createRewriter();
+    this.createSummarizer();
+    this.createWriter();
   }
 
-  async checkPromptAvailability() {
+  async createPrompt() {
     if(isPlatformServer(this.platformId)) {
       return;
     }
 
     try {
       // @ts-expect-error
-      this.promptAvailability = await LanguageModel.availability();
+      const session = await LanguageModel.create();
+      this.promptCreationSuccess = true;
     } catch (e: any) {
       this.promptError = e;
+      this.promptCreationSuccess = false;
     }
   }
 
-  async checkProofreaderAvailability() {
+  async createProofreader() {
     if(isPlatformServer(this.platformId)) {
       return;
     }
 
     try {
       // @ts-expect-error
-      this.proofreaderAvailability = await Proofreader.availability();
+      const session = await Proofreader.create();
+      this.proofreaderCreationSuccess = true;
     } catch (e: any) {
       this.proofreaderError = e;
+      this.proofreaderCreationSuccess = false;
     }
   }
 
-  async checkRewriterAvailability() {
+  async createRewriter() {
     if(isPlatformServer(this.platformId)) {
       return;
     }
 
     try {
       // @ts-expect-error
-      this.rewriterAvailability = await Rewriter.availability();
+      const session = await Rewriter.create();
+      this.rewriterCreationSuccess = true;
     } catch (e: any) {
       this.rewriterError = e;
+      this.rewriterCreationSuccess = false;
     }
   }
 
-  async checkSummarizerAvailability() {
+  async createSummarizer() {
     if(isPlatformServer(this.platformId)) {
       return;
     }
 
     try {
       // @ts-expect-error
-      this.summarizerAvailability = await Summarizer.availability();
+      const session = await Summarizer.create();
+      this.summarizerCreationSuccess = true;
     } catch (e: any) {
       this.summarizerError = e;
+      this.summarizerCreationSuccess = false;
     }
   }
 
-  async checkWriterAvailability() {
+  async createWriter() {
     if(isPlatformServer(this.platformId)) {
       return;
     }
 
     try {
       // @ts-expect-error
-      this.writerAvailability = await Writer.availability();
+      const session = await Writer.create();
+      this.writerCreationSuccess = true;
     } catch (e: any) {
       this.writerError = e;
+      this.writerCreationSuccess = false;
     }
   }
 }

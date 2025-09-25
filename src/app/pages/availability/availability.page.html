@@ -1,14 +1,16 @@
-<h1>Availability Tester</h1>
+<h1 class="ms-2 mt-2">Availability Tester</h1>
+
+<h2 class="mt-4 ms-2">Prompt API</h2>
 
 <div class="card">
   <div class="card-body">
-    <h2>Prompt API</h2>
+    <h3>Availability</h3>
 
     @if(this.promptError) {
       <div class="alert alert-danger">{{ this.promptError }}</div>
     }
 
-    <div class="d-flex flex-fill">
+    <div class="">
       <div>Status:</div>
       <span
         class="badge text-bg-secondary"
@@ -16,8 +18,125 @@
         [class.text-bg-danger]="this.promptAvailability === 'unavailable'"
         [class.text-bg-success]="this.promptAvailability === 'available'"
         [class.text-bg-primary]="this.promptAvailability === 'downloading'">{{ this.promptAvailability }}</span>
+    </div>
 
+    <div class="d-grid mt-5">
       <button class="btn btn-primary" (click)="checkPromptAvailability()">Check availability</button>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h2 class="mt-4 ms-2">Proofreader</h2>
+
+<div class="card">
+  <div class="card-body">
+    <h3>Availability</h3>
+
+    @if(this.proofreaderError) {
+      <div class="alert alert-danger">{{ this.proofreaderError }}</div>
+    }
+
+    <div class="">
+      <div>Status:</div>
+      <span
+        class="badge text-bg-secondary"
+        [class.text-bg-secondary]="this.proofreaderAvailability === 'downloadable'"
+        [class.text-bg-danger]="this.proofreaderAvailability === 'unavailable'"
+        [class.text-bg-success]="this.proofreaderAvailability === 'available'"
+        [class.text-bg-primary]="this.proofreaderAvailability === 'downloading'">{{ this.proofreaderAvailability }}</span>
+    </div>
+
+    <div class="d-grid mt-5">
+      <button class="btn btn-primary" (click)="checkProofreaderAvailability()">Check availability</button>
+    </div>
+  </div>
+</div>
+
+
+<hr>
+
+<h2 class="mt-4 ms-2">Rewriter</h2>
+
+<div class="card">
+  <div class="card-body">
+    <h3>Availability</h3>
+
+    @if(this.rewriterError) {
+      <div class="alert alert-danger">{{ this.rewriterError }}</div>
+    }
+
+    <div class="">
+      <div>Status:</div>
+      <span
+        class="badge text-bg-secondary"
+        [class.text-bg-secondary]="this.rewriterAvailability === 'downloadable'"
+        [class.text-bg-danger]="this.rewriterAvailability === 'unavailable'"
+        [class.text-bg-success]="this.rewriterAvailability === 'available'"
+        [class.text-bg-primary]="this.rewriterAvailability === 'downloading'">{{ this.rewriterAvailability }}</span>
+    </div>
+
+    <div class="d-grid mt-5">
+      <button class="btn btn-primary" (click)="checkRewriterAvailability()">Check availability</button>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<h2 class="mt-4 ms-2">Summarizer</h2>
+
+<div class="card">
+  <div class="card-body">
+    <h3>Availability</h3>
+
+    @if(this.summarizerError) {
+      <div class="alert alert-danger">{{ this.summarizerError }}</div>
+    }
+
+    <div class="">
+      <div>Status:</div>
+      <span
+        class="badge text-bg-secondary"
+        [class.text-bg-secondary]="this.summarizerAvailability === 'downloadable'"
+        [class.text-bg-danger]="this.summarizerAvailability === 'unavailable'"
+        [class.text-bg-success]="this.summarizerAvailability === 'available'"
+        [class.text-bg-primary]="this.summarizerAvailability === 'downloading'">{{ this.summarizerAvailability }}</span>
+    </div>
+
+    <div class="d-grid mt-5">
+      <button class="btn btn-primary" (click)="checkSummarizerAvailability()">Check availability</button>
+    </div>
+  </div>
+</div>
+
+
+
+<hr>
+
+<h2 class="mt-4 ms-2">Writer</h2>
+
+<div class="card">
+  <div class="card-body">
+    <h3>Availability</h3>
+
+    @if(this.writerError) {
+      <div class="alert alert-danger">{{ this.writerError }}</div>
+    }
+
+    <div class="">
+      <div>Status:</div>
+      <span
+        class="badge text-bg-secondary"
+        [class.text-bg-secondary]="this.writerAvailability === 'downloadable'"
+        [class.text-bg-danger]="this.writerAvailability === 'unavailable'"
+        [class.text-bg-success]="this.writerAvailability === 'available'"
+        [class.text-bg-primary]="this.writerAvailability === 'downloading'">{{ this.writerAvailability }}</span>
+    </div>
+
+    <div class="d-grid mt-5">
+      <button class="btn btn-primary" (click)="checkWriterAvailability()">Check availability</button>
     </div>
   </div>
 </div>

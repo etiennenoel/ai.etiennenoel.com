@@ -31,6 +31,7 @@ import {ChatPage} from '../../projects/web-ai-studio/src/lib/pages/chat/chat.pag
 import {WebAiRoutes} from '../../projects/web-ai-studio/src/lib/web-ai-routes';
 import {RedirectComponent} from './components/redirect/redirect.component';
 import {AvailabilityPage} from './pages/availability/availability.page';
+import {CreatorPage} from './pages/creator/creator.page';
 // @end
 
 const layouts: Routes = [
@@ -81,6 +82,10 @@ const layouts: Routes = [
   {
     path: RouteEnum.Availability,
     component: AvailabilityPage,
+  },
+  {
+    path: RouteEnum.Creator,
+    component: CreatorPage,
   },
   {
     path: "performance",

@@ -77,6 +77,7 @@ import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-stu
 import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens/base-url.token';
 import { RedirectComponent } from './components/redirect/redirect.component';
 import {AvailabilityPage} from './pages/availability/availability.page';
+import {CreatorPage} from './pages/creator/creator.page';
 
 
 @NgModule({
@@ -117,6 +118,7 @@ import {AvailabilityPage} from './pages/availability/availability.page';
     SummarizerBatchPageComponent,
     WriterApiPage,
     AvailabilityPage,
+    CreatorPage,
 
     AutocompleteComponent,
 

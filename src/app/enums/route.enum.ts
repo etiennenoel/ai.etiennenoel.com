@@ -20,6 +20,7 @@ export enum RouteEnum {
   Home = 'index',
 
   Availability = 'availability',
+  Creator = 'creator',
 
   // Studio
   Chat = 'chat',
