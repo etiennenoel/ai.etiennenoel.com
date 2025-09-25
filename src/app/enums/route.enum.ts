@@ -19,8 +19,7 @@ export enum RouteEnum {
   SummarizerBatchPage = 'summarizer-batch-page',
   Home = 'index',
 
-  Availability = 'availability',
-  Creator = 'creator',
+  AvailabilityCreator = 'availability-creator',
 
   // Studio
   Chat = 'chat',
