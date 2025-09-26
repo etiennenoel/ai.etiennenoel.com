@@ -141,7 +141,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
       const session = await LanguageModel.create();
       this.promptCreationSuccess = true;
     } catch (e: any) {
-      this.promptError = e;
+      this.promptCreationError = e;
       this.promptCreationSuccess = false;
     }
   }
@@ -156,7 +156,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
       const session = await Proofreader.create();
       this.proofreaderCreationSuccess = true;
     } catch (e: any) {
-      this.proofreaderError = e;
+      this.proofreaderCreationError = e;
       this.proofreaderCreationSuccess = false;
     }
   }
@@ -171,7 +171,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
       const session = await Rewriter.create();
       this.rewriterCreationSuccess = true;
     } catch (e: any) {
-      this.rewriterError = e;
+      this.rewriterCreationError = e;
       this.rewriterCreationSuccess = false;
     }
   }
@@ -186,7 +186,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
       const session = await Summarizer.create();
       this.summarizerCreationSuccess = true;
     } catch (e: any) {
-      this.summarizerError = e;
+      this.summarizerCreationError = e;
       this.summarizerCreationSuccess = false;
     }
   }
@@ -201,7 +201,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
       const session = await Writer.create();
       this.writerCreationSuccess = true;
     } catch (e: any) {
-      this.writerError = e;
+      this.writerCreationError = e;
       this.writerCreationSuccess = false;
     }
   }
