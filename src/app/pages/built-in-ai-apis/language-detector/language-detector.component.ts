@@ -152,7 +152,7 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
   async checkAvailabilityExplainer() {
     try {
       this.availabilityTaskStatus = TaskStatus.Executing;
-      this.availabilityStatus = await this.window?.ai.languageDetector.availability({
+      this.availabilityStatus = await this.window?.LanguageDetector.availability({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
 
