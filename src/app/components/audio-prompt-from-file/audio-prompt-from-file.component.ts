@@ -107,7 +107,7 @@ const prompt = '${this.prompt}';
 const audioContext = new AudioContext();
 const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
 
-const languageModel = await this.window?.ai.languageModel.create();
+const languageModel = await this.window?.LanguageModel.create();
 await languageModel.prompt([
 prompt,
 {
@@ -142,7 +142,7 @@ prompt,
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
 
-      const languageModel = await this.window?.ai.languageModel.create({
+      const languageModel = await this.window?.LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
         ]

@@ -60,7 +60,7 @@ export async function* processStream(
 
     if (buffer.written < stepSize) continue;
 
-    // const s = await window.ai.languageModel.create();
+    // const s = await window.LanguageModel.create();
 
 
     // console.log('\n\nReading new audio chunk');
@@ -125,7 +125,7 @@ export async function* processStream(
 //   );
 //   const buffer = await audioCtx.decodeAudioData(await request.arrayBuffer());
 //   try {
-//     const s = await window.ai.languageModel.create();
+//     const s = await window.LanguageModel.create();
 //     const r = await s.prompt([
 //       GEMINI_V2_PROMPT,
 //       { type: 'audio', content: buffer as unknown as string },

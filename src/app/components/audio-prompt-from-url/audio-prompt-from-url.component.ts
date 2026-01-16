@@ -133,7 +133,7 @@ const response = await fetch(url);
 const audioContext = new AudioContext();
 const audioBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
 
-const languageModel = await this.window?.ai.languageModel.create();
+const languageModel = await this.window?.LanguageModel.create();
 await languageModel.prompt([
 prompt,
 {
@@ -170,7 +170,7 @@ prompt,
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
 
-      const languageModel = await this.window?.ai.languageModel.create({
+      const languageModel = await this.window?.LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
         ]
