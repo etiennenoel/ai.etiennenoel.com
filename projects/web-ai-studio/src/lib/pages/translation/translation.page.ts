@@ -32,8 +32,7 @@ export class TranslationPage {
 
   languagePacksDownload:{sourceLocale: LocaleInterface, destinationLocale: LocaleInterface, progress: number, status: 'downloading' | 'completed' | 'unavailable'}[] = [];
 
-  // @ts-expect-error
-  translator: Translator;
+  translator?: Translator;
 
   textareaFormControl = new FormControl('');
 
@@ -133,7 +132,7 @@ export class TranslationPage {
       progress: number;
       status: "downloading" | "completed" | "unavailable";
     } = {
-      sourceLocale: sourceLocale,
+      sourceLocale: sourceLocale!,
       destinationLocale: targetLocale,
       progress: 0,
       status: 'downloading'
@@ -142,9 +141,9 @@ export class TranslationPage {
     this.languagePacksDownload.push(languagePacksDownload);
 
     try {
-      // @ts-expect-error
+      // 
       this.translator = await Translator.create({
-        sourceLanguage: sourceLocale.code,
+        sourceLanguage: sourceLocale!.code,
         targetLanguage: targetLocale.code,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
@@ -167,10 +166,10 @@ export class TranslationPage {
 
     if(!this.sourceLocale) {
       // Use the language detector API to find the locale.
-      // @ts-expect-error
+      // 
       const detector = await LanguageDetector.create();
 
-      const locales = await detector.detect(this.textareaFormControl.value);
+      const locales = await detector.detect(this.textareaFormControl.value ?? "");
       console.log(locales);
 
       if(locales[0].detectedLanguage === 'und') {
@@ -182,7 +181,7 @@ export class TranslationPage {
       await this.createTranslator(this.detectedLanguage, this.destinationLocale);
     }
 
-    // @ts-expect-error
-    this.translatedText = await this.translator.translate(this.textareaFormControl.value);
+    // 
+    this.translatedText = await this.translator?.translate(this.textareaFormControl.value ?? "") ?? "";
   }
 }

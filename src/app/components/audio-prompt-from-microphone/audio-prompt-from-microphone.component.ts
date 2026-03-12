@@ -171,7 +171,7 @@ const prompt = \`${this.prompt}\`;
 const audioContext = new AudioContext();
 const audioBuffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
 
-const languageModel = await this.window?.LanguageModel.create();
+const languageModel = await LanguageModel.create();
 
 await languageModel.prompt([
   prompt,
@@ -206,18 +206,20 @@ await languageModel.prompt([
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await this.audioBlob.arrayBuffer());
 
-      const languageModel = await this.window?.LanguageModel.create({
+      const languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
         ]
       });
 
       this.output = await languageModel.prompt([
-        prompt,
-        {
-          type: 'audio',
-          content: audioBuffer,
-        }
+ {
+          role: "user",
+          content: [{ type: "text", value: prompt }, {
+            type: 'audio',
+            value: audioBuffer,
+          }]
+        },
       ]);
       this.status = TaskStatus.Completed;
     } catch (e: any) {

@@ -71,7 +71,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.promptAvailability = await LanguageModel.availability();
     } catch (e: any) {
       this.promptError = e;
@@ -84,7 +84,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.proofreaderAvailability = await Proofreader.availability();
     } catch (e: any) {
       this.proofreaderError = e;
@@ -97,7 +97,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.rewriterAvailability = await Rewriter.availability();
     } catch (e: any) {
       this.rewriterError = e;
@@ -110,7 +110,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.summarizerAvailability = await Summarizer.availability();
     } catch (e: any) {
       this.summarizerError = e;
@@ -123,7 +123,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.writerAvailability = await Writer.availability();
     } catch (e: any) {
       this.writerError = e;
@@ -137,7 +137,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       const session = await LanguageModel.create();
       this.promptCreationSuccess = true;
     } catch (e: any) {
@@ -152,7 +152,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       const session = await Proofreader.create();
       this.proofreaderCreationSuccess = true;
     } catch (e: any) {
@@ -167,7 +167,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       const session = await Rewriter.create();
       this.rewriterCreationSuccess = true;
     } catch (e: any) {
@@ -182,7 +182,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       const session = await Summarizer.create();
       this.summarizerCreationSuccess = true;
     } catch (e: any) {
@@ -197,7 +197,7 @@ export class AvailabilityCreatorPage extends BasePageComponent implements OnInit
     }
 
     try {
-      // @ts-expect-error
+      // 
       const session = await Writer.create();
       this.writerCreationSuccess = true;
     } catch (e: any) {

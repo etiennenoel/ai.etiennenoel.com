@@ -116,7 +116,7 @@ export class ProofreaderApiComponent  extends BaseBuiltInApiPageComponent  imple
       this.abortControllerFromCreate  = new AbortController();
       this.abortController = new AbortController();
 
-      // // @ts-expect-error
+      // // 
       // const rewriter = await Rewriter.create({
       //   tone: this.toneFormControl.value,
       //   format: this.formatFormControl.value,

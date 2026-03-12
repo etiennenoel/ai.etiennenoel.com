@@ -279,7 +279,7 @@ console.log(output);`;
         expectedContextLanguages: this.expectedContextLanguagesFormControl.value,
         outputLanguage: this.outputLanguageFormControl.value})
 
-      // @ts-expect-error
+      // 
       const summarizer = await Summarizer.create({
         type: this.typeFormControl.value,
         format: this.formatFormControl.value,

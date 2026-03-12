@@ -234,7 +234,7 @@ export class TranscriptionAudioMultimodalPromptComponent extends BasePageCompone
     }));
 
     if (this.isBrowser) {
-      // @ts-expect-error
+      // 
       this.languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },

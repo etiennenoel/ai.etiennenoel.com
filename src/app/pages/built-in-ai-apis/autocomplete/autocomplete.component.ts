@@ -76,7 +76,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
     let session: any;
 
     if(this.window && "LanguageModel" in this.window) {
-      // @ts-expect-error
+      // 
       session = await LanguageModel.create();
     }
 
@@ -96,7 +96,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
       // Default: suggestion textarea mirrors user input (keeps text aligned if no suggestion found)
       this.suggestionTextAreaFormControl.setValue(value);
 
-      // @ts-expect-error
+      // 
       session = await LanguageModel.create({
         topK: 1,
         temperature: 0,

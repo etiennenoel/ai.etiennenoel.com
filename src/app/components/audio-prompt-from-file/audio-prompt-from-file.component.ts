@@ -1,9 +1,9 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {TaskStatus} from '../../enums/task-status.enum';
-import {isPlatformServer} from '@angular/common';
-import {BaseComponent} from '../base/base.component';
-import {FormControl} from '@angular/forms';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { TaskStatus } from '../../enums/task-status.enum';
+import { isPlatformServer } from '@angular/common';
+import { BaseComponent } from '../base/base.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-audio-prompt-from-file',
@@ -24,14 +24,14 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
     this.setPrompt(value);
   }
 
-  setPrompt(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+  setPrompt(value: string | null, options?: { emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean }) {
     this._prompt = value;
 
-    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
-      this.promptFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if (options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.promptFormControl.setValue(value, { emitEvent: options?.emitFormControlEvent ?? true });
     }
 
-    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioFilePrompt: value}, queryParamsHandling: 'merge' });
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioFilePrompt: value }, queryParamsHandling: 'merge' });
   }
   // </editor-fold>
 
@@ -62,7 +62,7 @@ export class AudioPromptFromFileComponent extends BaseComponent implements OnIni
     super.ngOnInit();
 
     this.subscriptions.push(this.promptFormControl.valueChanges.subscribe((value) => {
-      this.setPrompt(value, {emitFormControlEvent: false, setFormControlValue: false});
+      this.setPrompt(value, { emitFormControlEvent: false, setFormControlValue: false });
     }));
 
 
@@ -107,7 +107,7 @@ const prompt = '${this.prompt}';
 const audioContext = new AudioContext();
 const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
 
-const languageModel = await this.window?.LanguageModel.create();
+const languageModel = await LanguageModel.create();
 await languageModel.prompt([
 prompt,
 {
@@ -118,7 +118,7 @@ prompt,
   }
 
   async execute() {
-    if(isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this.platformId)) {
       return;
     }
 
@@ -126,7 +126,7 @@ prompt,
     this.output = "";
     this.status = TaskStatus.Executing
 
-    if(!this.fileSystemFileHandle) {
+    if (!this.fileSystemFileHandle) {
       this.status = TaskStatus.Error;
       this.error = new Error("You must drop an audio file first.");
       return;
@@ -142,18 +142,20 @@ prompt,
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await file.arrayBuffer());
 
-      const languageModel = await this.window?.LanguageModel.create({
+      const languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
         ]
       });
 
       this.output = await languageModel.prompt([
-        prompt,
         {
-          type: 'audio',
-          content: audioBuffer,
-        }
+          role: "user",
+          content: [{ type: "text", value: prompt }, {
+            type: 'audio',
+            value: audioBuffer,
+          }]
+        },
       ]);
       this.status = TaskStatus.Completed;
     } catch (e: any) {

@@ -49,7 +49,7 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
   async triggerDownload() {
     const self = this;
 
-    // @ts-expect-error
+    // 
     const session = await LanguageModel.create({
       expectedInputs: [
         { type: "text", languages: ["en"] },
@@ -75,7 +75,7 @@ export class ChatPage extends BasePage implements OnInit, OnDestroy {
     }
 
     try {
-      // @ts-expect-error
+      // 
       this.languageModelAvailability = await LanguageModel.availability({
         expectedInputs: [
           { type: "text", languages: ["en"] },

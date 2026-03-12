@@ -63,8 +63,8 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
   inputFormControl = new FormControl<string>("");
 
   results: {
-    confidence: number;
-    detectedLanguage: string;
+    confidence?: number;
+    detectedLanguage?: string;
   }[] = []
 
   constructor(
@@ -134,11 +134,12 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
     try {
       this.availabilityTaskStatus = TaskStatus.Executing;
 
-      // @ts-expect-error
+      // 
       const capabilities = await LanguageDetector.availability({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
       })
 
+      // @ts-expect-error
       this.availabilityStatus = capabilities;
 
       this.availabilityTaskStatus = TaskStatus.Completed;
@@ -152,9 +153,9 @@ export class LanguageDetectorComponent extends BaseBuiltInApiPageComponent imple
   async checkAvailabilityExplainer() {
     try {
       this.availabilityTaskStatus = TaskStatus.Executing;
-      this.availabilityStatus = await this.window?.LanguageDetector.availability({
+      this.availabilityStatus = await LanguageDetector.availability({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
-      })
+      }) as AvailabilityStatusEnum;
 
       this.availabilityTaskStatus = TaskStatus.Completed;
     } catch (e: any) {
@@ -190,7 +191,7 @@ const results = await detector.detect("${this.inputFormControl.value}", {
       this.executionPerformanceManager.start(BuiltInAiApiEnum.LanguageDetector);
 
       this.executionPerformanceManager.sessionCreationStarted();
-      // @ts-expect-error
+      // 
       const detector = await LanguageDetector.create({
         expectedInputLanguages: this.expectedInputLanguagesFormControl.value,
         monitor(m: any) {

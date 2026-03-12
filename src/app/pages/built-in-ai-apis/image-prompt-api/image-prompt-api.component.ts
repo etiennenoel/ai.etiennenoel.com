@@ -453,7 +453,7 @@ const output = await languageModel.prompt([
       this.executionPerformanceManager.start(BuiltInAiApiEnum.Prompt)
 
       this.executionPerformanceManager.sessionCreationStarted({})
-      // @ts-expect-error
+      // 
       const languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },

@@ -1,9 +1,9 @@
-import {Component, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {TaskStatus} from '../../enums/task-status.enum';
-import {isPlatformServer} from '@angular/common';
-import {BaseComponent} from '../base/base.component';
-import {FormControl} from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { TaskStatus } from '../../enums/task-status.enum';
+import { isPlatformServer } from '@angular/common';
+import { BaseComponent } from '../base/base.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-audio-prompt-from-url',
@@ -24,14 +24,14 @@ export class AudioPromptFromUrlComponent extends BaseComponent implements OnInit
     this.setAudioUrlPrompt(value);
   }
 
-  setAudioUrlPrompt(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+  setAudioUrlPrompt(value: string | null, options?: { emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean }) {
     this._audioUrlPrompt = value;
 
-    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
-      this.audioUrlPromptFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if (options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.audioUrlPromptFormControl.setValue(value, { emitEvent: options?.emitFormControlEvent ?? true });
     }
 
-    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrlPrompt: value}, queryParamsHandling: 'merge' });
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrlPrompt: value }, queryParamsHandling: 'merge' });
   }
   // </editor-fold>
 
@@ -49,14 +49,14 @@ export class AudioPromptFromUrlComponent extends BaseComponent implements OnInit
     this.setAudioUrl(value);
   }
 
-  setAudioUrl(value: string | null, options?: {emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean}) {
+  setAudioUrl(value: string | null, options?: { emitFormControlEvent?: boolean, emitChangeEvent?: boolean, setFormControlValue?: boolean }) {
     this._audioUrl = value;
 
-    if(options?.setFormControlValue !== false) { // By default we set the form contro lvalue
-      this.audioUrlFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if (options?.setFormControlValue !== false) { // By default we set the form contro lvalue
+      this.audioUrlFormControl.setValue(value, { emitEvent: options?.emitFormControlEvent ?? true });
     }
 
-    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrl: value}, queryParamsHandling: 'merge' });
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { audioUrl: value }, queryParamsHandling: 'merge' });
   }
 
   // </editor-fold>
@@ -82,11 +82,11 @@ export class AudioPromptFromUrlComponent extends BaseComponent implements OnInit
     super.ngOnInit();
 
     this.subscriptions.push(this.audioUrlPromptFormControl.valueChanges.subscribe((value) => {
-      this.setAudioUrlPrompt(value, {emitFormControlEvent: false, setFormControlValue: false});
+      this.setAudioUrlPrompt(value, { emitFormControlEvent: false, setFormControlValue: false });
     }));
 
     this.subscriptions.push(this.audioUrlFormControl.valueChanges.subscribe(async (value) => {
-      this.setAudioUrl(value, {emitFormControlEvent: false, setFormControlValue: false});
+      this.setAudioUrl(value, { emitFormControlEvent: false, setFormControlValue: false });
 
       if (!value || isPlatformServer(this.platformId)) {
         return;
@@ -96,14 +96,14 @@ export class AudioPromptFromUrlComponent extends BaseComponent implements OnInit
       try {
         const response = await fetch(`${value}`);
 
-        if(response.status !== 200) {
+        if (response.status !== 200) {
           this.audioSrc = undefined;
           return;
         }
 
         const arrayBuffer = await response.arrayBuffer();
         const type = value.split('.').pop() ?? "";
-        const blob = new Blob([arrayBuffer], {type: type});
+        const blob = new Blob([arrayBuffer], { type: type });
 
         this.audioSrc = URL.createObjectURL(blob);
       } catch (e) {
@@ -133,7 +133,7 @@ const response = await fetch(url);
 const audioContext = new AudioContext();
 const audioBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
 
-const languageModel = await this.window?.LanguageModel.create();
+const languageModel = await LanguageModel.create();
 await languageModel.prompt([
 prompt,
 {
@@ -145,11 +145,11 @@ prompt,
   }
 
   async execute() {
-    if(isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this.platformId)) {
       return;
     }
 
-    if(!this.audioUrl) {
+    if (!this.audioUrl) {
       this.status = TaskStatus.Error;
       this.error = new Error("The audio Url cannot be empty");
       return;
@@ -162,7 +162,7 @@ prompt,
     try {
       const response = await fetch(this.audioUrl);
 
-      if(response.status !== 200) {
+      if (response.status !== 200) {
         this.error = new Error("The audio Url is invalid");
         return;
       }
@@ -170,17 +170,19 @@ prompt,
       const audioContext = new AudioContext();
       const audioBuffer = await audioContext.decodeAudioData(await response.arrayBuffer());
 
-      const languageModel = await this.window?.LanguageModel.create({
+      const languageModel = await LanguageModel.create({
         expectedInputs: [
           { type: "audio" },
         ]
       });
       this.output = await languageModel.prompt([
-        this.audioUrlPrompt,
         {
-          type: 'audio',
-          content: audioBuffer,
-        }
+          role: "user",
+          content: [{ type: "text", value: this.audioUrlPrompt }, {
+            type: 'audio',
+            value: audioBuffer,
+          }]
+        },
       ]);
 
       this.status = TaskStatus.Completed;

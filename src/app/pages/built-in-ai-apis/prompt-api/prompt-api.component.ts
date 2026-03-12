@@ -187,11 +187,10 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
 
   async checkAvailability() {
     try {
-      // @ts-expect-error
       this.availabilityStatus = await LanguageModel.availability({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
-      })
+      }) as AvailabilityStatusEnum;
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.error = e;
@@ -204,7 +203,7 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
 
   async getParams() {
     try {
-      // @ts-expect-error
+      // 
       this.params = await LanguageModel.params();
     } catch (e: any) {
       this.error = e;
@@ -288,10 +287,10 @@ console.log(output);`;
         temperature: this.temperatureFormControl.value,
         initialPrompts: this.initialPrompts});
 
-      // @ts-expect-error
       const session = await LanguageModel.create({
         topK: this.topKFormControl.value,
         temperature: this.temperatureFormControl.value,
+        // @ts-expect-error
         initialPrompts: this.initialPrompts,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
@@ -337,6 +336,7 @@ console.log(output);`;
         switch (this.promptTypeFormControl.value) {
           case PromptTypeEnum.SequenceAILanguageModelPrompt:
             this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt: this.prompts})
+            // @ts-expect-error
             this.output = await session.prompt(this.prompts, {
               signal: abortController.signal,
             });
@@ -350,6 +350,7 @@ console.log(output);`;
             break;
           case PromptTypeEnum.AILanguageModelPrompt:
             this.executionPerformanceManager.inferenceStarted({streaming: this.useStreamingFormControl.value, prompt: this.prompt})
+            // @ts-expect-error
             this.output = await session.prompt(this.prompt, {
               signal: abortController.signal,
             });

@@ -39,7 +39,7 @@ export class DownloadTesterPage {
     this.statusSummarizer = TaskStatus.Executing;
 
     try {
-      //  @ts-expect-error
+      //  
       const summarizer = await Summarizer.create({
         type: "headline",
         format: "plain-text",

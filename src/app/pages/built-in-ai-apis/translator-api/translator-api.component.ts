@@ -16,6 +16,7 @@ import {isPlatformBrowser} from '@angular/common';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
+import { AvailabilityStatusEnum } from '../../../enums/availability-status.enum';
 
 declare global {
   interface Translator {
@@ -156,8 +157,7 @@ console.log(Result of availability: '\${availability}'.);`;
   }
 
   async checkAvailability() {
-    // @ts-expect-error
-    this.availabilityStatus = await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value});
+    this.availabilityStatus = (await Translator.availability({sourceLanguage: this.sourceLanguage.value, targetLanguage:this.targetLanguage.value})) as AvailabilityStatusEnum;
   }
 
   get translateCode() {
@@ -188,7 +188,7 @@ await translator.translate("${this.content.value}")
         sourceLanguage: this.sourceLanguage.value,
         targetLanguage: this.targetLanguage.value});
 
-      // @ts-expect-error
+      // 
       const translator = await Translator.create({
         sourceLanguage: this.sourceLanguage.value,
         targetLanguage: this.targetLanguage.value,

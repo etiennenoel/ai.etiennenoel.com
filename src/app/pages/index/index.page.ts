@@ -38,7 +38,7 @@ export class IndexPage extends BasePageComponent implements OnInit {
     const self = this;
     try {
       this.downloadStatus = TaskStatus.Executing;
-      // @ts-expect-error
+      // 
       const session = await LanguageModel.create({
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {

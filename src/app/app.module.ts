@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, isDevMode} from '@angular/core';
 import {BrowserModule, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -77,6 +77,7 @@ import {WebAiStudioModule} from '../../projects/web-ai-studio/src/lib/web-ai-stu
 import {WEBAI_STUDIO_BASE_URL} from '../../projects/web-ai-studio/src/lib/tokens/base-url.token';
 import { RedirectComponent } from './components/redirect/redirect.component';
 import {AvailabilityCreatorPage} from './pages/availability-creator/availability-creator.page';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @NgModule({
@@ -158,6 +159,12 @@ import {AvailabilityCreatorPage} from './pages/availability-creator/availability
     MagienoAIModule,
     NgbTooltip,
     WebAiStudioModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [
     provideClientHydration(withEventReplay()),

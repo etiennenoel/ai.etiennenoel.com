@@ -6,7 +6,8 @@
     "outDir": "./out-tsc/app",
     "types": [
       "node",
-      "@angular/localize"
+      "@angular/localize",
+      "@types/dom-chromium-ai"
     ]
   },
   "files": [
