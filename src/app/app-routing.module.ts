@@ -27,7 +27,6 @@ import {PerformanceTestExecutionPage} from './pages/performance/performance-test
 import {PerformanceTestSeriesEnum} from '../performance-test/enums/performance-test-series.enum';
 import {SummarizerBatchPageComponent} from './pages/summarizer-batch-page/summarizer-batch-page.component';
 import {ImagePromptApiComponent} from './pages/built-in-ai-apis/image-prompt-api/image-prompt-api.component';
-import {ChatPage} from '../../projects/web-ai-studio/src/lib/pages/chat/chat.page';
 import {WebAiRoutes} from '../../projects/web-ai-studio/src/lib/web-ai-routes';
 import {RedirectComponent} from './components/redirect/redirect.component';
 import {AvailabilityCreatorPage} from './pages/availability-creator/availability-creator.page';
@@ -104,10 +103,6 @@ const layouts: Routes = [
 
       }
     ]
-  },
-  {
-    path: RouteEnum.Chat,
-    component: ChatPage,
   }
 ];
 

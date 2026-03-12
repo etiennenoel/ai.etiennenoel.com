@@ -1,9 +1,7 @@
 import {Routes} from '@angular/router';
 import {LayoutComponent} from './components/layout/layout.component';
-import {ChatPage} from './pages/chat/chat.page';
 import {TranslationPage} from './pages/translation/translation.page';
 import {RouteEnum} from './enums/route.enum';
-import {WritingAssistancePage} from './pages/writing-assistance/writing-assistance.page';
 
 export const WebAiRoutes: Routes = [
   {
@@ -11,22 +9,8 @@ export const WebAiRoutes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: "",
-        component: ChatPage,
-        data: {
-          route: RouteEnum.Translation
-        }
-      },
-      {
         path: "translation",
         component: TranslationPage,
-        data: {
-          route: RouteEnum.Translation
-        }
-      },
-      {
-        path: "writing-assistance",
-        component: WritingAssistancePage,
         data: {
           route: RouteEnum.Translation
         }

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import {ChatPage} from './pages/chat/chat.page';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from '../../../../src/app/app-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -16,18 +15,15 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TranslationPage } from './pages/translation/translation.page';
-import { WritingAssistancePage } from './pages/writing-assistance/writing-assistance.page';
 
 
 
 @NgModule({
   declarations: [
-    ChatPage,
     LayoutComponent,
     HeaderComponent,
     SidebarComponent,
     TranslationPage,
-    WritingAssistancePage,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +42,6 @@ import { WritingAssistancePage } from './pages/writing-assistance/writing-assist
     NgbOffcanvasModule,
   ],
   exports: [
-    ChatPage,
   ]
 })
 export class WebAiStudioModule { }
