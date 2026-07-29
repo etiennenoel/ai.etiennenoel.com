@@ -54,6 +54,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       this.currentRoute = RouteEnum.LanguageDetectorApi;
     } else if(url.endsWith('download-tester')) {
       this.currentRoute = RouteEnum.DownloadTester;
+    } else if(url.endsWith('semantic-embedder-api')) {
+      this.currentRoute = RouteEnum.SemanticEmbedderApi;
     }
     // @start-remove-in-chrome-dev
     else if(url.endsWith('transcription-audio-multimodal-prompt-api')) {

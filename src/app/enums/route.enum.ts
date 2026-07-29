@@ -6,6 +6,7 @@ export enum RouteEnum {
   WriterApi = 'writer-api',
   RewriterApi = 'rewriter-api',
   ProofreaderApi = 'proofreader-api',
+  SemanticEmbedderApi = 'semantic-embedder-api',
   Autocomplete = 'autocomplete',
   SummarizerApi = 'summarizer-api',
   PromptApi = 'prompt-api',

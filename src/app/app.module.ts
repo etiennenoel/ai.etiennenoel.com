@@ -53,6 +53,9 @@ import {EnumToMagienoDropdownItemsPipe} from './pipes/enum-to-magieno-dropdown-i
 import {DownloadTesterPage} from './pages/download-tester/download-tester.page';
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
+import {
+  SemanticEmbedderApiComponent
+} from './pages/built-in-ai-apis/semantic-embedder-api/semantic-embedder-api.component';
 import {ExecutionPerformanceManager} from './managers/execution-performance.manager';
 import {InferencePerformanceManager} from '../performance-test/managers/inference-performance.manager';
 import {ExecutionPerformanceComponent} from './components/execution-performance/execution-performance.component';
@@ -112,6 +115,7 @@ import {AvailabilityCreatorPage} from './pages/availability-creator/availability
     PromptApiComponent,
     ProofreaderApiComponent,
     RewriterApiComponent,
+    SemanticEmbedderApiComponent,
     SummarizerApiComponent,
     TranslatorApiComponent,
     SummarizerBatchPageComponent,

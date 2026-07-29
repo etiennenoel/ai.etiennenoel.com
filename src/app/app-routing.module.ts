@@ -21,6 +21,9 @@ import {RouteEnum} from './enums/route.enum';
 import {DownloadTesterPage} from './pages/download-tester/download-tester.page';
 import {ProofreaderApiComponent} from './pages/built-in-ai-apis/proofreader-api/proofreader-api.component';
 import {AutocompleteComponent} from './pages/built-in-ai-apis/autocomplete/autocomplete.component';
+import {
+  SemanticEmbedderApiComponent
+} from './pages/built-in-ai-apis/semantic-embedder-api/semantic-embedder-api.component';
 import {PerformanceHistoryPage} from './pages/performance/performance-history/performance-history.page';
 import {PerformanceTestRunnerPage} from './pages/performance/performance-test-runner/performance-test-runner.page';
 import {PerformanceTestExecutionPage} from './pages/performance/performance-test-execution-page/performance-test-execution-page';
@@ -57,6 +60,10 @@ const layouts: Routes = [
   {
     path: "proofreader-api",
     component: ProofreaderApiComponent,
+  },
+  {
+    path: RouteEnum.SemanticEmbedderApi,
+    component: SemanticEmbedderApiComponent,
   },
   {
     path: "autocomplete",
