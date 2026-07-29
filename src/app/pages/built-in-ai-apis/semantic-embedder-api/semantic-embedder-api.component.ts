@@ -197,12 +197,28 @@ semanticEmbedder.destroy();`;
       destroy: () => void,
     } | undefined;
 
+    // The performance manager measures against the marks set by its `*Started()` methods: calling a
+    // `*Completed()` method for a step that never started throws a SyntaxError that masks the real
+    // error.
+    let sessionCreationStarted = false;
+    let inferenceStarted = false;
+
     try {
       this.abortControllerFromCreate = new AbortController();
       this.abortController = new AbortController();
 
+      // `create()` throws an opaque InvalidStateError when the model is not usable on this device,
+      // so check the availability first to be able to report something actionable.
+      // @ts-expect-error SemanticEmbedder is not yet part of the TypeScript DOM lib.
+      this.availabilityStatus = await SemanticEmbedder.availability();
+
+      if (this.availabilityStatus === AvailabilityStatusEnum.Unavailable) {
+        throw new Error("SemanticEmbedder.availability() returned 'unavailable': the embedding model cannot run on this device.");
+      }
+
       this.executionPerformanceManager.start(BuiltInAiApiEnum.SemanticEmbedder);
       this.executionPerformanceManager.sessionCreationStarted();
+      sessionCreationStarted = true;
 
       // @ts-expect-error SemanticEmbedder is not yet part of the TypeScript DOM lib.
       semanticEmbedder = await SemanticEmbedder.create({
@@ -215,8 +231,10 @@ semanticEmbedder.destroy();`;
         signal: this.abortControllerFromCreate.signal,
       });
       this.executionPerformanceManager.sessionCreationCompleted();
+      sessionCreationStarted = false;
 
       this.executionPerformanceManager.inferenceStarted({input: inputs.join("\n")});
+      inferenceStarted = true;
 
       const taskType = this.taskTypeFormControl.value;
       const result = await semanticEmbedder!.embed(inputs, {
@@ -243,9 +261,14 @@ semanticEmbedder.destroy();`;
     } catch (e: unknown) {
       this.error = e as Error;
       this.embedStatus = TaskStatus.Error;
-      this.executionPerformanceManager.sessionCreationCompleted();
+
+      if (sessionCreationStarted) {
+        this.executionPerformanceManager.sessionCreationCompleted();
+      }
     } finally {
-      this.executionPerformanceManager.inferenceCompleted();
+      if (inferenceStarted) {
+        this.executionPerformanceManager.inferenceCompleted();
+      }
 
       // The embedder holds on to the model: release it proactively.
       semanticEmbedder?.destroy();
