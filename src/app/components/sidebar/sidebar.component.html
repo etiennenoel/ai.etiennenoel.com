@@ -95,6 +95,14 @@
 
           </li>
 
+          <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.SemanticEmbedderApi">
+            <a class="btn" routerLink="/semantic-embedder-api">
+              <i class="bi bi-diagram-3"></i>
+              <span>Semantic Embedder API</span>
+              <span class="badge text-bg-warning">Experimental</span>
+            </a>
+          </li>
+
           <li class="navigation-item" [class.active]="this.currentRoute === RouteEnum.MultimodalPromptApi">
             <a class="btn" routerLink="/multimodal-prompt-api">
               <i class="bi bi-collection-play-fill"></i>

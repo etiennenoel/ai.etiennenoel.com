@@ -1,0 +1,369 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+
+  <app-page-title [title]="'Semantic Embedder API'" [icon]="'bi-diagram-3'">
+    <a class="btn btn-light"
+       href="https://github.com/explainers-by-googlers/semantic-embedder-api"
+       target="_blank"><i class="bi bi-file-text"></i> <span class="ms-2">Explainer</span></a>
+    <a class="btn btn-light disabled"
+       href="https://github.com/explainers-by-googlers/semantic-embedder-api"
+       target="_blank"><i class="bi bi-body-text"></i> <span class="ms-2">Specifications</span></a>
+  </app-page-title>
+
+  <div class="row mb-3">
+    <div class="col-12">
+      <app-page-accordion
+        [requirementsStatus]="this.apiFlag.status"
+        (checkRequirementsEvent)="checkRequirements()"
+        [requirements]="getRequirements()"
+      >
+        <div debugInformation>
+          <p>The Semantic Embedder API is an <strong>early design sketch</strong> from the Chrome Built-in AI team and
+            has not been approved to ship in Chrome. The surface below follows the explainer and may change.</p>
+          <p class="mt-1">Embeddings are only comparable within the same embedding space: check
+            <span class="code">result.metadata.embeddingSpace</span> before comparing vectors you stored earlier.</p>
+        </div>
+      </app-page-accordion>
+    </div>
+  </div>
+
+  <h2 class="display-6 mt-5"><i class="bi bi-play"></i> Playground</h2>
+  <hr>
+
+  <app-output
+    [status]="this.embedStatus"
+    [error]="this.error"
+    [downloadProgress]="this.loaded"
+    [outputCollapsed]="outputCollapsed"
+    [statisticsCollapsed]="statisticsCollapsed"
+    [output]="this.output"
+    (abortExecution)="abortTriggered()"
+    (abortExecutionFromCreate)="abortFromCreateTriggered()"
+  >
+    @if (rows.length > 0) {
+      @if (metadata) {
+        <div class="mb-3">
+          @if (metadata.embeddingSpace) {
+            <span class="code me-2">embeddingSpace: {{ metadata.embeddingSpace }}</span>
+          }
+          @if (metadata.maxInputTokens) {
+            <span class="code">maxInputTokens: {{ metadata.maxInputTokens }}</span>
+          }
+        </div>
+      }
+
+      <h5>Embeddings</h5>
+      <div style="max-height: 400px; overflow: auto">
+        <table class="table table-responsive">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Input</th>
+            <th>Dimensions</th>
+            <th>Tokens</th>
+            <th>Values (first {{ previewLength }})</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (row of rows; track row.index) {
+              <tr>
+                <td>{{ row.index }}</td>
+                <td>{{ row.input }}</td>
+                <td>{{ row.dimensions }}</td>
+                <td>
+                  {{ row.tokenCount ?? '—' }}
+                  @if (row.truncated) {
+                    <span class="badge text-bg-warning ms-1">truncated</span>
+                  }
+                </td>
+                <td><span class="code">{{ getPreview(row) }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h5 class="mt-4">Cosine similarity</h5>
+      <p class="text-muted"><small>Computed in JavaScript from the returned vectors: the API does not expose a built-in
+        comparison method.</small></p>
+      <div style="max-height: 400px; overflow: auto">
+        <table class="table table-responsive">
+          <thead>
+          <tr>
+            <th></th>
+            @for (row of rows; track row.index) {
+              <th>#{{ row.index }}</th>
+            }
+          </tr>
+          </thead>
+          <tbody>
+            @for (row of rows; track row.index) {
+              <tr>
+                <th>#{{ row.index }}</th>
+                @for (similarity of similarityMatrix[row.index]; track $index) {
+                  <td>{{ similarity | number: '1.4-4' }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </app-output>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <label for="input" class="form-label">Inputs <small class="text-muted">(one passage per line — they are sent
+        as a single batch)</small></label>
+      <textarea id="input" class="form-control" rows="8"
+                placeholder="Enter one passage per line."
+                [formControl]="inputFormControl"></textarea>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-12 col-md-6">
+      <label for="task-type" class="form-label">Task type <small class="text-muted">(optional hint)</small></label>
+      <select id="task-type" class="form-select" [formControl]="taskTypeFormControl">
+        <option [ngValue]="null">None</option>
+        @for (taskType of SemanticEmbedderTaskTypeEnum | keyvalue; track taskType.key) {
+          <option [ngValue]="taskType.value">{{ taskType.value }}</option>
+        }
+      </select>
+      <div class="form-text">Browsers may safely ignore this hint if their model does not support task types.</div>
+    </div>
+  </div>
+
+  <div class="d-grid">
+    <button class="btn btn-primary btn-lg mt-4" (click)="embed()">Embed</button>
+  </div>
+
+  <h2 class="display-6 mt-5"><i class="bi bi-code-square"></i> Runnable code examples</h2>
+  <hr>
+
+  <div class="row mt-4">
+    <div class="col-12 col-xl-6">
+      <app-card [status]="availabilityTaskStatus">
+        <div header><h3 class="m-0">Availability</h3></div>
+        <div class="card-body">
+          <h5>Code</h5>
+          <code-editor [code]="availabilityCode" [readonly]="true" [height]="'100px'"></code-editor>
+
+          <h5 class="mt-3">Result</h5>
+          <span class="code"
+                [class.code-warning]="availabilityStatus === AvailabilityStatusEnum.Downloadable || availabilityStatus === AvailabilityStatusEnum.Downloading"
+                [class.code-danger]="availabilityStatus === AvailabilityStatusEnum.Unavailable"
+                [class.code-success]="availabilityStatus === AvailabilityStatusEnum.Available"
+                [class.code-dark]="availabilityStatus === AvailabilityStatusEnum.Unknown"
+          >{{ availabilityStatus }}</span>
+
+          @if (availabilityError) {
+            <div class="alert alert-danger m-0 mt-2 mb-2">{{ availabilityError }}</div>
+          }
+
+          <div class="row mt-5">
+            <div class="col-12 d-grid">
+              <button class="btn btn-outline-primary d-block" (click)="checkAvailability()">Check availability</button>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <app-card [status]="embedStatus">
+        <div header><h3 class="m-0">Embed</h3></div>
+        <div class="card-body">
+          <h5>Code</h5>
+          <code-editor [code]="embedCode" [readonly]="true" [height]="'400px'"></code-editor>
+
+          <div class="row mt-5">
+            <div class="col-12 d-grid">
+              <button class="btn btn-primary d-block" (click)="embed()">Embed</button>
+            </div>
+          </div>
+        </div>
+      </app-card>
+    </div>
+  </div>
+
+  <h2 class="display-6 mt-5"><i class="bi bi-journal-code"></i> API Reference</h2>
+  <hr>
+
+  <p class="text-muted">Based on the
+    <a href="https://github.com/explainers-by-googlers/semantic-embedder-api" target="_blank">Semantic Embedder API
+      explainer</a>. No WebIDL has been published yet, so the shapes below describe the surface as documented in the
+    explainer.</p>
+
+  <div class="row">
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0"><span class="code">SemanticEmbedder.availability()</span></h4>
+        </div>
+        <div class="card-body">
+          <p>Static. Reports whether the on-device embedding model can be used, following the standard Built-in AI
+            lifecycle.</p>
+          <code-editor [code]="'SemanticEmbedder.availability(): Promise<Availability>'" [readonly]="true"
+                       [height]="'60px'"></code-editor>
+          <table class="table mt-3">
+            <thead>
+            <tr>
+              <th>Value</th>
+              <th>Meaning</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><span class="code">"unavailable"</span></td>
+              <td>The model cannot be used on this device.</td>
+            </tr>
+            <tr>
+              <td><span class="code">"downloadable"</span></td>
+              <td>Supported, but the model must be downloaded first.</td>
+            </tr>
+            <tr>
+              <td><span class="code">"downloading"</span></td>
+              <td>The model is currently being downloaded.</td>
+            </tr>
+            <tr>
+              <td><span class="code">"available"</span></td>
+              <td>Ready to use immediately.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0"><span class="code">SemanticEmbedder.create()</span></h4>
+        </div>
+        <div class="card-body">
+          <p>Static. Creates an embedder, downloading the model if needed.</p>
+          <code-editor
+            [code]="'SemanticEmbedder.create(options?: {\n  monitor?: (m: EventTarget) => void,\n  signal?: AbortSignal,\n}): Promise<SemanticEmbedder>'"
+            [readonly]="true" [height]="'110px'"></code-editor>
+          <table class="table mt-3">
+            <thead>
+            <tr>
+              <th>Option</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><span class="code">monitor</span></td>
+              <td>Receives an object emitting <span class="code">downloadprogress</span> events with a
+                <span class="code">loaded</span> ratio between 0 and 1.
+              </td>
+            </tr>
+            <tr>
+              <td><span class="code">signal</span></td>
+              <td>An <span class="code">AbortSignal</span> aborting the creation and the download.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0"><span class="code">semanticEmbedder.embed()</span></h4>
+        </div>
+        <div class="card-body">
+          <p>Polymorphic: accepts a single string or an array of strings. The returned embeddings correspond strictly
+            1:1 with the inputs, in order.</p>
+          <code-editor
+            [code]="'semanticEmbedder.embed(\n  input: string | string[],\n  options?: {\n    taskType?: \'retrieval\' | \'classification\',\n    signal?: AbortSignal,\n  },\n): Promise<EmbedderResult>'"
+            [readonly]="true" [height]="'160px'"></code-editor>
+          <table class="table mt-3">
+            <thead>
+            <tr>
+              <th>Option</th>
+              <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><span class="code">taskType</span></td>
+              <td>Optional hint used to optimize embedding quality for a downstream task (e.g. retrieval,
+                classification). Browsers may ignore it.
+              </td>
+            </tr>
+            <tr>
+              <td><span class="code">signal</span></td>
+              <td>An <span class="code">AbortSignal</span> aborting the inference.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0"><span class="code">semanticEmbedder.destroy()</span></h4>
+        </div>
+        <div class="card-body">
+          <p>Proactively releases the resources held by the embedder. Call it as soon as you are done embedding: the
+            model consumes a significant amount of memory.</p>
+          <code-editor [code]="'semanticEmbedder.destroy(): void'" [readonly]="true" [height]="'60px'"></code-editor>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0"><span class="code">EmbedderResult</span></h4>
+        </div>
+        <div class="card-body">
+          <p>A dictionary rather than a raw array, so the API can gain statistics, truncation warnings or multi-modal
+            metadata without breaking early adopters.</p>
+          <code-editor
+            [code]="'{\n  embeddings: [\n    {\n      values: Float32Array,\n      statistics: { tokenCount, truncated },\n    },\n  ],\n  metadata: {\n    embeddingSpace: \'embeddinggemma-300m\',\n    maxInputTokens: 2048,\n  },\n}'"
+            [readonly]="true" [height]="'220px'"></code-editor>
+          <p class="mt-3"><span class="code">statistics</span> and <span class="code">metadata</span> are described in
+            the explainer as extensibility points and may not be populated by early implementations.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card mt-3">
+        <div class="card-header">
+          <h4 class="m-0">Limitations &amp; gotchas</h4>
+        </div>
+        <div class="card-body">
+          <ul class="mb-0">
+            <li><strong>No chunking.</strong> The API does not split large inputs. Pre-chunk documents yourself (e.g.
+              with LangChain's <span class="code">RecursiveCharacterTextSplitter</span>) to stay within the 2048-token
+              limit, and pass the passages as an array.
+            </li>
+            <li class="mt-2"><strong>No built-in comparison.</strong> Cosine similarity is up to you (or a third-party
+              library). A static <span class="code">SemanticEmbedder.compare()</span> is under discussion.
+            </li>
+            <li class="mt-2"><strong>No storage.</strong> There is no built-in vector database: persist vectors in
+              IndexedDB or OPFS.
+            </li>
+            <li class="mt-2"><strong>Embedding spaces are not interchangeable.</strong> Vectors produced by different
+              models cannot be compared; re-index when the embedding space changes.
+            </li>
+            <li class="mt-2"><strong>Permissions policy.</strong> Access is restricted to top-level frames and
+              same-origin iframes by default; third-party contexts must be granted access explicitly.
+            </li>
+            <li class="mt-2"><strong>Naming is an open question.</strong> <span class="code">SemanticEmbedder</span> is
+              the name chosen for the developer trial, over <span class="code">TextEmbedder</span> and
+              <span class="code">FeatureExtractor</span>.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

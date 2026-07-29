@@ -3,6 +3,7 @@ export enum BuiltInAiApiEnum {
   Prompt = "PROMPT",
   Proofreader = "PROOFREADER",
   Rewriter = "REWRITER",
+  SemanticEmbedder = "SEMANTIC_EMBEDDER",
   Summarizer = "SUMMARIZER",
   Translator = "TRANSLATOR",
   Writer = "WRITER",
