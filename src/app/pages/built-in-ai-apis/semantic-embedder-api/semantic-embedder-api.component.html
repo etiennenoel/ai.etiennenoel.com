@@ -203,13 +203,29 @@
               <tr>
                 <th>#{{ row.index }}</th>
                 @for (similarity of similarityMatrix[row.index]; track $index) {
-                  <td>{{ similarity | number: '1.4-4' }}</td>
+                  <td>
+                    <span [class]="'similarity ' + getSimilarityClass(similarity)">{{ similarity | number: '1.4-4' }}</span>
+                  </td>
                 }
               </tr>
             }
           </tbody>
         </table>
       </div>
+
+      <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
+        <small class="text-muted">Legend:</small>
+        <span class="similarity similarity-very-high">≥ 0.85</span>
+        <small class="text-muted me-2">near-duplicate</small>
+        <span class="similarity similarity-high">≥ 0.65</span>
+        <small class="text-muted me-2">related</small>
+        <span class="similarity similarity-moderate">≥ 0.45</span>
+        <small class="text-muted me-2">loosely related</small>
+        <span class="similarity similarity-low">&lt; 0.45</span>
+        <small class="text-muted">unrelated</small>
+      </div>
+      <p class="text-muted mt-2"><small>These thresholds are a reading aid, not a property of the API: the meaningful
+        cut-off depends on the embedding space and on your task, so calibrate them on your own data.</small></p>
     }
   </app-output>
 

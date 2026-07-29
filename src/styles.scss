@@ -3,31 +3,35 @@
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 
+// The subtle colors are read from the Bootstrap CSS variables rather than from the Sass variables:
+// the Sass values are baked in at compile time and always resolve to the light theme, which leaves
+// light text on a light background once `data-bs-theme="dark"` is set. The CSS variables follow the
+// active theme.
 .code {
-  background-color: $primary-bg-subtle;
-  border: 1px solid $primary-border-subtle;
+  background-color: var(--bs-primary-bg-subtle);
+  border: 1px solid var(--bs-primary-border-subtle);
   padding: 3px;
   border-radius: 6px;
 
   &.code-warning {
-    background-color: $warning-bg-subtle;
-    border: 1px solid $warning-border-subtle;
+    background-color: var(--bs-warning-bg-subtle);
+    border: 1px solid var(--bs-warning-border-subtle);
   }
   &.code-info {
-    background-color: $info-bg-subtle;
-    border: 1px solid $info-border-subtle;
+    background-color: var(--bs-info-bg-subtle);
+    border: 1px solid var(--bs-info-border-subtle);
   }
   &.code-success {
-    background-color: $success-bg-subtle;
-    border: 1px solid $success-border-subtle;
+    background-color: var(--bs-success-bg-subtle);
+    border: 1px solid var(--bs-success-border-subtle);
   }
   &.code-danger {
-    background-color: $danger-bg-subtle;
-    border: 1px solid $danger-border-subtle;
+    background-color: var(--bs-danger-bg-subtle);
+    border: 1px solid var(--bs-danger-border-subtle);
   }
   &.code-dark {
-    background-color: $dark-bg-subtle;
-    border: 1px solid $dark-border-subtle;
+    background-color: var(--bs-dark-bg-subtle);
+    border: 1px solid var(--bs-dark-border-subtle);
   }
 }
 

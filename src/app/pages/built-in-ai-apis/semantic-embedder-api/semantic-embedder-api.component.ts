@@ -295,6 +295,39 @@ semanticEmbedder.destroy();`;
     return denominator === 0 ? 0 : dotProduct / denominator;
   }
 
+  /**
+   * Thresholds used to color code the cosine similarity matrix. They are a reading aid, not a
+   * property of the API: the useful cut-off depends on the embedding space and on the task, so
+   * calibrate them on your own data before relying on them to accept or reject a match.
+   */
+  static readonly similarityThresholds = {
+    veryHigh: 0.85,
+    high: 0.65,
+    moderate: 0.45,
+  };
+
+  /**
+   * Maps a cosine similarity to the CSS class tinting its cell, from green (near-duplicate) to red
+   * (unrelated). Negative values fall in the lowest band.
+   */
+  getSimilarityClass(similarity: number): string {
+    const thresholds = SemanticEmbedderApiComponent.similarityThresholds;
+
+    if (similarity >= thresholds.veryHigh) {
+      return "similarity-very-high";
+    }
+
+    if (similarity >= thresholds.high) {
+      return "similarity-high";
+    }
+
+    if (similarity >= thresholds.moderate) {
+      return "similarity-moderate";
+    }
+
+    return "similarity-low";
+  }
+
   getPreview(row: EmbeddingRowInterface): string {
     const preview = row.values.slice(0, this.previewLength).map(value => value.toFixed(4)).join(", ");
 
