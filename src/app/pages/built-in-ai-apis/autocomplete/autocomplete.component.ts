@@ -98,8 +98,7 @@ export class AutocompleteComponent extends BasePageComponent  implements OnInit,
 
       // 
       session = await LanguageModel.create({
-        topK: 1,
-        temperature: 0,
+        samplingMode: "most-predictable",
       });
 
       const stream = session.promptStreaming([

@@ -18,6 +18,16 @@ import {RequirementInterface} from '../../../interfaces/requirement.interface';
 import {BaseBuiltInApiPageComponent} from '../../../components/base/base-built-in-api-page.component';
 import {ExecutionPerformanceManager} from '../../../managers/execution-performance.manager';
 import {BuiltInAiApiEnum} from '../../../enums/built-in-ai-api.enum';
+import {PromptSamplingModeEnum} from '../../../enums/prompt-sampling-mode.enum';
+
+declare global {
+  interface LanguageModelCreateCoreOptions {
+    samplingMode?: PromptSamplingModeEnum | string;
+  }
+  interface LanguageModel {
+    readonly samplingMode?: PromptSamplingModeEnum | string | null;
+  }
+}
 
 
 @Component({
@@ -30,10 +40,38 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
   medias: MediaInformationInterface[] = [];
 
 
-  // <editor-fold desc="TopK">
-  private _topK: number | null = 3;
-  public topKFormControl: FormControl<number | null> = new FormControl<number | null>(3);
+  // <editor-fold desc="Sampling Mode">
+  private _samplingMode: PromptSamplingModeEnum | null = PromptSamplingModeEnum.Balanced;
+  public samplingModeFormControl: FormControl<PromptSamplingModeEnum | null> = new FormControl<PromptSamplingModeEnum | null>(PromptSamplingModeEnum.Balanced);
 
+  get samplingMode(): PromptSamplingModeEnum | null {
+    return this._samplingMode;
+  }
+
+  @Input()
+  set samplingMode(value: PromptSamplingModeEnum | null) {
+    this.setSamplingMode(value);
+  }
+
+  setSamplingMode(value: PromptSamplingModeEnum | null, options?: { emitFormControlEvent?: boolean, emitChangeEvent?: boolean }) {
+    this._samplingMode = value;
+    this.samplingModeFormControl.setValue(value, {emitEvent: options?.emitFormControlEvent ?? true});
+    if (options?.emitChangeEvent ?? true) {
+      this.samplingModeChange.emit(value);
+    }
+  }
+
+  @Output()
+  samplingModeChange = new EventEmitter<PromptSamplingModeEnum | null>();
+  // </editor-fold>
+
+  // <editor-fold desc="TopK (Deprecated)">
+  /** @deprecated Use samplingMode instead. */
+  private _topK: number | null = null;
+  /** @deprecated Use samplingMode instead. */
+  public topKFormControl: FormControl<number | null> = new FormControl<number | null>(null);
+
+  /** @deprecated Use samplingMode instead. */
   get topK(): number | null {
     return this._topK;
   }
@@ -55,10 +93,13 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
   topKChange = new EventEmitter<number | null>();
   // </editor-fold>
 
-  // <editor-fold desc="Temperature">
-  private _temperature: number | null = 1;
-  public temperatureFormControl: FormControl<number | null> = new FormControl<number | null>(1);
+  // <editor-fold desc="Temperature (Deprecated)">
+  /** @deprecated Use samplingMode instead. */
+  private _temperature: number | null = null;
+  /** @deprecated Use samplingMode instead. */
+  public temperatureFormControl: FormControl<number | null> = new FormControl<number | null>(null);
 
+  /** @deprecated Use samplingMode instead. */
   get temperature(): number | null {
     return this._temperature;
   }
@@ -178,32 +219,56 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
     }
   }
 
+  private get hasLegacyTopK(): boolean {
+    const val = this.topKFormControl.value;
+    return val !== null && val !== undefined && String(val) !== '';
+  }
+
+  private get hasLegacyTemperature(): boolean {
+    const val = this.temperatureFormControl.value;
+    return val !== null && val !== undefined && String(val) !== '';
+  }
+
   get checkAvailabilityCode(): string {
-    return `const status = await LanguageModel.availability({
-  topK: ${this.topKFormControl.value},
-  temperature: ${this.temperatureFormControl.value},
-})`
+    const lines: string[] = [];
+    if (this.samplingModeFormControl.value) {
+      lines.push(`  samplingMode: "${this.samplingModeFormControl.value}",`);
+    }
+    if (this.hasLegacyTopK) {
+      lines.push(`  topK: ${this.topKFormControl.value}, // Deprecated`);
+    }
+    if (this.hasLegacyTemperature) {
+      lines.push(`  temperature: ${this.temperatureFormControl.value}, // Deprecated`);
+    }
+    return `const status = await LanguageModel.availability({\n${lines.join('\n')}\n})`;
   }
 
   async checkAvailability() {
     try {
-      this.availabilityStatus = await LanguageModel.availability({
-        topK: this.topKFormControl.value,
-        temperature: this.temperatureFormControl.value,
-      }) as AvailabilityStatusEnum;
+      const options: LanguageModelCreateCoreOptions = {};
+      if (this.samplingModeFormControl.value) {
+        options.samplingMode = this.samplingModeFormControl.value;
+      }
+      if (this.hasLegacyTopK) {
+        options.topK = Number(this.topKFormControl.value);
+      }
+      if (this.hasLegacyTemperature) {
+        options.temperature = Number(this.temperatureFormControl.value);
+      }
+      this.availabilityStatus = await LanguageModel.availability(options) as AvailabilityStatusEnum;
     } catch (e: any) {
       this.availabilityStatus = AvailabilityStatusEnum.Unavailable
       this.error = e;
     }
   }
 
+  /** @deprecated Restricted to web extension contexts only; use samplingMode instead. */
   get paramsCode(): string {
-    return `const params = LanguageModel.params()`;
+    return `// Deprecated: Only available in extension contexts; use samplingMode instead.\nconst params = await LanguageModel.params();`;
   }
 
   async getParams() {
     try {
-      // 
       this.params = await LanguageModel.params();
     } catch (e: any) {
       this.error = e;
@@ -211,12 +276,22 @@ export class PromptApiComponent extends BaseBuiltInApiPageComponent implements O
   }
 
   get executeCode(): string {
+    const optionLines: string[] = [];
+    if (this.samplingModeFormControl.value) {
+      optionLines.push(`  samplingMode: "${this.samplingModeFormControl.value}",`);
+    }
+    if (this.hasLegacyTopK) {
+      optionLines.push(`  topK: ${this.topKFormControl.value}, // Deprecated`);
+    }
+    if (this.hasLegacyTemperature) {
+      optionLines.push(`  temperature: ${this.temperatureFormControl.value}, // Deprecated`);
+    }
+    optionLines.push(`  initialPrompts: ${JSON.stringify(this.initialPrompts, null, 2)},`);
+
     let code = `const abortController = new AbortController();
 
 const session = await LanguageModel.create({
-  topK: ${this.topKFormControl.value},
-  temperature: ${this.temperatureFormControl.value},
-  initialPrompts: ${JSON.stringify(this.initialPrompts, null, 2)},
+${optionLines.join('\n')}
   monitor(m: any)  {
     m.addEventListener("downloadprogress", (e: any) => {
       console.log(\`Downloaded \${e.loaded * 100}%\`);
@@ -282,16 +357,23 @@ console.log(output);`;
       this.outputChunks = [];
       this.executionPerformanceManager.start(BuiltInAiApiEnum.Prompt);
 
-      this.executionPerformanceManager.sessionCreationStarted({
-        topK: this.topKFormControl.value,
-        temperature: this.temperatureFormControl.value,
-        initialPrompts: this.initialPrompts});
+      const createOptions: any = {
+        initialPrompts: this.initialPrompts,
+      };
+      if (this.samplingModeFormControl.value) {
+        createOptions.samplingMode = this.samplingModeFormControl.value;
+      }
+      if (this.hasLegacyTopK) {
+        createOptions.topK = Number(this.topKFormControl.value);
+      }
+      if (this.hasLegacyTemperature) {
+        createOptions.temperature = Number(this.temperatureFormControl.value);
+      }
+
+      this.executionPerformanceManager.sessionCreationStarted(createOptions);
 
       const session = await LanguageModel.create({
-        topK: this.topKFormControl.value,
-        temperature: this.temperatureFormControl.value,
-        // @ts-expect-error
-        initialPrompts: this.initialPrompts,
+        ...createOptions,
         monitor(m: any) {
           m.addEventListener("downloadprogress", (e: any) => {
             console.log(`Downloaded ${e.loaded * 100}%`);
@@ -379,6 +461,14 @@ console.log(output);`;
     this.checkRequirements()
     this.executionPerformanceManager.reset();
 
+    this.subscriptions.push(this.samplingModeFormControl.valueChanges.subscribe((value) => {
+      this.setSamplingMode(value, {emitChangeEvent: true, emitFormControlEvent: false});
+      this.router.navigate(['.'], {
+        relativeTo: this.route,
+        queryParams: {samplingMode: this.samplingMode},
+        queryParamsHandling: 'merge'
+      });
+    }));
     this.subscriptions.push(this.topKFormControl.valueChanges.subscribe((value) => {
       this.setTopK(value, {emitChangeEvent: true, emitFormControlEvent: false});
       this.router.navigate(['.'], {
@@ -412,6 +502,10 @@ console.log(output);`;
     }));
 
     this.subscriptions.push(this.route.queryParams.subscribe((params) => {
+      if (params['samplingMode']) {
+        this.setSamplingMode(params['samplingMode'], {emitChangeEvent: false, emitFormControlEvent: false});
+      }
+
       if (params['topK']) {
         this.setTopK(params['topK'], {emitChangeEvent: false, emitFormControlEvent: false});
       }
@@ -555,4 +649,5 @@ console.log(output);`;
   protected readonly PromptInitialRoleEnum = PromptInitialRoleEnum;
   protected readonly PromptTypeEnum = PromptTypeEnum;
   protected readonly PromptRoleEnum = PromptRoleEnum;
+  protected readonly PromptSamplingModeEnum = PromptSamplingModeEnum;
 }
